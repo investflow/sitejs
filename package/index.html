@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Vue</title>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+
+<body>
+
+<div id="app">
+    {{message}}
+    <p>Click the links below.</p>
+    <p>
+        <!-- use v-link directive for navigation. -->
+        <a v-link="{ path: '/view1' }">View1</a>&nbsp;&nbsp;&nbsp;&nbsp;<a v-link="{ path: '/view2' }">View2</a>
+    </p>
+    <!-- route outlet -->
+    <router-view></router-view>
+</div>
+<script src="/js/investflow-portfolio.js"></script>
+
+</body>
+</html>
