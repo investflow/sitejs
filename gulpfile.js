@@ -14,17 +14,17 @@ gulp.task('connect', function () {
 });
 
 gulp.task('build', function () {
-    return browserify('./app/main.js') // Grabs the app.js file
+    return browserify('./app/app.js') // Grabs the app.js file
         .transform(partialify)
-        .bundle() // bundles it and creates a file called main.js
-        .pipe(source('investflow-portfolio.js'))// saves it the investflow-portfolio.js file
+        .bundle() // bundles it and creates a file called app.js
+        .pipe(source('site.js'))// saves it the investflow-portfolio.js file
         .pipe(gulp.dest('./package/js/')); // stores it in ./package/js/ directory
 });
 
 gulp.task('build-min', function () {
-    return browserify('./app/main.js') // Grabs the app.js file
+    return browserify('./app/app.js') // Grabs the app.js file
         .transform(partialify)
-        .bundle() // bundles it and creates a file called main.js
+        .bundle() // bundles it and creates a file called app.js
         .pipe(source('investflow-portfolio.min.js'))// saves it the investflow-portfolio.js file
         .pipe(buffer()) //convert from streaming to buffered vinyl file object. Required by uglify.
         .pipe(uglify())
