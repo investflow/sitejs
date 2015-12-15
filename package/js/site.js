@@ -9,19 +9,23 @@ Vue.use(VueRouter);
 
 var router = new VueRouter();
 router.map({
-    '/view1': {
-        component: require("./components/view1")
+    '/pamm': {
+        component: require("./pamm/pamm.js")
     },
-    '/view2': {
-        component: require("./components/view2")
+    '/stock': {
+        component: require("./stock/stock.js")
+    },
+    '/deposit': {
+        component: require("./deposit/deposit.js")
+    },
+    '/free': {
+        component: require("./free/free.js")
     }
 });
 
 var App = {
     data: function () {
-        return {
-            message: "Hello!"
-        }
+        return {}
     }
 };
 
@@ -32,21 +36,63 @@ router.start(App, "#app");
 
 // custom filters
 //require('./filters/my-first-filter')(Vue);
-},{"./components/view1":2,"./components/view2":4,"vue":8,"vue-router":7}],2:[function(require,module,exports){
+},{"./deposit/deposit.js":5,"./free/free.js":7,"./pamm/pamm.js":9,"./stock/stock.js":11,"vue":14,"vue-router":13}],2:[function(require,module,exports){
+module.exports = '<div xmlns:v-bind="http://www.w3.org/1999/xhtml">\n    <select v-model="selectedCurrency">\n        <option v-for="c in allCurrencies" v-bind:value="c.value">\n            {{ c.text }}\n        </option>\n    </select>\n</div>';
+},{}],3:[function(require,module,exports){
 module.exports = {
     replace: true,
-    template: require('./template.html'),
+    template: require('./currency-selector.html'),
+    data: function () {
+        return {
+            selectedCurrency: "3",
+            allCurrencies: [{text: "one", value: "1"}, {text: "two", value: "2"}, {text: "three", value: "3"}]
+        };
+    }
+};
+},{"./currency-selector.html":2}],4:[function(require,module,exports){
+module.exports = '<p>Deposit</p>\n';
+},{}],5:[function(require,module,exports){
+module.exports = {
+    replace: true,
+    template: require('./deposit.html'),
     data: function () {
         return {};
     }
 };
-},{"./template.html":3}],3:[function(require,module,exports){
-module.exports = '<p>This is <strong>View 1</strong>.</p>\n';
-},{}],4:[function(require,module,exports){
-arguments[4][2][0].apply(exports,arguments)
-},{"./template.html":5,"dup":2}],5:[function(require,module,exports){
-module.exports = '<p>This is <strong>View 2</strong>.</p>\n';
-},{}],6:[function(require,module,exports){
+},{"./deposit.html":4}],6:[function(require,module,exports){
+module.exports = '<div>\n    <form>\n        <currency-selector></currency-selector>\n    </form>\n</div>';
+},{}],7:[function(require,module,exports){
+module.exports = {
+    replace: true,
+    template: require('./free.html'),
+    components: {
+        "currency-selector": require("../common/currency-selector.js")
+    },
+    data: function () {
+        return {};
+    }
+};
+},{"../common/currency-selector.js":3,"./free.html":6}],8:[function(require,module,exports){
+module.exports = '<p>Pamm</p>\n';
+},{}],9:[function(require,module,exports){
+module.exports = {
+    replace: true,
+    template: require('./pamm.html'),
+    data: function () {
+        return {};
+    }
+};
+},{"./pamm.html":8}],10:[function(require,module,exports){
+module.exports = '<p>Stock</p>\n';
+},{}],11:[function(require,module,exports){
+module.exports = {
+    replace: true,
+    template: require('./stock.html'),
+    data: function () {
+        return {};
+    }
+};
+},{"./stock.html":10}],12:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -139,7 +185,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],7:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 'use strict';
 
 var babelHelpers = {};
@@ -2674,7 +2720,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 }
 
 module.exports = Router;
-},{}],8:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 (function (process){
 /*!
  * Vue.js v1.0.11
@@ -12074,4 +12120,4 @@ if (process.env.NODE_ENV !== 'production' && inBrowser) {
 
 module.exports = Vue;
 }).call(this,require('_process'))
-},{"_process":6}]},{},[1]);
+},{"_process":12}]},{},[1]);

@@ -8,19 +8,23 @@ Vue.use(VueRouter);
 
 var router = new VueRouter();
 router.map({
-    '/view1': {
-        component: require("./components/view1")
+    '/pamm': {
+        component: require("./pamm/pamm.js")
     },
-    '/view2': {
-        component: require("./components/view2")
+    '/stock': {
+        component: require("./stock/stock.js")
+    },
+    '/deposit': {
+        component: require("./deposit/deposit.js")
+    },
+    '/free': {
+        component: require("./free/free.js")
     }
 });
 
 var App = {
     data: function () {
-        return {
-            message: "Hello!"
-        }
+        return {}
     }
 };
 

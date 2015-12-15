@@ -10,13 +10,12 @@
 <body>
 
 <div id="app">
-    {{message}}
-    <p>Click the links below.</p>
     <p>
-        <!-- use v-link directive for navigation. -->
-        <a v-link="{ path: '/view1' }">View1</a>&nbsp;&nbsp;&nbsp;&nbsp;<a v-link="{ path: '/view2' }">View2</a>
+        <a v-link="{ path: '/pamm' }">ПАММ</a>
+        <a v-link="{ path: '/stock' }" style="margin-left: 20px;">Акция</a>
+        <a v-link="{ path: '/deposit' }" style="margin-left: 20px;">Депозит</a>
+        <a v-link="{ path: '/free' }" style="margin-left: 20px;">Свободные средства</a>
     </p>
-    <!-- route outlet -->
     <router-view></router-view>
 </div>
 <script src="/js/site.js"></script>

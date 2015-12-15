@@ -1,6 +1,6 @@
 module.exports = {
     replace: true,
-    template: require('./template.html'),
+    template: require('./stock.html'),
     data: function () {
         return {};
     }

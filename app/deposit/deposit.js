@@ -1,6 +1,6 @@
 module.exports = {
     replace: true,
-    template: require('./template.html'),
+    template: require('./deposit.html'),
     data: function () {
         return {};
     }
