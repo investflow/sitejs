@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Vue</title>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+
+<body>
+<div id="form1">
+    <p>Form1</p>
+    <p>
+        <a href v-on:click="showPamms">ПАММ</a>
+        <a href v-on:click="showFree" style="margin-left: 20px;">Свободные средства</a>
+    </p>
+    <div>
+        <add-pamm-account v-show="tab == 0"></add-pamm-account>
+        <add-free-account v-show="tab == 1"></add-free-account>
+    </div>
+</div>
+<hr>
+<div id="form2">
+    <p>Form2</p>
+    <p>
+        <a href v-on:click="showPamms">ПАММ</a>
+        <a href v-on:click="showFree" style="margin-left: 20px;">Свободные средства</a>
+    </p>
+    <div>{{ tab }}</div>
+</div>
+
+<script src="/js/site.js"></script>
+<script>
+    window.iflow.AddAccountForm.create("#form1");
+    window.iflow.AddAccountForm.create("#form2");
+</script>
+
+</body>
+</html>
