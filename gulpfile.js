@@ -14,17 +14,17 @@ gulp.task('connect', function () {
 });
 
 gulp.task('build', function () {
-    return browserify('./app/all.js') // Grabs the all.js file
+    return browserify('./src/package.js') // Grabs the package.js file
         .transform(partialify)
-        .bundle() // bundles it and creates a file called all.js
+        .bundle() // bundles it and creates a file called package.js
         .pipe(source('site.js'))// saves it the investflow-portfolio.js file
         .pipe(gulp.dest('./package/js/')); // stores it in ./package/js/ directory
 });
 
 gulp.task('build-min', function () {
-    return browserify('./app/all.js') // Grabs the all.js file
+    return browserify('./src/package.js') // Grabs the package.js file
         .transform(partialify)
-        .bundle() // bundles it and creates a file called all.js
+        .bundle() // bundles it and creates a file called package.js
         .pipe(source('investflow-portfolio.min.js'))// saves it the investflow-portfolio.js file
         .pipe(buffer()) //convert from streaming to buffered vinyl file object. Required by uglify.
         .pipe(uglify())
@@ -33,7 +33,7 @@ gulp.task('build-min', function () {
 
 
 gulp.task('watch', function () {
-    gulp.watch('app/**', ['build']);
+    gulp.watch('src/**', ['build']);
 });
 
 gulp.task('default', ['connect', 'watch']);

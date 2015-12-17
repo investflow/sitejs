@@ -1,141 +1,4 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var iflow = {};
-
-iflow.AddAccountForm = require("./component/add-account/AddAccountForm");
-iflow.Chat = require("./component/chat/Chat");
-
-window.iflow = iflow;
-
-},{"./component/add-account/AddAccountForm":5,"./component/chat/Chat":10}],2:[function(require,module,exports){
-var Currency = require("./currency");
-var activeCurrencies = [Currency.EUR, Currency.RUB, Currency.USD];
-
-module.exports = {
-    Active: activeCurrencies
-};
-
-},{"./currency":4}],3:[function(require,module,exports){
-module.exports = {
-    ALFAFOREX: {id: 11, name: "Альфа-Форекс"},
-    AMARKETS: {id: 4, name: "AMarkets"},
-    ALPARI: {id: 3, name: "Альпари"},
-    COMON: {id: 28, name: "Comon"},
-    FOREX4YOU: {id: 9, name: "Forex4you"},
-    FXOPEN: {id: 10, name: "FxOpen"},
-    FRESHFOREX: {id: 21, name: "FreshForex"},
-    FIBOGROUP: {id: 22, name: "FIBO Group"},
-    INSTAFOREX: {id: 5, name: "InstaForex"},
-    LITEFOREX: {id: 18, name: "LiteForex"},
-    ROBOFOREX: {id: 13, name: "RoboForex"},
-    TENKOFX: {id: 15, name: "TenkoFX"},
-    WELTRADE: {id: 12, name: "WELTRADE"}
-};
-},{}],4:[function(require,module,exports){
-module.exports = {
-    EUR: {id: "euro", name: "Евро"},
-    RUB: {id: "ruble", name: "Рубль"},
-    USD: {id: "usd", name: "Доллар США"}
-};
-},{}],5:[function(require,module,exports){
-module.exports = {
-    create: function (elementId) {
-        var Vue = require('vue');
-        return new Vue({
-            el: elementId,
-            components: {
-                "add-pamm-account": require("./pamm/pamm"),
-                "add-free-account": require("./free/free")
-            },
-            methods: {
-                showPamms: function (event) {
-                    event.preventDefault();
-                    this.tab = 0;
-                },
-                showFree: function () {
-                    event.preventDefault();
-                    this.tab = 1;
-                }
-            },
-            data: {
-                tab: 0
-            }
-        });
-
-    }
-};
-
-
-},{"./free/free":7,"./pamm/pamm":9,"vue":17}],6:[function(require,module,exports){
-module.exports = '<div>\n    <form>\n        <currency-selector></currency-selector>\n    </form>\n</div>';
-},{}],7:[function(require,module,exports){
-module.exports = {
-    replace: true,
-    template: require('./free.html'),
-    components: {
-        "currency-selector": require("../../common/currency-selector.js")
-    },
-    data: function () {
-        return {};
-    }
-};
-},{"../../common/currency-selector.js":14,"./free.html":6}],8:[function(require,module,exports){
-module.exports = '<div>\n    <form>\n        <broker-selector></broker-selector>\n    </form>\n</div>';
-},{}],9:[function(require,module,exports){
-module.exports = {
-    replace: true,
-    template: require('./pamm.html'),
-    components: {
-        "broker-selector": require("../../common/broker-selector.js")
-    },
-    data: function () {
-        return {};
-    }
-};
-},{"../../common/broker-selector.js":12,"./pamm.html":8}],10:[function(require,module,exports){
-module.exports = {};
-
-},{}],11:[function(require,module,exports){
-module.exports = '<div xmlns:v-bind="http://www.w3.org/1999/xhtml">\n    <select v-model="selected">\n        <option v-for="c in options" v-bind:value="c.value">\n            {{ c.text }}\n        </option>\n    </select>\n</div>';
-},{}],12:[function(require,module,exports){
-var _ = require("underscore");
-var Brokers = require("../../api/broker");
-
-var formOptions = _.map(Brokers, function (val) {
-    return {text: val.name, value: val.id};
-});
-
-module.exports = {
-    replace: true,
-    template: require('./broker-selector.html'),
-    data: function () {
-        return {
-            selected: Brokers.ALFAFOREX.id,
-            options: formOptions
-        }
-    }
-};
-},{"../../api/broker":3,"./broker-selector.html":11,"underscore":16}],13:[function(require,module,exports){
-arguments[4][11][0].apply(exports,arguments)
-},{"dup":11}],14:[function(require,module,exports){
-var _ = require("underscore");
-var Currency = require("../../api/currency");
-var ActiveCurrencies = require("../../api/account-currency").Active;
-
-var formOptions = _.map(ActiveCurrencies, function (val) {
-    return {text: val.name, value: val.id};
-});
-
-module.exports = {
-    replace: true,
-    template: require('./currency-selector.html'),
-    data: function () {
-        return {
-            selected: Currency.RUB.id,
-            options: formOptions
-        }
-    }
-};
-},{"../../api/account-currency":2,"../../api/currency":4,"./currency-selector.html":13,"underscore":16}],15:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -228,7 +91,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],16:[function(require,module,exports){
+},{}],2:[function(require,module,exports){
 //     Underscore.js 1.8.3
 //     http://underscorejs.org
 //     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -1778,7 +1641,7 @@ process.umask = function() { return 0; };
   }
 }.call(this));
 
-},{}],17:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 (function (process){
 /*!
  * Vue.js v1.0.11
@@ -11178,4 +11041,156 @@ if (process.env.NODE_ENV !== 'production' && inBrowser) {
 
 module.exports = Vue;
 }).call(this,require('_process'))
-},{"_process":15}]},{},[1]);
+},{"_process":1}],4:[function(require,module,exports){
+var Currency = require("./currency");
+var activeCurrencies = [Currency.EUR, Currency.RUB, Currency.USD];
+
+module.exports = {
+    Active: activeCurrencies
+};
+
+},{"./currency":6}],5:[function(require,module,exports){
+module.exports = {
+    ALFAFOREX: {id: 11, name: "Альфа-Форекс"},
+    AMARKETS: {id: 4, name: "AMarkets"},
+    ALPARI: {id: 3, name: "Альпари"},
+    COMON: {id: 28, name: "Comon"},
+    FOREX4YOU: {id: 9, name: "Forex4you"},
+    FXOPEN: {id: 10, name: "FxOpen"},
+    FRESHFOREX: {id: 21, name: "FreshForex"},
+    FIBOGROUP: {id: 22, name: "FIBO Group"},
+    INSTAFOREX: {id: 5, name: "InstaForex"},
+    LITEFOREX: {id: 18, name: "LiteForex"},
+    ROBOFOREX: {id: 13, name: "RoboForex"},
+    TENKOFX: {id: 15, name: "TenkoFX"},
+    WELTRADE: {id: 12, name: "WELTRADE"}
+};
+},{}],6:[function(require,module,exports){
+module.exports = {
+    EUR: {id: "euro", name: "Евро"},
+    RUB: {id: "ruble", name: "Рубль"},
+    USD: {id: "usd", name: "Доллар США"}
+};
+},{}],7:[function(require,module,exports){
+module.exports = {
+    create: function (elementId) {
+        var Vue = require('vue');
+        var AddAccountForm = require("./../component/add-account/AddAccountForm");
+        var form = new AddAccountForm();
+        form.el = elementId;
+        return new Vue(form);
+    }
+};
+
+
+},{"./../component/add-account/AddAccountForm":9,"vue":3}],8:[function(require,module,exports){
+module.exports = '<div>\n    <a href v-on:click="showPamms">ПАММ</a>\n    <a href v-on:click="showFree" style="margin-left: 20px;">Свободные средства</a>\n    <div>\n        <add-pamm-account v-show="tab == 0"></add-pamm-account>\n        <add-free-account v-show="tab == 1"></add-free-account>\n    </div>\n</div>\n';
+},{}],9:[function(require,module,exports){
+module.exports = function () {
+    var model = {
+        tab: 0
+    };
+    return {
+        template: require('./AddAccountForm.html'),
+        components: {
+            "add-pamm-account": require("./AddPammAccountPanel")(),
+            "add-free-account": require("./AddFreeAccountPanel")()
+        },
+        methods: {
+            showPamms: function (event) {
+                event.preventDefault();
+                model.tab = 0;
+            },
+            showFree: function () {
+                event.preventDefault();
+                model.tab = 1;
+            }
+        },
+        data: function () {
+            return model
+        }
+    };
+};
+},{"./AddAccountForm.html":8,"./AddFreeAccountPanel":11,"./AddPammAccountPanel":13}],10:[function(require,module,exports){
+module.exports = '<div>\n    <form>\n        <currency-selector></currency-selector>\n    </form>\n</div>';
+},{}],11:[function(require,module,exports){
+module.exports = function () {
+    var model = {};
+    return {
+        template: require('./AddFreeAccountPanel.html'),
+        components: {
+            "currency-selector": require("../common/currency-selector.js")()
+        },
+        data: function() {
+            return model;
+        }
+    }
+};
+},{"../common/currency-selector.js":17,"./AddFreeAccountPanel.html":10}],12:[function(require,module,exports){
+module.exports = '<div>\n    <form>\n        <broker-selector></broker-selector>\n    </form>\n</div>';
+},{}],13:[function(require,module,exports){
+module.exports = function () {
+    var model = {};
+    return {
+        template: require('./AddPammAccountPanel.html'),
+        components: {
+            "broker-selector": require("../common/broker-selector.js")()
+        },
+        data: function() {
+            return model;
+        }
+    };
+};
+},{"../common/broker-selector.js":15,"./AddPammAccountPanel.html":12}],14:[function(require,module,exports){
+module.exports = '<div xmlns:v-bind="http://www.w3.org/1999/xhtml">\n    <select v-model="selected">\n        <option v-for="c in options" v-bind:value="c.value">\n            {{ c.text }}\n        </option>\n    </select>\n</div>';
+},{}],15:[function(require,module,exports){
+module.exports = function () {
+    var _ = require("underscore");
+    var Brokers = require("../../api/broker");
+
+    var formOptions = _.map(Brokers, function (val) {
+        return {text: val.name, value: val.id};
+    });
+
+    return {
+        template: require('./broker-selector.html'),
+        data: function () {
+            return {
+                selected: Brokers.ALFAFOREX.id,
+                options: formOptions
+            }
+        }
+    }
+};
+},{"../../api/broker":5,"./broker-selector.html":14,"underscore":2}],16:[function(require,module,exports){
+arguments[4][14][0].apply(exports,arguments)
+},{"dup":14}],17:[function(require,module,exports){
+module.exports = function () {
+    var _ = require("underscore");
+    var Currency = require("../../api/currency");
+    var ActiveCurrencies = require("../../api/account-currency").Active;
+
+    var formOptions = _.map(ActiveCurrencies, function (val) {
+        return {text: val.name, value: val.id};
+    });
+
+    return {
+        replace: true,
+        template: require('./currency-selector.html'),
+        data: function () {
+            return {
+                selected: Currency.RUB.id,
+                options: formOptions
+            }
+        }
+    }
+};
+},{"../../api/account-currency":4,"../../api/currency":6,"./currency-selector.html":16,"underscore":2}],18:[function(require,module,exports){
+var exports = {};
+
+exports.AddAccountFormApp = require("./app/AddAccountFormApp");
+//exports.ChatApp = require("./component/chat/Chat");
+
+window.$iflow = exports;
+
+},{"./app/AddAccountFormApp":7}]},{},[18]);
