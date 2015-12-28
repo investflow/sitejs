@@ -1,6 +1,6 @@
 var exports = {};
 
 exports.AddAccountFormApp = require("./app/AddAccountFormApp");
-//exports.ChatApp = require("./component/chat/Chat");
+exports.LazyTitle = require("./api/lazy-title");
 
 window.$iflow = exports;
