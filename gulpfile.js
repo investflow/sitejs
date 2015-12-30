@@ -24,14 +24,14 @@ gulp.task('build', function () {
         .pipe(gulp.dest('./package/js/')); // stores it in ./package/js/ directory
 });
 
-gulp.task('build-min', function () {
+gulp.task('deploy-site-js', function () {
     return browserify('./src/site.js') // Grabs the site.js file
         .transform(partialify)
         .bundle() // bundles it and creates a file called site.js
         .pipe(source('site.min.js'))// saves it the investflow-portfolio.js file
         .pipe(buffer()) //convert from streaming to buffered vinyl file object. Required by uglify.
         .pipe(uglify())
-        .pipe(gulp.dest('./package/js/')); // stores it in ./package/js/ directory
+        .pipe(gulp.dest('../iflow/src/main/webapp/js/')); // deploy it to iflow
 });
 
 gulp.task('test', function () {
