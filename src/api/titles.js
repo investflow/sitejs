@@ -15,5 +15,6 @@ module.exports = {
         DOMUtils.setTitle(".pi-nc", "Есть новые комментарии!", rootEl);
         DOMUtils.setTitle(".pi-i-share", "Доля инвестора в лучшей оферте.", rootEl);
         DOMUtils.setTitle(".pi-i-min", "Минимальная инвестиция в валюте счета.", rootEl);
+        DOMUtils.setTitle(".pi-age", "Возраст счета.", rootEl);
     }
 };
