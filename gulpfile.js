@@ -1,7 +1,6 @@
 var gulp = require('gulp');
 var connect = require('gulp-connect');
 var uglify = require('gulp-uglify');
-var gzip = require('gulp-gzip');
 var jasmine = require('gulp-jasmine');
 
 var source = require('vinyl-source-stream');
@@ -18,21 +17,20 @@ gulp.task('connect', function () {
 });
 
 gulp.task('build', function () {
-    return browserify('./src/package.js') // Grabs the package.js file
+    return browserify('./src/site.js') // Grabs the site.js file
         .transform(partialify)
-        .bundle() // bundles it and creates a file called package.js
+        .bundle() // bundles it and creates a file called site.js
         .pipe(source('site.js'))// saves it the investflow-portfolio.js file
         .pipe(gulp.dest('./package/js/')); // stores it in ./package/js/ directory
 });
 
 gulp.task('build-min', function () {
-    return browserify('./src/package.js') // Grabs the package.js file
+    return browserify('./src/site.js') // Grabs the site.js file
         .transform(partialify)
-        .bundle() // bundles it and creates a file called package.js
+        .bundle() // bundles it and creates a file called site.js
         .pipe(source('site.min.js'))// saves it the investflow-portfolio.js file
         .pipe(buffer()) //convert from streaming to buffered vinyl file object. Required by uglify.
         .pipe(uglify())
-        .pipe(gzip())
         .pipe(gulp.dest('./package/js/')); // stores it in ./package/js/ directory
 });
 

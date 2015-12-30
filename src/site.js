@@ -1,6 +1,6 @@
 var exports = {};
 
 exports.AddAccountFormApp = require("./app/AddAccountFormApp");
-exports.LazyTitle = require("./api/lazy-title");
+exports.DOMUtils = require("./api/dom-utils");
 
-window.$iflow = exports;
+window.$site = exports;
