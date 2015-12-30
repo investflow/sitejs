@@ -13,5 +13,7 @@ module.exports = {
         DOMUtils.setTitle(".pi-percent", "Процент за календарную неделю.", rootEl);
         DOMUtils.setTitle(".pi-fav", "Избранный ПАММ-счет.", rootEl);
         DOMUtils.setTitle(".pi-nc", "Есть новые комментарии!", rootEl);
+        DOMUtils.setTitle(".pi-i-share", "Доля инвестора в лучшей оферте.", rootEl);
+        DOMUtils.setTitle(".pi-i-min", "Минимальная инвестиция в валюте счета.", rootEl);
     }
 };
