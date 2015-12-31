@@ -17,21 +17,23 @@ gulp.task('connect', function () {
 });
 
 gulp.task('build', function () {
-    return browserify('./src/site.js') // Grabs the site.js file
+    return browserify('./src/site.js')
         .transform(partialify)
-        .bundle() // bundles it and creates a file called site.js
-        .pipe(source('site.js'))// saves it the investflow-portfolio.js file
-        .pipe(gulp.dest('./package/js/')); // stores it in ./package/js/ directory
+        .transform('browserify-shim', {global: true})
+        .bundle()
+        .pipe(source('site.js'))
+        .pipe(gulp.dest('./package/js/'));
 });
 
 gulp.task('deploy-site-js', function () {
-    return browserify('./src/site.js') // Grabs the site.js file
+    return browserify('./src/site.js')
         .transform(partialify)
-        .bundle() // bundles it and creates a file called site.js
-        .pipe(source('site.min.js'))// saves it the investflow-portfolio.js file
-        .pipe(buffer()) //convert from streaming to buffered vinyl file object. Required by uglify.
+        .transform('browserify-shim', {global: true})
+        .bundle()
+        .pipe(source('site.min.js'))
+        .pipe(buffer())
         .pipe(uglify())
-        .pipe(gulp.dest('../iflow/src/main/webapp/js/')); // deploy it to iflow
+        .pipe(gulp.dest('../iflow/src/main/webapp/js/'));
 });
 
 gulp.task('test', function () {

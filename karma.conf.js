@@ -11,11 +11,13 @@ module.exports = function (config) {
         frameworks: ['jasmine', 'browserify'],
 
         // list of files / patterns to load in the browser
-        files: ['src/**/*.spec.js'],
+        files: [
+            "node_modules/jquery/dist/jquery.js",
+            "src/**/*.spec.js"
+        ],
 
         // list of files to exclude
         exclude: [],
-
 
         // preprocess matching files before serving them to the browser
         preprocessors: {'src/**/*.js': ['browserify']},
