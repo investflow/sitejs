@@ -8,8 +8,7 @@ describe("Investflow REST service test suite", function () {
     it("IR.listAccounts must return valid results", function (done) {
         IR.listAccounts().then(
             function (listing) {
-                expect(listing).toBeDefined();
-                expect(listing.length).toBeDefined();
+                expect(Array.isArray(listing)).toBe(true);
                 expect(listing.length).toBeGreaterThan(1000);
                 done();
             },

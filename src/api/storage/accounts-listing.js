@@ -1,15 +1,17 @@
 var _ = require("underscore");
+var Q = require("q");
 var STORE = require("store");
 var IR = require("../investflow-rest");
 
 function list() {
     var listing = STORE.get("listing");
-
-    if (_.isUndefined(listing)) {
-        listing = IR.listAccounts();
-        STORE.set("listing", listing);
+    if (_.isUndefined(listing) || !_.isArray(listing)) {
+        return IR.listAccounts().then(function (listing) {
+            STORE.set("listing", listing);
+            return Q(listing);
+        });
     }
-    return listing;
+    return Q(listing);
 }
 
 function reset() {

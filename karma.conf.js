@@ -35,7 +35,7 @@ module.exports = function (config) {
         // web server port
         port: 9876,
 
-        //logLevel: 'LOG_DEBUG',
+        logLevel: 'LOG_DEBUG',
 
         // Start these browsers. Available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
         browsers: ['PhantomJS'],

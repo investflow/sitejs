@@ -1,18 +1,22 @@
 describe("Cached.accountListing test suite", function () {
     var AL = require("./accounts-listing");
 
-    it("Must have list method defined", function () {
+    it("list method must be defined", function () {
         expect(AL.list).toBeDefined()
     });
 
-    it("Must have reset method defined", function () {
+    it("reset method must be defined", function () {
         expect(AL.reset).toBeDefined()
     });
 
-    it("list method must return result", function () {
-        var list = AL.list();
-        expect(list.length).toBeDefined();
-        expect(list.length).toBeGreaterThan(1000);
+    it("list method must return valid results", function (done) {
+        var listPromise = AL.list();
+        listPromise.then(function (list) {
+            expect(Array.isArray(list)).toBe(true);
+            expect(list.length).toBeGreaterThan(1000);
+            done();
+        });
+
     });
 
 });
