@@ -7,8 +7,7 @@ module.exports = function (config) {
         // base path that will be used to resolve all patterns (eg. files, exclude)
         basePath: '',
 
-        // frameworks to use
-        frameworks: ['jasmine', 'browserify'],
+        frameworks: ["jasmine-jquery", "jasmine", "browserify"],
 
         // list of files / patterns to load in the browser
         files: [
@@ -36,8 +35,7 @@ module.exports = function (config) {
         // web server port
         port: 9876,
 
-        // level of logging
-        logLevel: 'LOG_DEBUG',
+        //logLevel: 'LOG_DEBUG',
 
         // Start these browsers. Available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
         browsers: ['PhantomJS'],
@@ -46,7 +44,7 @@ module.exports = function (config) {
         singleRun: true,
 
         // enable / disable watching file and executing tests whenever any file changes
-        autoWatch: false,
+        autoWatch: true,
 
         // Concurrency level: how many browser should be started simultaneous
         concurrency: Infinity
