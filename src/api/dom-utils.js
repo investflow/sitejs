@@ -1,5 +1,4 @@
 var $ = require("jquery");
-var _ = require("underscore");
 
 function addTitle(el, title) {
     if (!$(el).attr("title")) {
@@ -15,5 +14,9 @@ function setTitleBySelector(selector, title, root) {
 }
 
 module.exports = {
+    setTitle: setTitleBySelector
+};
+
+export default {
     setTitle: setTitleBySelector
 };

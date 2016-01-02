@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     infoPanel: function (rootId) {
         var DOMUtils = require("./dom-utils");
         var rootEl = document.getElementById(rootId);

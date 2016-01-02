@@ -8,5 +8,5 @@ module.exports = function () {
         data: function() {
             return model;
         }
-    }
+    };
 };

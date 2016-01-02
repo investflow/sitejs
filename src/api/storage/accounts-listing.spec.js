@@ -1,12 +1,13 @@
-describe("Cached.accountListing test suite", function () {
-    var AL = require("./accounts-listing");
+import AL from "./accounts-listing";
+
+describe("accountListing test suite", function () {
 
     it("list method must be defined", function () {
-        expect(AL.list).toBeDefined()
+        expect(AL.list).toBeDefined();
     });
 
     it("reset method must be defined", function () {
-        expect(AL.reset).toBeDefined()
+        expect(AL.reset).toBeDefined();
     });
 
     it("list method must return valid results", function (done) {
@@ -16,7 +17,6 @@ describe("Cached.accountListing test suite", function () {
             expect(list.length).toBeGreaterThan(1000);
             done();
         });
-
     });
 
 });

@@ -1,24 +1,24 @@
-var _ = require("underscore");
-var Q = require("q");
-var STORE = require("store");
-var IR = require("../investflow-rest");
+import _ from "underscore";
+import STORE from "store";
+import IR  from "../investflow-rest";
+require('es6-promise').polyfill();
 
 function list() {
     var listing = STORE.get("listing");
     if (_.isUndefined(listing) || !_.isArray(listing)) {
         return IR.listAccounts().then(function (listing) {
             STORE.set("listing", listing);
-            return Q(listing);
+            return listing;
         });
     }
-    return Q(listing);
+    return new Promise((resolve) => resolve(listing));
 }
 
 function reset() {
 
 }
 
-module.exports = {
+export default {
     list: list,
     reset: reset
 };

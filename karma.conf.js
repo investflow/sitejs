@@ -23,9 +23,8 @@ module.exports = function (config) {
 
         browserify: {
             debug: true,
-            transform: ['brfs']
+            transform: [['babelify', {presets: ["es2015"]}]]
         },
-
 
         // test results reporter to use
         // possible values: 'dots', 'progress'
@@ -48,5 +47,5 @@ module.exports = function (config) {
 
         // Concurrency level: how many browser should be started simultaneous
         concurrency: Infinity
-    })
+    });
 };

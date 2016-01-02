@@ -14,7 +14,7 @@ module.exports = function () {
             return {
                 selected: Currency.RUB.id,
                 options: formOptions
-            }
+            };
         }
-    }
+    };
 };

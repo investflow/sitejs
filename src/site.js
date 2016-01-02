@@ -1,11 +1,16 @@
-var exports = {};
+// ES6 modules
+import DOMUtils from "./api/dom-utils";
+import Titles  from "./api/titles";
+import Parsley from "parsleyjs";
 
-exports.AddAccountFormApp = require("./app/AddAccountFormApp");
-exports.DOMUtils = require("./api/dom-utils");
-exports.Titles = require("./api/titles");
-
-exports.Parsley = require("parsleyjs");
+// ES5 modules
+var AddAccountFormApp = require("./app/AddAccountFormApp");
 require("./api/parsley-translations");
 
-window.$site = exports;
+window.$site = {
+    DOMUtils: DOMUtils,
+    Titles: Titles,
+    Parsley: Parsley,
+    AddAccountFormApp: AddAccountFormApp
+};
 

@@ -1,38 +1,35 @@
-var Q = require("q");
-
+require('es6-promise').polyfill();
 
 //var SERVER_URL = "http://investflow.ru";
-var SERVER_URL = "http://localhost:8080";
-var OP_LIST_ACCOUNTS = SERVER_URL + "/api/list-accounts?v=1";
-var TIMEOUT_MILLIS = 30 * 1000;
+const SERVER_URL = "http://127.0.0.1:8080";
+const OP_LIST_ACCOUNTS = SERVER_URL + "/api/list-accounts?v=1";
+const TIMEOUT_MILLIS = 30 * 1000;
 
-function query(path, successCallback) {
-    var response = Q.defer();
-    var request = new XMLHttpRequest(); // ActiveX blah blah
-    request.open("GET", path, true);
-    request.onreadystatechange = function () {
-        if (request.readyState === 4) {
-            if (request.status === 200) {
-                var responseJson = JSON.parse(request.responseText);
-                successCallback(response, responseJson);
-            } else {
-                response.reject("HTTP " + request.status + " for " + path);
-            }
+
+function query(path) {
+    return new Promise((resolve, reject) => {
+            var request = new XMLHttpRequest(); // ActiveX blah blah
+            request.open("GET", path, true);
+            request.onload = function () {
+                if (this.status >= 200 && this.status < 300) {
+                    resolve(JSON.parse(request.responseText));
+                } else {
+                    reject("HTTP " + request.status + " for " + path);
+                }
+            };
+            setTimeout(reject, TIMEOUT_MILLIS);
+            request.send();
         }
-    };
-    setTimeout(response.reject, TIMEOUT_MILLIS);
-    request.send('');
-    return response.promise;
+    );
 }
 
 function listAccounts() {
-    return query(OP_LIST_ACCOUNTS, function (deferred, data) {
-        var packed = data.result;
-        var lines = packed.split("\n");
-        deferred.resolve(lines);
+    return query(OP_LIST_ACCOUNTS).then((response) => {
+        var packed = response.result;
+        return packed.split("\n");
     });
 }
 
-module.exports = {
+export default {
     listAccounts: listAccounts
 };

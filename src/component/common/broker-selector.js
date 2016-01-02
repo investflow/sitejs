@@ -12,7 +12,7 @@ module.exports = function () {
             return {
                 selected: Brokers.ALFAFOREX.id,
                 options: formOptions
-            }
+            };
         }
-    }
+    };
 };
