@@ -6,17 +6,13 @@ function addTitle(el, title) {
     }
 }
 
-function setTitleBySelector(selector, title, root) {
-    root = root ? root : window.document.body;
-    $(root).find(selector).each(function () {
-        addTitle(this, title);
-    });
+class DOMUtils {
+    static setTitle(selector, title, root) {
+        root = root ? root : window.document.body;
+        $(root).find(selector).each(function () {
+            addTitle(this, title);
+        });
+    };
 }
 
-module.exports = {
-    setTitle: setTitleBySelector
-};
-
-export default {
-    setTitle: setTitleBySelector
-};
+export default DOMUtils;

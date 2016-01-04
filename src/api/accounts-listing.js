@@ -15,8 +15,13 @@ function list():Promise {
 function reset() {
 
 }
-
-module.exports = {
+const AccountListing = {
     list: list,
     reset: reset
 };
+
+export {
+    AccountListing
+}
+
+

@@ -1,6 +1,6 @@
-const al = require("./../../src/api/accounts-listing");
+import {AccountListing as al} from "./../../src/api/accounts-listing";
 
-describe("accountListing test suite", function () {
+describe("AccountListing test suite", function () {
 
     it("list method must be defined", function () {
         expect(al.list).toBeDefined();
