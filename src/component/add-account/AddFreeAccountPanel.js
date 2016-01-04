@@ -1,12 +1,16 @@
-module.exports = function () {
-    var model = {};
-    return {
-        template: require('./AddFreeAccountPanel.html'),
-        components: {
-            "currency-selector": require("../common/currency-selector.js")()
-        },
-        data: function() {
-            return model;
-        }
-    };
+import currencySelector from "../common/currency-selector";
+
+export default {
+    template: `
+        <div>
+            <form>
+                <currency-selector></currency-selector>
+            </form>
+        </div>`,
+    components: {
+        "currency-selector": currencySelector
+    },
+    data: function () {
+        return {};
+    }
 };

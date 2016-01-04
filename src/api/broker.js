@@ -1,4 +1,4 @@
-module.exports = {
+let brokers = {
     ALFAFOREX: {id: 11, name: "Альфа-Форекс"},
     AMARKETS: {id: 4, name: "AMarkets"},
     ALPARI: {id: 3, name: "Альпари"},
@@ -12,4 +12,9 @@ module.exports = {
     ROBOFOREX: {id: 13, name: "RoboForex"},
     TENKOFX: {id: 15, name: "TenkoFX"},
     WELTRADE: {id: 12, name: "WELTRADE"}
+};
+Object.freeze(brokers);
+
+export {
+    brokers as Broker
 };

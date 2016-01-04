@@ -1,6 +1,6 @@
 var Parsley = require("parsleyjs");
 
-Parsley.addMessages('ru', {
+Parsley.addMessages("ru", {
     defaultMessage: "Некорректное значение.",
     type: {
         email: "Введите адрес электронной почты.",
@@ -25,4 +25,4 @@ Parsley.addMessages('ru', {
     equalto: "Это значение должно совпадать."
 });
 
-Parsley.setLocale('ru');
+Parsley.setLocale("ru");

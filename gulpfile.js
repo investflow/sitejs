@@ -1,47 +1,41 @@
-var gulp = require('gulp');
-var uglify = require('gulp-uglify');
-var jshint = require('gulp-jshint');
+var gulp = require("gulp");
+var uglify = require("gulp-uglify");
 
-var source = require('vinyl-source-stream');
-var buffer = require('vinyl-buffer');
+var eslint = require("gulp-eslint");
 
-var browserify = require('browserify');
-var shim = require('browserify-shim');
-var partialify = require('partialify');
-var babelify = require('babelify');
-var babelConfig = {presets: ["es2015"]};
+var source = require("vinyl-source-stream");
+var buffer = require("vinyl-buffer");
 
-gulp.task('lint', function () {
-    return gulp.src('./src/**/*.js')
-        .pipe(jshint())
-        .pipe(jshint.reporter('default'));
+var browserify = require("browserify");
+var shim = require("browserify-shim");
+var babelify = require("babelify");
+
+gulp.task("eslint", function () {
+    return gulp.src(["./src/**/*.js", "./spec/**/*.js"])
+        .pipe(eslint())
+        .pipe(eslint.format())
+        .pipe(eslint.failAfterError());
 });
 
-gulp.task('build', function () {
-    return browserify('./src/site.js')
-        .transform(babelify, babelConfig)
-        .transform(partialify)
-        .transform(shim, {global: true})
+
+gulp.task("build", function () {
+    return browserify("./src/site.js")
+        .transform(babelify)
+        .transform(shim)
         .bundle()
-        .pipe(source('site.js'))
-        .pipe(gulp.dest('./package/js/'));
+        .pipe(source("site.js"))
+        .pipe(gulp.dest("./package/js/"));
 });
 
-gulp.task('deploy-site-js', function () {
-    return browserify('./src/site.js')
-        .transform(babelify, babelConfig)
-        .transform(partialify)
-        .transform(shim, {global: true})
+gulp.task("deploy-site-js", function () {
+    return browserify("./src/site.js")
+        .transform(babelify)
+        .transform(shim)
         .bundle()
-        .pipe(source('site.min.js'))
+        .pipe(source("site.min.js"))
         .pipe(buffer())
         .pipe(uglify())
-        .pipe(gulp.dest('../iflow/src/main/webapp/js/'));
+        .pipe(gulp.dest("../iflow/src/main/webapp/js/"));
 });
 
-
-gulp.task('watch', function () {
-    gulp.watch('src/**', ['build']);
-});
-
-gulp.task('default', ['build']);
+gulp.task("default", ["build"]);

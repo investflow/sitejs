@@ -1,18 +1,21 @@
-module.exports = function () {
-    var _ = require("underscore");
-    var Brokers = require("../../api/broker");
+import {Broker} from "../../api/broker"
 
-    var formOptions = _.map(Brokers, function (val) {
-        return {text: val.name, value: val.id};
-    });
+let formOptions = Object.values(Broker).map((v) => {
+    return {text: v.name, value: v.id};
+});
 
-    return {
-        template: require('./broker-selector.html'),
-        data: function () {
-            return {
-                selected: Brokers.ALFAFOREX.id,
-                options: formOptions
-            };
-        }
-    };
+export default {
+    template: `
+        <select v-model="selected">
+            <option v-for="c in options" v-bind:value="c.value">
+                {{ c.text }}
+            </option>
+        </select>`,
+
+    data: function () {
+        return {
+            selected: Broker.ALFAFOREX.id,
+            options: formOptions
+        };
+    }
 };

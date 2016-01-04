@@ -1,20 +1,22 @@
-module.exports = function () {
-    var _ = require("underscore");
-    var Currency = require("../../api/currency");
-    var ActiveCurrencies = require("../../api/account-currency").Active;
+import {Currency} from  "../../api/currency";
 
-    var formOptions = _.map(ActiveCurrencies, function (val) {
-        return {text: val.name, value: val.id};
-    });
+const formOptions = Object.values(Currency).map((val) => {
+    return {text: val.name, value: val.id};
+});
 
-    return {
-        replace: true,
-        template: require('./currency-selector.html'),
-        data: function () {
-            return {
-                selected: Currency.RUB.id,
-                options: formOptions
-            };
-        }
-    };
+export default {
+    replace: true,
+    template: `
+        <select v-model='selected'>
+            <option v-for="c in options" v-bind:value="c.value">
+                {{ c.text }}
+            </option>
+        </select>
+        `,
+    data: function () {
+        return {
+            selected: Currency.RUB.id,
+            options: formOptions
+        };
+    }
 };
