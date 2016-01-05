@@ -1,13 +1,13 @@
 import $ from "jquery"
-import DOMUtils from "./../../src/api/dom-utils";
+import SiteUtils from "./../../src/api/site-utils";
 
-describe("DOMUtils test suite", function () {
+describe("SiteUtils test suite", function () {
     it("Title must be replaced with setTitle by #id", function () {
         $("<div id='test'>ID</div>").appendTo(document.body);
         expect($("#test")).toBeInDOM();
 
         var titleToSet = "Hello World!";
-        DOMUtils.setTitle("#test", titleToSet);
+        SiteUtils.setTitle("#test", titleToSet);
 
         expect($("#test")).toHaveAttr("title", titleToSet);
     });
@@ -17,7 +17,7 @@ describe("DOMUtils test suite", function () {
         expect($(".test")).toBeInDOM();
 
         var titleToSet = "Hello World!";
-        DOMUtils.setTitle(".test", titleToSet);
+        SiteUtils.setTitle(".test", titleToSet);
 
         expect($("#test")).toHaveAttr("title", titleToSet);
     });

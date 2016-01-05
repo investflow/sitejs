@@ -6,7 +6,10 @@
   "license": "MIT",
   "repository": "https://github.com/investflow/sitejs",
   "browserify-shim": {
-    "jquery": "global:$"
+    "babel-polyfill": "global:_polyfill_unused",
+    "jquery": "global:$",
+    "parsleyjs": "global:Parsley",
+    "vue": "global:Vue"
   },
   "devDependencies": {
     "babel": "^6.3.26",
@@ -47,7 +50,7 @@
     "babel-polyfill": "^6.3.14",
     "jquery": "v=1.11.3",
     "parsleyjs": "2.2.0-rc4",
-    "store": "1.3.20",
-    "vue": "^1.0.13"
+    "vue": "^1.0.13",
+    "store": "1.3.20"
   }
 }

@@ -1,4 +1,4 @@
-import DOMUtils from "./dom-utils";
+import DOMUtils from "./site-utils";
 
 export default {
     infoPanel: function (rootId) {

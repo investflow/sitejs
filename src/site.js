@@ -1,14 +1,12 @@
 import "babel-polyfill";
 import SiteApp from "./app/SiteApp";
-import DOMUtils from  "./api/dom-utils";
+import SiteUtils from  "./api/site-utils";
 import Titles from  "./api/titles";
-import Parsley from  "parsleyjs";
 
 window.$site = {
-    DOMUtils: DOMUtils,
+    Utils: SiteUtils,
     Titles: Titles,
-    SiteApp: SiteApp,
-    Parsley: Parsley
+    SiteApp: SiteApp
 };
 
 import "./api/parsley-translations";
