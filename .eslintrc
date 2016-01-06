@@ -1,14 +1,18 @@
 {
   "parser": "babel-eslint",
-  "env": {"node": true, "browser": true, "es6": true},
+  "env": {
+    "node": true,
+    "browser": true,
+    "commonjs": true,
+    "es6": true
+  },
+  "extends": "eslint:recommended",
   "rules": {
-    "quotes": [2, "double"],
-    "eol-last": [0],
-    "no-mixed-requires": [0],
-    "no-underscore-dangle": [0],
+    "curly": 1,
     "no-cond-assign": 2,
-    "block-scoped-var": 2,
-    "curly": 2,
+    "no-var": 1,
+    "prefer-arrow-callback": 1,
+    "quotes": [1, "double"],
     "yoda": 2
   }
 }

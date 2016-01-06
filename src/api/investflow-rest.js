@@ -5,7 +5,7 @@ const TIMEOUT_MILLIS = 30 * 1000;
 
 function query(path:string) {
     return new Promise((resolve, reject) => {
-            var request = new XMLHttpRequest(); // ActiveX blah blah
+            let request = new XMLHttpRequest(); // ActiveX blah blah
             request.open("GET", path, true);
             request.onload = function () {
                 if (this.status >= 200 && this.status < 300) {
@@ -22,7 +22,7 @@ function query(path:string) {
 
 function listAccounts() {
     return query(OP_LIST_ACCOUNTS).then((response) => {
-        var packed = response.result;
+        let packed = response.result;
         return packed.split("\n");
     });
 }

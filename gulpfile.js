@@ -13,7 +13,7 @@ gulp.task("eslint", function () {
 });
 
 
-gulp.task("build", function () {
+gulp.task("build", ["eslint"], function () {
     return browserify("./src/site.js")
         .transform(babelify)
         .transform(shim)

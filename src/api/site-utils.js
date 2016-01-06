@@ -1,15 +1,11 @@
 import $ from "jquery";
 
-function addTitle(el:string, title:string):void {
-    if (!$(el).attr("title")) {
-        $(el).attr("title", title);
-    }
-}
-
 function setTitle(selector:string, title:string, root:?string):void {
     root = root ? root : window.document.body;
     $(root).find(selector).each(function () {
-        addTitle(this, title);
+        if (!$(this).attr("title")) {
+            $(this).attr("title", title);
+        }
     });
 }
 
@@ -17,7 +13,7 @@ function urlify(text:string, options:?Object):string {
     if (!text) {
         return "";
     }
-    var urlRegex = /(https?:\/\/[^\s\]]+)/g; // ']' character is used in HtmlUtils.getPlainTextFromHtml
+    let urlRegex = /(https?:\/\/[^\s\]]+)/g; // ']' character is used in HtmlUtils.getPlainTextFromHtml
     if (options && options.shortLinks) {
         return text.replace(urlRegex, "<a href='\$1' target='_blank'><i class='fa fa-external-link ml5 mr5'></i></a>")
     }
@@ -31,7 +27,7 @@ function focusOnEnter(event, id):void {
     }
 }
 function clickOnEnter(event, id):void {
-    var keyCode = (event.which ? event.which : event.keyCode);
+    let keyCode = (event.which ? event.which : event.keyCode);
     if ((keyCode === 10 || keyCode == 13) && !event.ctrlKey) {
         $(id).click();
         event.preventDefault();
@@ -39,7 +35,7 @@ function clickOnEnter(event, id):void {
 }
 
 function clickOnCtrlEnter(event, id):void {
-    var keyCode = (event.which ? event.which : event.keyCode);
+    let keyCode = (event.which ? event.which : event.keyCode);
     if ((keyCode === 10 || keyCode == 13) && event.ctrlKey) {
         $(id).click();
         event.preventDefault();
@@ -51,7 +47,7 @@ function renderSwitches():void {
 }
 
 function applyDateTimePicker(e):void {
-    var now = new Date();
+    let now = new Date();
     //noinspection JSUnresolvedFunction,JSUnusedGlobalSymbols
     e.datetimepicker({
         format: "dd.MM.yyyy hh:mm",
@@ -66,7 +62,7 @@ function applyDateTimePicker(e):void {
 
 function sortClick(event):void {
     event = event || window.event;
-    var elem = event.target || event.srcElement;
+    let elem = event.target || event.srcElement;
     if (elem.nodeName === "TH") {
         elem.getElementsByTagName("A")[0].click();
         return false;
@@ -76,7 +72,7 @@ function sortClick(event):void {
 
 
 function showMenuByClick(e, id):void {
-    var evt = e ? e : window.event;
+    let evt = e ? e : window.event;
     if (evt && evt.stopPropagation) {
         evt.stopPropagation();
     }
@@ -89,12 +85,12 @@ function showMenuByClick(e, id):void {
 
 
 function getURLParameter(name:string):string {
-    return decodeURIComponent((new RegExp("[?|&]" + name + "=" + "([^&;]+?)(&|#|;|$)").exec(location.search) || [, ""])[1].replace(/\+/g, "%20")) || null
+    return decodeURIComponent((new RegExp("[?|&]" + name + "=" + "([^&;]+?)(&|#|;|$)").exec(location.search) || [undefined, ""])[1].replace(/\+/g, "%20")) || null
 }
 
 function limitTextArea($textArea, $feedback, $button, maxTextLen, minRemainingToShow):void {
-    var f = function () {
-        var remaining = maxTextLen - $textArea.val().length;
+    let f = function () {
+        let remaining = maxTextLen - $textArea.val().length;
         if (remaining <= minRemainingToShow) {
             $feedback.html("" + remaining);
         } else {
@@ -118,13 +114,13 @@ function limitTextArea($textArea, $feedback, $button, maxTextLen, minRemainingTo
 
 
 function enableScrollTop():void {
-    $(document).ready(function () {
-        var $backTop = $("#back-top");
+    $(document).ready(() => {
+        let $backTop = $("#back-top");
         if (!$backTop) {
             return;
         }
         $backTop.hide(); // hide #back-top first
-        $(function () { // fade in #back-top
+        $(() => { // fade in #back-top
             $(window).scroll(function () {
                 if ($(this).scrollTop() > 100) {
                     $("#back-top").fadeIn();
@@ -132,7 +128,7 @@ function enableScrollTop():void {
                     $("#back-top").fadeOut();
                 }
             });
-            $("#back-top").find("a").click(function () { // scroll body to 0px on click
+            $("#back-top").find("a").click(() => { // scroll body to 0px on click
                 $("body,html").animate({
                     scrollTop: 0
                 }, 500);
@@ -147,27 +143,27 @@ function moveCaretToEnd(el):void {
         el.selectionStart = el.selectionEnd = el.value.length;
     } else if (typeof el.createTextRange != "undefined") {
         el.focus();
-        var range = el.createTextRange();
+        const range = el.createTextRange();
         range.collapse(false);
         range.select();
     }
 }
 
 function countdown(refreshSeconds, formatter, timeBlockId, timeLeftBlockId, completionCallback):void {
-    var timeBlock = document.getElementById(timeBlockId);
+    let timeBlock = document.getElementById(timeBlockId);
     if (!timeBlock) {
         return;
     }
-    var timeString = timeBlock.getAttribute("utc-date");
+    let timeString = timeBlock.getAttribute("utc-date");
     if (!timeString) {
         return;
     }
-    var targetTime = Date.parse(timeString);
+    let targetTime = Date.parse(timeString);
     if (!targetTime) {
         return;
     }
-    var timeLeftBlock = document.getElementById(timeLeftBlockId);
-    var millisLeft = targetTime - new Date().getTime();
+    let timeLeftBlock = document.getElementById(timeLeftBlockId);
+    let millisLeft = targetTime - new Date().getTime();
     if (millisLeft <= 0) {
         timeLeftBlock.innerHTML = formatter(0, 0);
         if (completionCallback) {
@@ -175,13 +171,13 @@ function countdown(refreshSeconds, formatter, timeBlockId, timeLeftBlockId, comp
         }
         return;
     }
-    var millisPerMinute = 60 * 1000;
-    var millisPerHour = 60 * millisPerMinute;
-    var hoursLeft = parseInt(millisLeft / millisPerHour, 10);
-    var minutesLeft = parseInt(Math.round((millisLeft - hoursLeft * millisPerHour) / millisPerMinute), 10);
+    let millisPerMinute = 60 * 1000;
+    let millisPerHour = 60 * millisPerMinute;
+    let hoursLeft = parseInt(millisLeft / millisPerHour, 10);
+    let minutesLeft = parseInt(Math.round((millisLeft - hoursLeft * millisPerHour) / millisPerMinute), 10);
     timeLeftBlock.innerHTML = formatter(hoursLeft, minutesLeft);
 
-    setTimeout(function () {
+    setTimeout(() => {
         countdown(refreshSeconds, formatter, timeBlockId, timeLeftBlockId, completionCallback);
     }, refreshSeconds * 1000);
 }

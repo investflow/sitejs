@@ -1,22 +1,22 @@
 import $ from "jquery"
 import SiteUtils from "./../../src/api/site-utils";
 
-describe("SiteUtils test suite", function () {
-    it("Title must be replaced with setTitle by #id", function () {
+describe("SiteUtils test suite", () => {
+    it("Title must be replaced with setTitle by #id", () => {
         $("<div id='test'>ID</div>").appendTo(document.body);
         expect($("#test")).toBeInDOM();
 
-        var titleToSet = "Hello World!";
+        let titleToSet = "Hello World!";
         SiteUtils.setTitle("#test", titleToSet);
 
         expect($("#test")).toHaveAttr("title", titleToSet);
     });
 
-    it("Title must be replaced with setTitle by .class", function () {
+    it("Title must be replaced with setTitle by .class", () => {
         $("<div class='test'>CLASS</div>").appendTo(document.body);
         expect($(".test")).toBeInDOM();
 
-        var titleToSet = "Hello World!";
+        let titleToSet = "Hello World!";
         SiteUtils.setTitle(".test", titleToSet);
 
         expect($("#test")).toHaveAttr("title", titleToSet);

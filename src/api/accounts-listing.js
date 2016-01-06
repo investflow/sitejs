@@ -2,9 +2,9 @@ import store from "store";
 import IR  from "./investflow-rest";
 
 function list():Promise {
-    var listing = store.get("listing");
+    let listing = store.get("listing");
     if (listing == undefined || !Array.isArray(listing)) {
-        return IR.listAccounts().then(function (listing) {
+        return IR.listAccounts().then((listing) => {
             store.set("listing", listing);
             return listing;
         });

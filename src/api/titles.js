@@ -2,7 +2,7 @@ import DOMUtils from "./site-utils";
 
 export default {
     infoPanel: function (rootId) {
-        var rootEl = document.getElementById(rootId);
+        let rootEl = document.getElementById(rootId);
         if (!rootEl) {
             return;
         }
