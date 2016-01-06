@@ -26,7 +26,7 @@ module.exports = function (config) {
         },
         browserify: {
             debug: true,
-            transform: ["babelify", "flow-typestrip"]
+            transform: ["babelify"]
         },
 
         // test results reporter to use

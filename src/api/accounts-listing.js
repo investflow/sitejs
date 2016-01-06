@@ -9,7 +9,7 @@ function list():Promise {
             return listing;
         });
     }
-    return new Promise.resolve(listing);
+    return Promise.resolve(listing);
 }
 
 function reset() {

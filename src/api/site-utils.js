@@ -1,21 +1,21 @@
 import $ from "jquery";
 
-function addTitle(el, title) {
+function addTitle(el:string, title:string):void {
     if (!$(el).attr("title")) {
         $(el).attr("title", title);
     }
 }
 
-function setTitle(selector, title, root) {
+function setTitle(selector:string, title:string, root:?string):void {
     root = root ? root : window.document.body;
     $(root).find(selector).each(function () {
         addTitle(this, title);
     });
 }
 
-function urlify(text, options) {
+function urlify(text:string, options:?Object):string {
     if (!text) {
-        return;
+        return "";
     }
     var urlRegex = /(https?:\/\/[^\s\]]+)/g; // ']' character is used in HtmlUtils.getPlainTextFromHtml
     if (options && options.shortLinks) {
@@ -24,13 +24,13 @@ function urlify(text, options) {
     return text.replace(urlRegex, "<a href='\$1' target='_blank'>$1</a>")
 }
 
-function focusOnEnter(event, id) {
+function focusOnEnter(event, id):void {
     if (event.which == 13) {
         $(id).focus();
         event.preventDefault();
     }
 }
-function clickOnEnter(event, id) {
+function clickOnEnter(event, id):void {
     var keyCode = (event.which ? event.which : event.keyCode);
     if ((keyCode === 10 || keyCode == 13) && !event.ctrlKey) {
         $(id).click();
@@ -38,7 +38,7 @@ function clickOnEnter(event, id) {
     }
 }
 
-function clickOnCtrlEnter(event, id) {
+function clickOnCtrlEnter(event, id):void {
     var keyCode = (event.which ? event.which : event.keyCode);
     if ((keyCode === 10 || keyCode == 13) && event.ctrlKey) {
         $(id).click();
@@ -46,11 +46,11 @@ function clickOnCtrlEnter(event, id) {
     }
 }
 
-function renderSwitches() {
+function renderSwitches():void {
     $(".make-switch")["bootstrapSwitch"]();
 }
 
-function applyDateTimePicker(e) {
+function applyDateTimePicker(e):void {
     var now = new Date();
     //noinspection JSUnresolvedFunction,JSUnusedGlobalSymbols
     e.datetimepicker({
@@ -64,7 +64,7 @@ function applyDateTimePicker(e) {
     });
 }
 
-function sortClick(event) {
+function sortClick(event):void {
     event = event || window.event;
     var elem = event.target || event.srcElement;
     if (elem.nodeName === "TH") {
@@ -75,7 +75,7 @@ function sortClick(event) {
 }
 
 
-function showMenuByClick(e, id) {
+function showMenuByClick(e, id):void {
     var evt = e ? e : window.event;
     if (evt && evt.stopPropagation) {
         evt.stopPropagation();
@@ -88,11 +88,11 @@ function showMenuByClick(e, id) {
 }
 
 
-function getURLParameter(name) {
+function getURLParameter(name:string):string {
     return decodeURIComponent((new RegExp("[?|&]" + name + "=" + "([^&;]+?)(&|#|;|$)").exec(location.search) || [, ""])[1].replace(/\+/g, "%20")) || null
 }
 
-function limitTextArea($textArea, $feedback, $button, maxTextLen, minRemainingToShow) {
+function limitTextArea($textArea, $feedback, $button, maxTextLen, minRemainingToShow):void {
     var f = function () {
         var remaining = maxTextLen - $textArea.val().length;
         if (remaining <= minRemainingToShow) {
@@ -117,7 +117,7 @@ function limitTextArea($textArea, $feedback, $button, maxTextLen, minRemainingTo
 }
 
 
-function enableScrollTop() {
+function enableScrollTop():void {
     $(document).ready(function () {
         var $backTop = $("#back-top");
         if (!$backTop) {
@@ -142,7 +142,7 @@ function enableScrollTop() {
     });
 }
 
-function moveCaretToEnd(el) {
+function moveCaretToEnd(el):void {
     if (typeof el.selectionStart == "number") {
         el.selectionStart = el.selectionEnd = el.value.length;
     } else if (typeof el.createTextRange != "undefined") {
@@ -153,7 +153,7 @@ function moveCaretToEnd(el) {
     }
 }
 
-function countdown(refreshSeconds, formatter, timeBlockId, timeLeftBlockId, completionCallback) {
+function countdown(refreshSeconds, formatter, timeBlockId, timeLeftBlockId, completionCallback):void {
     var timeBlock = document.getElementById(timeBlockId);
     if (!timeBlock) {
         return;

@@ -1,5 +1,5 @@
-//var SERVER_URL = "http://investflow.ru";
-const SERVER_URL = "http://127.0.0.1:8080";
+const SERVER_URL = "http://investflow.ru";
+//const SERVER_URL = "http://127.0.0.1:8080";
 const OP_LIST_ACCOUNTS = SERVER_URL + "/api/list-accounts?v=1";
 const TIMEOUT_MILLIS = 30 * 1000;
 
