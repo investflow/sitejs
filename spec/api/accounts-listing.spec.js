@@ -12,12 +12,27 @@ describe("AccountListing test suite", () => {
         });
     });
 
-    it("result must contain known accounts", (done) => {
+    it("result must contain known accounts from Alpari", (done) => {
         let listPromise = getCachedAccountsListing();
         listPromise.then((accounts:Array<Account>) => {
             let found = false;
             for (let a:Account of accounts) {
                 if (a.broker === Broker.ALPARI && a.name === "Freya") {
+                    found = true;
+                    break;
+                }
+            }
+            expect(found).toBe(true);
+            done();
+        });
+    });
+
+    it("result must contain known accounts from MOEX", (done) => {
+        let listPromise = getCachedAccountsListing();
+        listPromise.then((accounts:Array<Account>) => {
+            let found = false;
+            for (let a:Account of accounts) {
+                if (a.broker === Broker.MOEX && a.account === "AFLT") {
                     found = true;
                     break;
                 }
