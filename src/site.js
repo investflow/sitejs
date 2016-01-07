@@ -2,7 +2,7 @@ import "babel-polyfill";
 import SiteApp from "./app/SiteApp";
 import SiteUtils from  "./api/site-utils";
 import Titles from  "./api/titles";
-import site from "./api/site-def"
+import site from "./api/site-def";
 
 
 /** Set of utility functions */
