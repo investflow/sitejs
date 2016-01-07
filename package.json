@@ -25,6 +25,7 @@
     "browserify": "^12.0.1",
     "browserify-shim": "^3.8.11",
     "eslint": "^1.10.3",
+    "flow-bin": "^0.20.1",
     "gulp": "^3.9.0",
     "gulp-eslint": "^1.1.1",
     "gulp-gzip": "^1.2.0",
@@ -46,6 +47,7 @@
   },
   "dependencies": {
     "babel-polyfill": "^6.3.14",
+    "flow-bin": "^0.20.1",
     "jquery": "v=1.11.3",
     "loglevel": "^1.4.0",
     "parsleyjs": "2.2.0-rc4",

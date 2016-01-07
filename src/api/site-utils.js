@@ -60,7 +60,7 @@ function applyDateTimePicker(e):void {
     });
 }
 
-function sortClick(event):void {
+function sortClick(event):boolean {
     event = event || window.event;
     let elem = event.target || event.srcElement;
     if (elem.nodeName === "TH") {
@@ -71,7 +71,7 @@ function sortClick(event):void {
 }
 
 
-function showMenuByClick(e, id):void {
+function showMenuByClick(e, id):boolean {
     let evt = e ? e : window.event;
     if (evt && evt.stopPropagation) {
         evt.stopPropagation();
@@ -84,7 +84,7 @@ function showMenuByClick(e, id):void {
 }
 
 
-function getURLParameter(name:string):string {
+function getURLParameter(name:string):?string {
     return decodeURIComponent((new RegExp("[?|&]" + name + "=" + "([^&;]+?)(&|#|;|$)").exec(location.search) || [undefined, ""])[1].replace(/\+/g, "%20")) || null
 }
 

@@ -24,6 +24,8 @@ function query(path:string):Promise<Object> {
     );
 }
 export class ListAccountsResponse {
+    result:string;
+
     constructor(result:string) {
         this.result = result;
     }
@@ -31,4 +33,3 @@ export class ListAccountsResponse {
 export function listAccounts():Promise<ListAccountsResponse> {
     return query(OP_LIST_ACCOUNTS);
 }
-

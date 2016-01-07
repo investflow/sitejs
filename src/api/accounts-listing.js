@@ -1,7 +1,8 @@
 import store from "store";
 import {listAccounts, ListAccountsResponse} from "./investflow-rest";
 import site from "./site-def"
-import {Broker, getBrokerById} from "./broker"
+import {getBrokerById} from "./broker"
+import type {Broker} from "./broker"
 import log from "loglevel"
 
 const STORE_LISTING_KEY = "account-listing";
@@ -9,6 +10,12 @@ const FLAGS_OPEN = "o";
 //const FLAGS_INDEX = "i";
 
 export class Account {
+    broker:Broker;
+    account:string;
+    name:string;
+    typeName:string;
+    open:boolean;
+
     constructor(broker:Broker, account:string, name:string, typeName:string, open:boolean = true) {
         this.broker = broker;
         this.account = account;
