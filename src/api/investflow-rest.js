@@ -1,9 +1,13 @@
+import log from "loglevel"
+
 const SERVER_URL = "http://investflow.ru";
 //const SERVER_URL = "http://127.0.0.1:8080";
 const OP_LIST_ACCOUNTS = SERVER_URL + "/api/list-accounts?v=1";
 const TIMEOUT_MILLIS = 30 * 1000;
 
-function query(path:string) {
+function query(path:string):Promise<Object> {
+    log.debug("Running query: " + path);
+
     return new Promise((resolve, reject) => {
             let request = new XMLHttpRequest(); // ActiveX blah blah
             request.open("GET", path, true);
@@ -19,14 +23,12 @@ function query(path:string) {
         }
     );
 }
-
-function listAccounts() {
-    return query(OP_LIST_ACCOUNTS).then((response) => {
-        let packed = response.result;
-        return packed.split("\n");
-    });
+export class ListAccountsResponse {
+    constructor(result:string) {
+        this.result = result;
+    }
+}
+export function listAccounts():Promise<ListAccountsResponse> {
+    return query(OP_LIST_ACCOUNTS);
 }
 
-export default {
-    listAccounts: listAccounts
-};

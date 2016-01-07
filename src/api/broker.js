@@ -1,4 +1,4 @@
-let brokers = {
+export const Broker = {
     ALFAFOREX: {id: 11, name: "Альфа-Форекс"},
     AMARKETS: {id: 4, name: "AMarkets"},
     ALPARI: {id: 3, name: "Альпари"},
@@ -11,10 +11,18 @@ let brokers = {
     LITEFOREX: {id: 18, name: "LiteForex"},
     ROBOFOREX: {id: 13, name: "RoboForex"},
     TENKOFX: {id: 15, name: "TenkoFX"},
-    WELTRADE: {id: 12, name: "WELTRADE"}
+    WELTRADE: {id: 12, name: "WELTRADE"},
+    MOEX: {id: 30, name: "ММВБ-РТС"}
 };
-Object.freeze(brokers);
+Object.freeze(Broker);
 
-export {
-    brokers as Broker
-};
+export function getBrokerById(id:number) {
+    for (let key of Object.keys(Broker)) {
+        let broker = Broker[key];
+        if (broker.id == id) {
+            return broker;
+        }
+    }
+    return null;
+}
+
