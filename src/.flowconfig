@@ -4,3 +4,4 @@
 [libs]
 ./
 [options]
+module.system=node

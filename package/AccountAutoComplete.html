@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Vue</title>
+</head>
+
+<body>
+
+<input type="text" id="account-input">
+
+<script src="./../node_modules/jquery/dist/jquery.js"></script>
+<script src="./../node_modules/devbridge-autocomplete/dist/jquery.autocomplete.js"></script>
+<script src="./../node_modules/babel-polyfill/dist/polyfill.js"></script>
+<script src="./../package/js/site.js"></script>
+
+<script>
+    window.$site.AccountAutoComplete.attach("#account-input");
+</script>
+
+</body>
+</html>
