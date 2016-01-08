@@ -1,10 +1,15 @@
 import Vue from "vue";
 import AddAccountForm from "./../component/add-account/AddAccountForm";
+import AddPammAccountPanel from "./../component/add-account/AddPammAccountPanel";
+import AddFreeAccountPanel from "./../component/add-account/AddFreeAccountPanel";
+
 
 export default {
-    create: function (elementId) {
+    create: function (selector:string):void {
         Vue.component("add-account-form", AddAccountForm);
-        new Vue({el: elementId});
+        Vue.component("add-pamm-account", AddPammAccountPanel);
+        Vue.component("add-free-account", AddFreeAccountPanel);
+        new Vue({el: selector});
     }
 };
 
