@@ -64,7 +64,7 @@ function loadListingFromStore():void {
     });
 }
 
-export function getCachedAccountsListing(forceUpdate:boolean = false):Promise<Account> {
+export function getCachedAccountsListing(forceUpdate:boolean = false):Promise<Array<Account>> {
     if (forceUpdate) {
         store.remove(STORE_LISTING_KEY);
         lastAccountId = 0;
