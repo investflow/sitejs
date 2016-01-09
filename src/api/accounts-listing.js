@@ -1,10 +1,11 @@
 import store from "store";
 import {listAccounts, ListAccountsResponse} from "./investflow-rest";
-import site from "./site-def"
+import $site from "./site-def"
 import {Broker} from "./broker"
 import log from "loglevel"
 
 const STORE_LISTING_KEY = "account-listing";
+const STORE_LAST_ACCOUNT_ID_KEY = "account-listing-last-id";
 const FLAGS_CLOSED = "c";
 //const FLAGS_INDEX = "i";
 
@@ -22,21 +23,36 @@ export class Account {
         this.typeName = typeName;
         this.open = open;
     }
+
+    //noinspection JSMethodCanBeStatic
+    isAlpariFund():boolean {
+        return false;
+        //todo: return broker == Broker.ALPARI && ;
+    }
+
+    //noinspection JSMethodCanBeStatic
+    isAlpariIndex():boolean {
+        return false;
+        //todo: return broker == Broker.ALPARI && ;
+    }
 }
 
-let lastAccountId:number = 0;
-let parsedListing:Array<Account> = [];
+class Cached {
+    static lastAccountId:number = -1;
+    static parsedListing:Array<Account> = [];
+}
 
 function loadListingFromStore():void {
-    log.debug("AL:lfs: started");
-    parsedListing = [];
+    log.trace("AL:lfs: started");
+    Cached.parsedListing = [];
+    Cached.lastAccountId = store.get(STORE_LAST_ACCOUNT_ID_KEY);
     let listing = store.get(STORE_LISTING_KEY);
     if (listing == undefined || typeof listing !== "string") {
-        log.debug("AL:lfs: finished: no data found");
+        log.trace("AL:lfs: finished: no data found");
         return;
     }
     let lines = listing.split("\n");
-    log.debug("AL:lfs: lines:" + lines.length);
+    log.trace("AL:lfs: lines:" + lines.length);
     let parseErrorLogged = false;
     lines.forEach((line) => {
         if (line.length == 0) {
@@ -69,26 +85,33 @@ function loadListingFromStore():void {
         let name = line.substr(accountEndIdx + 1);
         let typeName = "";//todo
         let open = flags.indexOf(FLAGS_CLOSED) < 0;
-        parsedListing.push(new Account(broker, account, name, typeName, open));
+        Cached.parsedListing.push(new Account(broker, account, name, typeName, open));
     });
-    log.debug("AL:lfs: finished, found: " + parsedListing.length + " items");
+    log.trace("AL:lfs: finished, found: " + Cached.parsedListing.length + " items");
 }
 
 export function getCachedAccountsListing(forceUpdate:boolean = false):Promise<Array<Account>> {
+    log.trace("AL:gca, cached len:" + Cached.parsedListing.length + " lastId: " + Cached.lastAccountId
+        + ", siteLastId:" + $site.ServiceState.lastAccountId + ", force: " + forceUpdate);
     if (forceUpdate) {
         store.remove(STORE_LISTING_KEY);
-        lastAccountId = 0;
-        parsedListing = [];
-    }
-    if (!forceUpdate && parsedListing.length == 0) {
+        store.remove(STORE_LAST_ACCOUNT_ID_KEY);
+        Cached.lastAccountId = -1;
+        Cached.parsedListing = [];
+    } else if (Cached.parsedListing.length == 0) {
         loadListingFromStore();
     }
-    if (forceUpdate || (parsedListing.length == 0 || lastAccountId <= 0 || lastAccountId < site.ServiceState.lastAccountId)) {
-        return listAccounts().then((response:ListAccountsResponse) => {
-            store.set(STORE_LISTING_KEY, response.result);
-            loadListingFromStore();
-            return Promise.resolve(parsedListing);
-        });
+
+    if (Cached.parsedListing.length > 0 && Cached.lastAccountId == $site.ServiceState.lastAccountId) {
+        log.trace("AL:gca: using cached listing");
+        return Promise.resolve(Cached.parsedListing);
     }
-    return Promise.resolve(parsedListing);
+    log.trace("AL:gca: fetching listing from web");
+    return listAccounts().then((response:ListAccountsResponse) => {
+        store.set(STORE_LISTING_KEY, response.result);
+        store.set(STORE_LAST_ACCOUNT_ID_KEY, $site.ServiceState.lastAccountId);
+        loadListingFromStore();
+        Cached.lastAccountId = $site.ServiceState.lastAccountId;
+        return Promise.resolve(Cached.parsedListing);
+    });
 }

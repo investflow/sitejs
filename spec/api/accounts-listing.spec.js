@@ -1,9 +1,14 @@
 import {Account, getCachedAccountsListing} from "./../../src/api/accounts-listing";
 import {Broker} from "./../../src/api/broker";
+import store from "store";
 import log from "loglevel"
 log.enableAll();
 
 describe("AccountListing test suite", () => {
+
+    beforeEach(()=> {
+        store.clear();
+    });
 
     it("list method must return thousands of results", (done) => {
         let listPromise = getCachedAccountsListing();

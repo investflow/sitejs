@@ -3,12 +3,13 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Vue</title>
+    <title>Account autocomplete form</title>
+    <link rel="stylesheet" href="./../node_modules/bootstrap/dist/css/bootstrap.css">
 </head>
 
-<body>
+<body style="padding: 30px;">
 
-<input type="text" id="account-input">
+<label for="account-input">Счет: </label><input id="account-input" type="text" class="form-control input-sm" style="font-size:inherit; max-width: 200px;">
 
 <script src="./../node_modules/jquery/dist/jquery.js"></script>
 <script src="./../node_modules/devbridge-autocomplete/dist/jquery.autocomplete.js"></script>
@@ -17,6 +18,7 @@
 
 <script>
     window.$site.AccountAutoComplete.attach("#account-input");
+    window.$site.log.enableAll();
 </script>
 
 </body>

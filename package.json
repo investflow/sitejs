@@ -7,6 +7,7 @@
   "repository": "https://github.com/investflow/sitejs",
   "browserify-shim": {
     "babel-polyfill": "global:_polyfill_unused",
+    "devbridge-autocomplete": "global:$.Autocomplete",
     "jquery": "global:$",
     "parsleyjs": "global:Parsley",
     "vue": "global:Vue"
@@ -22,6 +23,7 @@
     "babel-preset-stage-2": "^6.3.13",
     "babel-preset-stage-3": "^6.3.13",
     "babelify": "^7.2.0",
+    "bootstrap": "^3.3.6",
     "browserify": "^12.0.2",
     "browserify-shim": "^3.8.11",
     "eslint": "^1.10.3",
