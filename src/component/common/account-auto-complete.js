@@ -1,14 +1,13 @@
 import $ from "jquery"
 import {Account, getCachedAccountsListing} from "../../api/accounts-listing"
-import log from "loglevel"
 
 const MAX_SUGGESTIONS = 10;
 export default {
     attach: function (selector:string):void {
+        //noinspection JSUnusedGlobalSymbols
         $(selector).devbridgeAutocomplete({
             lookup: function (query, done) {
                 getCachedAccountsListing().then((accounts:Array<Account>) => {
-                    log.warn("query: " + query + ", accounts: " + accounts.length + " typeof: " + (typeof accounts));
                     let lcQuery = query.toLowerCase();
                     let result = {suggestions: []};
                     for (let i = 0; i < accounts.length && result.suggestions.length < MAX_SUGGESTIONS; i++) {

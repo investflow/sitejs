@@ -1,4 +1,6 @@
 import {listAccounts,ListAccountsResponse}  from "./../../src/api/investflow-rest";
+import log from "loglevel"
+log.enableAll();
 
 describe("REST service test suite", () => {
 

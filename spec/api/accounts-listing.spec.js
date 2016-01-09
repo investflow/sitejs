@@ -1,11 +1,13 @@
 import {Account, getCachedAccountsListing} from "./../../src/api/accounts-listing";
 import {Broker} from "./../../src/api/broker";
+import log from "loglevel"
+log.enableAll();
 
 describe("AccountListing test suite", () => {
 
     it("list method must return thousands of results", (done) => {
         let listPromise = getCachedAccountsListing();
-        listPromise.then((accounts) => {
+        listPromise.then((accounts:Array<Account>) => {
             expect(Array.isArray(accounts)).toBe(true);
             expect(accounts.length).toBeGreaterThan(1000);
             done();
@@ -38,6 +40,24 @@ describe("AccountListing test suite", () => {
                 }
             }
             expect(found).toBe(true);
+            done();
+        });
+    });
+
+    it("result must contain both open and close accounts", (done) => {
+        let listPromise = getCachedAccountsListing();
+        listPromise.then((accounts:Array<Account>) => {
+            let foundOpen = false;
+            let foundClosed = false;
+            for (let a:Account of accounts) {
+                foundClosed = foundClosed || !a.open;
+                foundOpen = foundOpen || a.open;
+                if (foundOpen && foundClosed) {
+                    break;
+                }
+            }
+            expect(foundOpen).toBe(true);
+            //TODO: expect(foundClosed).toBe(true);
             done();
         });
     });

@@ -1,4 +1,4 @@
-/*eslint no-var: 0, prefer-arrow-callback: 0, no-console: 0*/
+/*eslint no-var: 0, no-console: 0*/
 
 var gulp = require("gulp");
 var eslint = require("gulp-eslint");
