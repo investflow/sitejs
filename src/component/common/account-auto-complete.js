@@ -2,7 +2,9 @@ import $ from "jquery"
 import {Account, getCachedAccountsListing} from "../../api/accounts-listing"
 import log from "loglevel";
 
-const MAX_SUGGESTIONS = 10;
+//TODO: defer subsequent requests.
+
+const MAX_SUGGESTIONS = 40;
 export default {
     attach: (selector:string):void => {
         //noinspection JSUnusedGlobalSymbols
@@ -50,9 +52,10 @@ export default {
             formatResult: (suggestion:Object):string => {
                 return suggestion.value;
             },
-            onSelect: (suggestion) => {
-                alert("You selected: " + suggestion.value + ", " + suggestion.data);
-            }
+            onSelect: (suggestion:Object) => {
+                log.trace("Selected option: " + suggestion.value);
+            },
+            deferRequestBy: 350
         });
     }
 }

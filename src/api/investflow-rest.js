@@ -1,7 +1,11 @@
 import log from "loglevel"
 
-const SERVER_URL = "http://investflow.ru";
-//const SERVER_URL = "http://127.0.0.1:8080";
+let SERVER_URL = "http://investflow.ru";
+const docUrl = document && typeof document.URL === "string" ? document.URL : "";
+if (docUrl.indexOf("localhost:8080") >= 0 || docUrl.indexOf("127.0.0.1") >= 0) {
+    log.info("IR: using local instance for queries!");
+    SERVER_URL = "http://127.0.0.1:8080";
+}
 const OP_LIST_ACCOUNTS = "/api/list-accounts?v=1";
 const REQUEST_TIMEOUT_MILLIS = 30 * 1000;
 
