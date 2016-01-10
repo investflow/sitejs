@@ -1,5 +1,6 @@
 import $ from "jquery"
 import {Account, getCachedAccountsListing} from "../../api/accounts-listing"
+import log from "loglevel";
 
 const MAX_SUGGESTIONS = 10;
 export default {
@@ -7,21 +8,40 @@ export default {
         //noinspection JSUnusedGlobalSymbols
         $(selector).devbridgeAutocomplete({
             lookup: (query, done) => {
+                log.trace("AAC: lookup: " + query);
                 getCachedAccountsListing().then((accounts:Array<Account>) => {
                     let lcQuery = query.toLowerCase();
-                    let result = {suggestions: []};
-                    for (let i = 0; i < accounts.length && result.suggestions.length < MAX_SUGGESTIONS; i++) {
+                    let accountsToShow = [];
+
+                    let checkAccount = (account, lcQuery):boolean => {
+                        return (account.account.toLocaleLowerCase().indexOf(lcQuery) >= 0 || account.name.toLocaleLowerCase().indexOf(lcQuery) >= 0);
+                    };
+
+                    // select open accounts first
+                    for (let i = 0; i < accounts.length && accountsToShow.length < MAX_SUGGESTIONS; i++) {
                         let account = accounts[i];
-                        if (account.account.toLocaleLowerCase().indexOf(lcQuery) >= 0 || account.name.toLocaleLowerCase().indexOf(lcQuery) >= 0) {
-                            let nameString = account.name + "/" + account.account;
-                            let typeName = account.isAlpariIndex() ? ", портфель" : account.isAlpariFund() ? ", фонд" : "";
-                            let closedTxt = account.open ? "" : ", закрыт";
-                            let detailedString = nameString + " (" + account.broker.name + typeName + closedTxt + ")";
-                            result.suggestions.push({
-                                value: detailedString,
-                                data: {category: account.broker.id == 4 ? undefined : "--- закрытые счета ---"}
-                            });
+                        if (account.open && checkAccount(account, lcQuery)) {
+                            accountsToShow.push(account);
                         }
+                    }
+                    // now add closed accounts up to MAX_SUGGESTIONS
+                    for (let i = 0; i < accounts.length && accountsToShow.length < MAX_SUGGESTIONS; i++) {
+                        let account = accounts[i];
+                        if (!account.open && !checkAccount(account, lcQuery)) {
+                            accountsToShow.push(account);
+                        }
+                    }
+                    let result = {suggestions: []};
+                    for (let i = 0; i < accountsToShow.length; i++) {
+                        let account = accounts[i];
+                        let nameString = account.name + "/" + account.account;
+                        let typeName = account.isAlpariIndex() ? ", портфель" : account.isAlpariFund() ? ", фонд" : "";
+                        let closedTxt = account.open ? "" : ", закрыт";
+                        let detailedString = nameString + " (" + account.broker.name + typeName + closedTxt + ")";
+                        result.suggestions.push({
+                            value: detailedString,
+                            data: {category: account.broker.id == 4 ? undefined : "--- закрытые счета ---"}
+                        });
                     }
                     done(result);
                 });

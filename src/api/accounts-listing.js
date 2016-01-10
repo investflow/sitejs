@@ -2,12 +2,14 @@ import store from "store";
 import {listAccounts, ListAccountsResponse} from "./investflow-rest";
 import $site from "./site-def"
 import {Broker} from "./broker"
+import lzString from "lz-string"
 import log from "loglevel"
 
 const STORE_LISTING_KEY = "account-listing";
 const STORE_LAST_ACCOUNT_ID_KEY = "account-listing-last-id";
 const FLAGS_CLOSED = "c";
-//const FLAGS_INDEX = "i";
+const FLAGS_INDEX = "i";
+const FLAGS_FUND = "f";
 
 export class Account {
     broker:Broker;
@@ -15,25 +17,23 @@ export class Account {
     name:string;
     typeName:string;
     open:boolean;
+    index:boolean;
+    fund:boolean;
 
-    constructor(broker:Broker, account:string, name:string, typeName:string, open:boolean = true) {
+
+    constructor(broker:Broker, account:string, name:string, open:boolean = true) {
         this.broker = broker;
         this.account = account;
         this.name = name;
-        this.typeName = typeName;
         this.open = open;
     }
 
-    //noinspection JSMethodCanBeStatic
     isAlpariFund():boolean {
-        return false;
-        //todo: return broker == Broker.ALPARI && ;
+        return this.index && this.broker == Broker.ALPARI;
     }
 
-    //noinspection JSMethodCanBeStatic
     isAlpariIndex():boolean {
-        return false;
-        //todo: return broker == Broker.ALPARI && ;
+        return this.fund && this.broker == Broker.ALPARI;
     }
 }
 
@@ -47,12 +47,17 @@ function loadListingFromStore():void {
     Cached.parsedListing = [];
     Cached.lastAccountId = store.get(STORE_LAST_ACCOUNT_ID_KEY);
     let listing = store.get(STORE_LISTING_KEY);
-    if (listing == undefined || typeof listing !== "string") {
+    if (listing == undefined || typeof listing !== "object" || !listing.data || typeof  listing.data !== "string") {
         log.trace("AL:lfs: finished: no data found");
         return;
     }
-    let lines = listing.split("\n");
-    log.trace("AL:lfs: lines:" + lines.length);
+    let rawText = lzString.decompress(listing.data);
+    if (!rawText) {
+        log.trace("AL:lfs: failed to decompress.");
+        return;
+    }
+    let lines = rawText.split("\n");
+    log.trace("AL:lfs: lines:" + lines.length + ", raw len: " + rawText.length);
     let parseErrorLogged = false;
     lines.forEach((line) => {
         if (line.length == 0) {
@@ -83,9 +88,14 @@ function loadListingFromStore():void {
         let flags = line.substr(brokerEndIdx + 1, flagsEndIdx - brokerEndIdx - 1);
         let account = line.substr(flagsEndIdx + 1, accountEndIdx - flagsEndIdx - 1);
         let name = line.substr(accountEndIdx + 1);
-        let typeName = "";//todo
         let open = flags.indexOf(FLAGS_CLOSED) < 0;
-        Cached.parsedListing.push(new Account(broker, account, name, typeName, open));
+        let res = new Account(broker, account, name, open);
+        if (broker == Broker.ALPARI) {
+            res.index = flags.indexOf(FLAGS_INDEX) >= 0;
+            res.fund = flags.indexOf(FLAGS_FUND) >= 0;
+        }
+        res.typeName = res.index ? ", " : res.fund ? ", фонд" : "";
+        Cached.parsedListing.push(res);
     });
     log.trace("AL:lfs: finished, found: " + Cached.parsedListing.length + " items");
 }
@@ -108,7 +118,9 @@ export function getCachedAccountsListing(forceUpdate:boolean = false):Promise<Ar
     }
     log.trace("AL:gca: fetching listing from web");
     return listAccounts().then((response:ListAccountsResponse) => {
-        store.set(STORE_LISTING_KEY, response.result);
+        let compressedData = lzString.compress(response.result);
+        log.trace("AL:gca: fetch complete: raw len: " + response.result.length + ", compressed len: " + compressedData.length);
+        store.set(STORE_LISTING_KEY, {data: compressedData});
         store.set(STORE_LAST_ACCOUNT_ID_KEY, $site.ServiceState.lastAccountId);
         loadListingFromStore();
         Cached.lastAccountId = $site.ServiceState.lastAccountId;
