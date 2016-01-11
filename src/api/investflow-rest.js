@@ -1,6 +1,6 @@
 import log from "loglevel"
 
-let SERVER_URL = "http://investflow.ru";
+let SERVER_URL = ((window.location.protocol == "https:") ? "https" : "http") + "://investflow.ru";
 const docUrl = document && typeof document.URL === "string" ? document.URL : "";
 if (docUrl.indexOf("localhost:8080") >= 0 || docUrl.indexOf("127.0.0.1") >= 0) {
     log.info("IR: using local instance for queries!");
