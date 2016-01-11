@@ -16,7 +16,9 @@ function query(path:string):Promise<Object> {
             request.open("GET", SERVER_URL + path, true);
             request.onload = function () {
                 if (this.status >= 200 && this.status < 300) {
+                    log.trace("IR:query: starting to parse response");
                     resolve(JSON.parse(request.responseText));
+                    log.trace("IR:query: response parsed");
                 } else {
                     reject("HTTP " + request.status + " for " + path);
                 }

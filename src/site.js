@@ -17,7 +17,7 @@ site.Titles = Titles;
 /** Vue JS app */
 site.SiteApp = SiteApp;
 
-/* Account auto-complete controllr */
+/* Account auto-complete controller */
 site.AccountAutoComplete = AccountAutoComplete;
 
 /** Site logger */

@@ -62,7 +62,7 @@ describe("AccountListing test suite", () => {
                 }
             }
             expect(foundOpen).toBe(true);
-            //TODO: expect(foundClosed).toBe(true);
+            expect(foundClosed).toBe(true);
             done();
         });
     });

@@ -5,8 +5,8 @@ import {Broker} from "./broker"
 import lzString from "lz-string"
 import log from "loglevel"
 
+const STORE_LISTING_HASH = "account-listing-hash";
 const STORE_LISTING_KEY = "account-listing";
-const STORE_LAST_ACCOUNT_ID_KEY = "account-listing-last-id";
 const FLAGS_CLOSED = "c";
 const FLAGS_INDEX = "i";
 const FLAGS_FUND = "f";
@@ -38,14 +38,14 @@ export class Account {
 }
 
 class Cached {
-    static lastAccountId:number = -1;
+    static listingHash:string = "";
     static parsedListing:Array<Account> = [];
 }
 
 function loadListingFromStore():void {
     log.trace("AL:lfs: started");
     Cached.parsedListing = [];
-    Cached.lastAccountId = store.get(STORE_LAST_ACCOUNT_ID_KEY);
+    Cached.listingHash = store.get(STORE_LISTING_HASH);
     let listing = store.get(STORE_LISTING_KEY);
     if (listing == undefined || typeof listing !== "object" || !listing.data || typeof  listing.data !== "string") {
         log.trace("AL:lfs: finished: no data found");
@@ -77,7 +77,7 @@ function loadListingFromStore():void {
         let brokerId = parseInt(brokerIdToken);
         let broker = Broker.getBrokerById(brokerId);
         if (!broker) {
-            if (brokerId != 24 && brokerId != 29) { // mt4 & myfxbook -> todo: add to brokers list
+            if (brokerId != 24 && brokerId != 29 && brokerId != 8) { //todo: add to brokers list  mt4 & myfxbook, remove RVD
                 if (!parseErrorLogged) {
                     log.warn("AL:lfs: failed to parse broker: '" + brokerIdToken + "' in line: " + line);
                     parseErrorLogged = true;
@@ -101,18 +101,18 @@ function loadListingFromStore():void {
 }
 
 export function getCachedAccountsListing(forceUpdate:boolean = false):Promise<Array<Account>> {
-    log.trace("AL:gca, cached len:" + Cached.parsedListing.length + " lastId: " + Cached.lastAccountId
-        + ", siteLastId:" + $site.ServiceState.lastAccountId + ", force: " + forceUpdate);
+    log.trace("AL:gca, cached len:" + Cached.parsedListing.length + " hash: '" + Cached.listingHash +
+        "', siteHash: '" + $site.ServiceState.accountListingHash + "', force: " + forceUpdate);
     if (forceUpdate) {
         store.remove(STORE_LISTING_KEY);
-        store.remove(STORE_LAST_ACCOUNT_ID_KEY);
-        Cached.lastAccountId = -1;
+        store.remove(STORE_LISTING_HASH);
+        Cached.listingHash = "";
         Cached.parsedListing = [];
     } else if (Cached.parsedListing.length == 0) {
         loadListingFromStore();
     }
 
-    if (Cached.parsedListing.length > 0 && Cached.lastAccountId == $site.ServiceState.lastAccountId) {
+    if (Cached.parsedListing.length > 0 && Cached.listingHash == $site.ServiceState.accountListingHash) {
         log.trace("AL:gca: using cached listing");
         return Promise.resolve(Cached.parsedListing);
     }
@@ -121,9 +121,9 @@ export function getCachedAccountsListing(forceUpdate:boolean = false):Promise<Ar
         let compressedData = lzString.compress(response.result);
         log.trace("AL:gca: fetch complete: raw len: " + response.result.length + ", compressed len: " + compressedData.length);
         store.set(STORE_LISTING_KEY, {data: compressedData});
-        store.set(STORE_LAST_ACCOUNT_ID_KEY, $site.ServiceState.lastAccountId);
+        store.set(STORE_LISTING_HASH, $site.ServiceState.accountListingHash);
         loadListingFromStore();
-        Cached.lastAccountId = $site.ServiceState.lastAccountId;
+        Cached.listingHash = $site.ServiceState.accountListingHash;
         return Promise.resolve(Cached.parsedListing);
     });
 }
