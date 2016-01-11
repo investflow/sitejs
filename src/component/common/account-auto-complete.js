@@ -67,12 +67,11 @@ export default {
             },
             groupBy: "category",
             preserveInput: true,
-            maxHeight: 700,
+            maxHeight: 720,
             onSelect: (suggestion:Object) => {
                 log.trace("Selected option: " + suggestion.value);
                 $el.val(suggestion.value);
-            },
-            deferRequestBy: 300
+            }
         });
 
         //Kind of dirty hack to prevent click event propagation
