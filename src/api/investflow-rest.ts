@@ -1,4 +1,4 @@
-import log from "loglevel"
+import * as log from "loglevel"
 
 let SERVER_URL = ((window.location.protocol == "https:") ? "https" : "http") + "://investflow.ru";
 const docUrl = document && typeof document.URL === "string" ? document.URL : "";

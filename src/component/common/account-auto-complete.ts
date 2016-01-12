@@ -1,7 +1,7 @@
-import $ from "jquery"
+import * as $ from "jquery"
 import {Account, getCachedAccountsListing} from "../../api/accounts-listing"
 import $site from "../../api/site-def";
-import log from "loglevel";
+import * as log from "loglevel";
 
 //TODO: defer subsequent requests.
 
@@ -10,6 +10,7 @@ export default {
     attach: (selector:string):void => {
         //noinspection JSUnusedGlobalSymbols
         let $el = $(selector);
+        //noinspection TypeScriptUnresolvedFunction
         $el.devbridgeAutocomplete({
             lookup: (query, done) => {
                 log.trace("AAC: lookup: " + query);
@@ -69,8 +70,8 @@ export default {
             preserveInput: true,
             maxHeight: 720,
             onSelect: (suggestion:Object) => {
-                log.trace("Selected option: " + suggestion.value);
-                $el.val(suggestion.value);
+                log.trace("Selected option: " + suggestion["value"]);
+                $el.val(suggestion["value"]);
             }
         });
 

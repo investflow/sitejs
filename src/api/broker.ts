@@ -40,7 +40,7 @@ export class Broker {
         Broker.MOEX
     ];
 
-    static getBrokerById(id:number):?Broker {
+    static getBrokerById(id:number):Broker {
         return Broker.ActiveBrokers.find((b)=>b.id === id);
     }
 }

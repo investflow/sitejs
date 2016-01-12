@@ -1,6 +1,6 @@
-import $ from "jquery";
+import * as $ from "jquery";
 
-function setTitle(selector:string, title:string, root:?string):void {
+function setTitle(selector:string, title:string, root?:HTMLElement):void {
     root = root ? root : window.document.body;
     $(root).find(selector).each(function () {
         if (!$(this).attr("title")) {
@@ -9,12 +9,12 @@ function setTitle(selector:string, title:string, root:?string):void {
     });
 }
 
-function urlify(text:string, options:?Object):string {
+function urlify(text:string, options?:Object):string {
     if (!text) {
         return "";
     }
     let urlRegex = /(https?:\/\/[^\s\]]+)/g; // ']' character is used in HtmlUtils.getPlainTextFromHtml
-    if (options && options.shortLinks) {
+    if (options && options["shortLinks"]) {
         return text.replace(urlRegex, "<a href='\$1' target='_blank'><i class='fa fa-external-link ml5 mr5'></i></a>")
     }
     return text.replace(urlRegex, "<a href='\$1' target='_blank'>$1</a>")
@@ -84,7 +84,7 @@ function showMenuByClick(e, id):boolean {
 }
 
 
-function getURLParameter(name:string):?string {
+function getURLParameter(name:string):string {
     return decodeURIComponent((new RegExp("[?|&]" + name + "=" + "([^&;]+?)(&|#|;|$)").exec(location.search) || [undefined, ""])[1].replace(/\+/g, "%20")) || null
 }
 
@@ -173,8 +173,8 @@ function countdown(refreshSeconds, formatter, timeBlockId, timeLeftBlockId, comp
     }
     let millisPerMinute = 60 * 1000;
     let millisPerHour = 60 * millisPerMinute;
-    let hoursLeft = parseInt(millisLeft / millisPerHour, 10);
-    let minutesLeft = parseInt(Math.round((millisLeft - hoursLeft * millisPerHour) / millisPerMinute), 10);
+    let hoursLeft = parseInt("" + (millisLeft / millisPerHour), 10);
+    let minutesLeft = parseInt("" + Math.round((millisLeft - hoursLeft * millisPerHour) / millisPerMinute), 10);
     timeLeftBlock.innerHTML = formatter(hoursLeft, minutesLeft);
 
     setTimeout(() => {

@@ -7,27 +7,17 @@ module.exports = function (config) {
         // base path that will be used to resolve all patterns (eg. files, exclude)
         basePath: "",
 
-        frameworks: ["jasmine-jquery", "jasmine", "browserify"],
+        frameworks: ["jasmine-jquery", "jasmine"],
 
         // list of files / patterns to load in the browser
         files: [
-            "node_modules/babel-polyfill/dist/polyfill.js",
             "node_modules/jquery/dist/jquery.js",
-            "spec/**/*.spec.js"
+            "package/js/site.js",
+            "package/js/test.js"
         ],
 
         // list of files to exclude
         exclude: [],
-
-        // preprocess matching files before serving them to the browser
-        preprocessors: {
-            "spec/**/*spec.js": ["babel", "browserify"],
-            "src/**/*.js": ["babel", "browserify"]
-        },
-        browserify: {
-            debug: true,
-            transform: ["babelify"]
-        },
 
         // test results reporter to use
         // possible values: 'dots', 'progress'

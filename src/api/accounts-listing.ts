@@ -1,9 +1,9 @@
-import store from "store";
+import * as store from "store";
 import {listAccounts, ListAccountsResponse} from "./investflow-rest";
 import $site from "./site-def"
 import {Broker} from "./broker"
-import lzString from "lz-string"
-import log from "loglevel"
+import * as lzString from "lz-string"
+import * as log from "loglevel"
 
 const STORE_LISTING_HASH = "account-listing-hash";
 const STORE_LISTING_KEY = "account-listing";
