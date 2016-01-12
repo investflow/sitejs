@@ -10,7 +10,6 @@ export default {
     attach: (selector:string):void => {
         //noinspection JSUnusedGlobalSymbols
         let $el = $(selector);
-        //noinspection TypeScriptUnresolvedFunction
         $el.devbridgeAutocomplete({
             lookup: (query, done) => {
                 log.trace("AAC: lookup: " + query);

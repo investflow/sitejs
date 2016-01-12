@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "devbridge-autocomplete": "^1.2.24",
+    "es6-promise": "^3.0.2",
     "jquery": "v=1.11.3",
     "loglevel": "^1.4.0",
     "lz-string": "^1.4.4",
