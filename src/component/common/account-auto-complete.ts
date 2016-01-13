@@ -1,28 +1,28 @@
-import * as $ from "jquery"
-import {Account, getCachedAccountsListing} from "../../api/accounts-listing"
+import * as $ from "jquery";
+import {Account, getCachedAccountsListing} from "../../api/accounts-listing";
 import $site from "../../api/site-def";
 import * as log from "loglevel";
 
 //TODO: defer subsequent requests.
 
-const MAX_SUGGESTIONS = 40;
+const MAX_SUGGESTIONS:number = 40;
 export default {
     attach: (selector:string):void => {
         //noinspection JSUnusedGlobalSymbols
-        let $el = $(selector);
+        let $el:JQuery = $(selector);
         $el.devbridgeAutocomplete({
-            lookup: (query, done) => {
+            lookup: (query:string, done:Function) => {
                 log.trace("AAC: lookup: " + query);
                 getCachedAccountsListing().then((accounts:Array<Account>) => {
-                    let lcQuery = query.toLowerCase();
-                    let accountsToShow = [];
+                    let lcQuery:string = query.toLowerCase();
+                    let accountsToShow:Array<Account> = [];
 
-                    let checkAccount = (account, lcQuery):boolean => {
-                        return (account.account.toLocaleLowerCase().indexOf(lcQuery) >= 0 || account.name.toLocaleLowerCase().indexOf(lcQuery) >= 0);
+                    let checkAccount = (account:Account, q:string):boolean => {
+                        return (account.account.toLocaleLowerCase().indexOf(q) >= 0 || account.name.toLocaleLowerCase().indexOf(q) >= 0);
                     };
-                    let disabledBrokers = new Map();
+                    let disabledBrokers:{ [key:number]:boolean; } = {};
                     if ($site.ServiceState.AutocompleteExcludeBrokerIds) {
-                        $site.ServiceState.AutocompleteExcludeBrokerIds.forEach((v)=> disabledBrokers[v] = true);
+                        $site.ServiceState.AutocompleteExcludeBrokerIds.forEach((v:number)=> disabledBrokers[v] = true);
                     }
                     // select open accounts first
                     for (let i = 0; i < accounts.length && accountsToShow.length < MAX_SUGGESTIONS; i++) {
@@ -68,9 +68,9 @@ export default {
             groupBy: "category",
             preserveInput: true,
             maxHeight: 720,
-            onSelect: (suggestion:Object) => {
-                log.trace("Selected option: " + suggestion["value"]);
-                $el.val(suggestion["value"]);
+            onSelect: (suggestion:any) => {
+                log.trace("Selected option: " + suggestion.value);
+                $el.val(suggestion.value);
             }
         });
 

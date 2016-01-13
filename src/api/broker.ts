@@ -1,29 +1,20 @@
 export class Broker {
-    id:number;
-    name:string;
+    public static ALFAFOREX:Broker = new Broker(11, "Альфа-Форекс");
+    public static AMARKETS:Broker = new Broker(4, "AMarkets");
+    public static ALPARI:Broker = new Broker(3, "Альпари");
+    public static COMON:Broker = new Broker(28, "Comon");
+    public static FOREX4YOU:Broker = new Broker(9, "Forex4you");
+    public static FXOPEN:Broker = new Broker(10, "FxOpen");
+    public static FRESHFOREX:Broker = new Broker(21, "FreshForex");
+    public static FIBOGROUP:Broker = new Broker(22, "FIBO Group");
+    public static INSTAFOREX:Broker = new Broker(5, "InstaForex");
+    public static LITEFOREX:Broker = new Broker(18, "LiteForex");
+    public static ROBOFOREX:Broker = new Broker(13, "RoboForex");
+    public static TENKOFX:Broker = new Broker(15, "TenkoFX");
+    public static WELTRADE:Broker = new Broker(12, "WELTRADE");
+    public static MOEX:Broker = new Broker(30, "ММВБ-РТС");
 
-    constructor(id:number, name:string) {
-        this.id = id;
-        this.name = name;
-        Object.freeze(this);
-    }
-
-    static ALFAFOREX:Broker = new Broker(11, "Альфа-Форекс");
-    static AMARKETS:Broker = new Broker(4, "AMarkets");
-    static ALPARI:Broker = new Broker(3, "Альпари");
-    static COMON:Broker = new Broker(28, "Comon");
-    static FOREX4YOU:Broker = new Broker(9, "Forex4you");
-    static FXOPEN:Broker = new Broker(10, "FxOpen");
-    static FRESHFOREX:Broker = new Broker(21, "FreshForex");
-    static FIBOGROUP:Broker = new Broker(22, "FIBO Group");
-    static INSTAFOREX:Broker = new Broker(5, "InstaForex");
-    static LITEFOREX:Broker = new Broker(18, "LiteForex");
-    static ROBOFOREX:Broker = new Broker(13, "RoboForex");
-    static TENKOFX:Broker = new Broker(15, "TenkoFX");
-    static WELTRADE:Broker = new Broker(12, "WELTRADE");
-    static MOEX:Broker = new Broker(30, "ММВБ-РТС");
-
-    static ActiveBrokers:Array<Broker> = [
+    public static ACTIVE_BROKERS:Array<Broker> = [
         Broker.ALFAFOREX,
         Broker.AMARKETS,
         Broker.ALPARI,
@@ -37,13 +28,26 @@ export class Broker {
         Broker.ROBOFOREX,
         Broker.TENKOFX,
         Broker.WELTRADE,
-        Broker.MOEX
+        Broker.MOEX,
     ];
 
-    static getBrokerById(id:number):Broker {
-        return Broker.ActiveBrokers.find((b)=>b.id === id);
+    public id:number;
+    public name:string;
+
+    constructor(id:number, name:string) {
+        this.id = id;
+        this.name = name;
+        Object.freeze(this);
+    }
+
+    public static getBrokerById(id:number):Broker {
+        for (let b in Broker.ACTIVE_BROKERS) {
+            if (b.id === id) {
+                return b;
+            }
+        }
+        return undefined;
+
     }
 }
-
-Object.freeze(Broker);
 

@@ -9,34 +9,34 @@ function setTitle(selector:string, title:string, root?:HTMLElement):void {
     });
 }
 
-function urlify(text:string, options?:Object):string {
+function urlify(text:string, options?:any):string {
     if (!text) {
         return "";
     }
     let urlRegex = /(https?:\/\/[^\s\]]+)/g; // ']' character is used in HtmlUtils.getPlainTextFromHtml
-    if (options && options["shortLinks"]) {
-        return text.replace(urlRegex, "<a href='\$1' target='_blank'><i class='fa fa-external-link ml5 mr5'></i></a>")
+    if (options && options.shortLinks) {
+        return text.replace(urlRegex, "<a href='\$1' target='_blank'><i class='fa fa-external-link ml5 mr5'></i></a>");
     }
-    return text.replace(urlRegex, "<a href='\$1' target='_blank'>$1</a>")
+    return text.replace(urlRegex, "<a href='\$1' target='_blank'>$1</a>");
 }
 
-function focusOnEnter(event, id):void {
-    if (event.which == 13) {
+function focusOnEnter(event:KeyboardEvent, id:string):void {
+    if (event.which === 13) {
         $(id).focus();
         event.preventDefault();
     }
 }
-function clickOnEnter(event, id):void {
+function clickOnEnter(event:KeyboardEvent, id:number):void {
     let keyCode = (event.which ? event.which : event.keyCode);
-    if ((keyCode === 10 || keyCode == 13) && !event.ctrlKey) {
+    if ((keyCode === 10 || keyCode === 13) && !event.ctrlKey) {
         $(id).click();
         event.preventDefault();
     }
 }
 
-function clickOnCtrlEnter(event, id):void {
+function clickOnCtrlEnter(event:KeyboardEvent, id:number):void {
     let keyCode = (event.which ? event.which : event.keyCode);
-    if ((keyCode === 10 || keyCode == 13) && event.ctrlKey) {
+    if ((keyCode === 10 || keyCode === 13) && event.ctrlKey) {
         $(id).click();
         event.preventDefault();
     }
@@ -85,7 +85,7 @@ function showMenuByClick(e, id):boolean {
 
 
 function getURLParameter(name:string):string {
-    return decodeURIComponent((new RegExp("[?|&]" + name + "=" + "([^&;]+?)(&|#|;|$)").exec(location.search) || [undefined, ""])[1].replace(/\+/g, "%20")) || null
+    return decodeURIComponent((new RegExp("[?|&]" + name + "=" + "([^&;]+?)(&|#|;|$)").exec(location.search) || [undefined, ""])[1].replace(/\+/g, "%20")) || undefined;
 }
 
 function limitTextArea($textArea, $feedback, $button, maxTextLen, minRemainingToShow):void {
@@ -141,7 +141,7 @@ function enableScrollTop():void {
 function moveCaretToEnd(el):void {
     if (typeof el.selectionStart == "number") {
         el.selectionStart = el.selectionEnd = el.value.length;
-    } else if (typeof el.createTextRange != "undefined") {
+    } else if (typeof el.createTextRange !== "undefined") {
         el.focus();
         const range = el.createTextRange();
         range.collapse(false);

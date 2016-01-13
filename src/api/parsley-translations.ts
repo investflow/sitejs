@@ -1,5 +1,7 @@
-if (window["Parsley"]) {
-    window["Parsley"].addMessages("ru", {
+declare var window:any;
+
+if (window.Parsley) {
+    window.Parsley.addMessages("ru", {
         defaultMessage: "Некорректное значение.",
         type: {
             email: "Введите адрес электронной почты.",
@@ -24,5 +26,5 @@ if (window["Parsley"]) {
         equalto: "Это значение должно совпадать."
     });
 
-    window["Parsley"].setLocale("ru");
+    window.Parsley.setLocale("ru");
 }
