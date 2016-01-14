@@ -1,6 +1,6 @@
 import brokerSelector from "../common/broker-selector";
 
-export default {
+export default Vue.extend({
     template: `
         <div>
             <form>
@@ -13,4 +13,4 @@ export default {
     data: function () {
         return {};
     }
-};
+});

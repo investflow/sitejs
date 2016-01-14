@@ -1,4 +1,4 @@
-declare var window:any;
+declare var window:Window;
 
 if (window.Parsley) {
     window.Parsley.addMessages("ru", {

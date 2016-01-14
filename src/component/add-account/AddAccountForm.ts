@@ -1,4 +1,5 @@
-export default {
+import * as Vue from "vue";
+export default Vue.extend({
     template: `
         <div>
             <a href v-on:click="showPamms">ПАММ</a>
@@ -21,4 +22,4 @@ export default {
     data: function () {
         return {tab: 0};
     }
-};
+});

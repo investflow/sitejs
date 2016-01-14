@@ -1,10 +1,11 @@
 import SiteApp from "./app/SiteApp";
-import SiteUtils from  "./api/site-utils";
-import Titles from  "./api/titles";
-import AccountAutoComplete from  "./component/common/account-auto-complete";
+import SiteUtils from "./api/site-utils";
+import Titles from "./api/titles";
+import AccountAutoComplete from "./component/common/account-auto-complete";
 import site from "./api/site-def";
 import * as log from "loglevel";
 import * as lzString from "lz-string";
+import "./api/parsley-translations";
 
 
 /** Set of utility functions */
@@ -27,4 +28,3 @@ site["lz"] = lzString;
 
 window["$site"] = site;
 
-import "./api/parsley-translations";

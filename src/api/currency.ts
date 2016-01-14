@@ -1,9 +1,15 @@
-let currency = {
-    EUR: {id: "euro", name: "Евро"},
-    RUB: {id: "ruble", name: "Рубль"},
-    USD: {id: "usd", name: "Доллар США"}
-};
+export class Currency {
+    public static EUR = new Currency("euro", "Евро");
+    public static RUB = new Currency("ruble", "Рубль");
+    public static USD = new Currency("usd", "Доллар США");
 
-export {
-    currency as Currency
-};
+    public static ALL_CURRENCIES:Array<Currency> = [Currency.EUR, Currency.RUB, Currency.USD];
+
+    public id:string;
+    public name:string;
+
+    constructor(id:string, name:string) {
+        this.id = id;
+        this.name = name;
+    }
+}

@@ -1,7 +1,7 @@
-import {Currency} from  "../../api/currency";
+import {Currency} from "../../api/currency";
 
-const formOptions = Object.values(Currency).map((val) => {
-    return {text: val.name, value: val.id};
+const formOptions = Currency.ALL_CURRENCIES.forEach((c:Currency) => {
+    return {text: c.name, value: c.id};
 });
 
 export default {

@@ -31,23 +31,19 @@ export class Broker {
         Broker.MOEX,
     ];
 
-    public id:number;
-    public name:string;
-
-    constructor(id:number, name:string) {
+    constructor(public id:number, public name:string) {
         this.id = id;
         this.name = name;
         Object.freeze(this);
     }
 
     public static getBrokerById(id:number):Broker {
-        for (let b in Broker.ACTIVE_BROKERS) {
+        for (let b of Broker.ACTIVE_BROKERS) {
             if (b.id === id) {
                 return b;
             }
         }
         return undefined;
-
     }
 }
 

@@ -1,7 +1,7 @@
-import {Broker} from "../../api/broker"
+import {Broker} from "../../api/broker";
 
-let formOptions = Object.values(Broker).map((v) => {
-    return {text: v.name, value: v.id};
+let formOptions = Broker.ACTIVE_BROKERS.forEach((b:Broker) => {
+    return {text: b.name, value: b.id};
 });
 
 export default {
