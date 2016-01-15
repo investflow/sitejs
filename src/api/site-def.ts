@@ -1,4 +1,11 @@
 export default {
+    Utils: null,
+    Titles: null,
+    SiteApp: null,
+    AccountAutoComplete: null,
+    log: null,
+    lz: null,
+
     /* Service state. Filled by server side.*/
     ServiceState: {
 

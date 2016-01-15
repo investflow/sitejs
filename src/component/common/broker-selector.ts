@@ -1,10 +1,12 @@
 import {Broker} from "../../api/broker";
 
-let formOptions = Broker.ACTIVE_BROKERS.forEach((b:Broker) => {
-    return {text: b.name, value: b.id};
+let formOptions = [];
+
+Broker.ACTIVE_BROKERS.forEach((b:Broker) => {
+    formOptions.push({text: b.name, value: b.id});
 });
 
-export default {
+export default Vue.extend({
     template: `
         <select v-model="selected">
             <option v-for="c in options" v-bind:value="c.value">
@@ -18,4 +20,4 @@ export default {
             options: formOptions
         };
     }
-};
+});

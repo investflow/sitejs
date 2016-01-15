@@ -1,10 +1,12 @@
 import {Currency} from "../../api/currency";
 
-const formOptions = Currency.ALL_CURRENCIES.forEach((c:Currency) => {
-    return {text: c.name, value: c.id};
+const formOptions = [];
+
+Currency.ALL_CURRENCIES.forEach((c:Currency) => {
+    formOptions.push({text: c.name, value: c.id});
 });
 
-export default {
+export default Vue.extend({
     replace: true,
     template: `
         <select v-model='selected'>
@@ -19,4 +21,4 @@ export default {
             options: formOptions
         };
     }
-};
+});
