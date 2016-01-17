@@ -13,6 +13,7 @@ export class Broker {
     public static TENKOFX:Broker = new Broker(15, "TenkoFX");
     public static WELTRADE:Broker = new Broker(12, "WELTRADE");
     public static MOEX:Broker = new Broker(30, "ММВБ-РТС");
+    public static SHARE4YOU:Broker = new Broker(31, "Share4you");
 
     public static ACTIVE_BROKERS:Array<Broker> = [
         Broker.ALFAFOREX,
@@ -26,6 +27,7 @@ export class Broker {
         Broker.INSTAFOREX,
         Broker.LITEFOREX,
         Broker.ROBOFOREX,
+        Broker.SHARE4YOU,
         Broker.TENKOFX,
         Broker.WELTRADE,
         Broker.MOEX,

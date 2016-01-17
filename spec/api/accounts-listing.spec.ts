@@ -1,8 +1,6 @@
 import {Account, getCachedAccountsListing} from "./../../src/api/accounts-listing";
 import {Broker} from "./../../src/api/broker";
-import store from "store";
-import log from "loglevel"
-log.enableAll();
+import * as store from "store";
 
 describe("AccountListing test suite", () => {
 
@@ -23,7 +21,7 @@ describe("AccountListing test suite", () => {
         let listPromise = getCachedAccountsListing();
         listPromise.then((accounts:Array<Account>) => {
             let found = false;
-            for (let a:Account of accounts) {
+            for (let a of accounts) {
                 if (a.broker === Broker.ALPARI && a.name === "Freya") {
                     found = true;
                     break;
@@ -38,7 +36,7 @@ describe("AccountListing test suite", () => {
         let listPromise = getCachedAccountsListing();
         listPromise.then((accounts:Array<Account>) => {
             let found = false;
-            for (let a:Account of accounts) {
+            for (let a of accounts) {
                 if (a.broker === Broker.MOEX && a.account === "AFLT") {
                     found = true;
                     break;
@@ -54,7 +52,7 @@ describe("AccountListing test suite", () => {
         listPromise.then((accounts:Array<Account>) => {
             let foundOpen = false;
             let foundClosed = false;
-            for (let a:Account of accounts) {
+            for (let a of accounts) {
                 foundClosed = foundClosed || !a.open;
                 foundOpen = foundOpen || a.open;
                 if (foundOpen && foundClosed) {

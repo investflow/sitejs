@@ -1,16 +1,16 @@
-import $ from "jquery"
+import * as $ from "jquery";
 import SiteUtils from "./../../src/api/site-utils";
-import log from "loglevel"
-log.enableAll();
 
 describe("SiteUtils test suite", () => {
     it("Title must be replaced with setTitle by #id", () => {
         $("<div id='test'>ID</div>").appendTo(document.body);
+        //noinspection JSJQueryEfficiency
         expect($("#test")).toBeInDOM();
 
         let titleToSet = "Hello World!";
         SiteUtils.setTitle("#test", titleToSet);
 
+        //noinspection JSJQueryEfficiency
         expect($("#test")).toHaveAttr("title", titleToSet);
     });
 

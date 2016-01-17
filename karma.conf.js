@@ -12,8 +12,8 @@ module.exports = function (config) {
         // list of files / patterns to load in the browser
         files: [
             "node_modules/jquery/dist/jquery.js",
-            "package/js/site.js",
-            "package/js/test.js"
+            "node_modules/es6-promise/dist/es6-promise.js",
+            "package/js/tests.js"
         ],
 
         // list of files to exclude

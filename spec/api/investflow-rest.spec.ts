@@ -1,6 +1,4 @@
-import {listAccounts,ListAccountsResponse}  from "./../../src/api/investflow-rest";
-import log from "loglevel"
-log.enableAll();
+import {listAccounts, ListAccountsResponse} from "./../../src/api/investflow-rest";
 
 describe("REST service test suite", () => {
     it("REST.listAccounts must return valid results", (done) => {
