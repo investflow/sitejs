@@ -31,4 +31,10 @@ gulp.task("run-tests", ["build-tests"], function (done) {
     }, done).start();
 });
 
+
+gulp.task("deploy-site-js", ["build"], function () {
+    return gulp.src("./package/js/site.js")
+        .pipe(gulp.dest("../iflow/src/main/webapp/js/"));
+});
+
 gulp.task("default", ["build"]);
