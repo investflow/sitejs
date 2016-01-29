@@ -1,10 +1,10 @@
 export default {
-    Utils: null,
-    Titles: null,
-    SiteApp: null,
-    AccountAutoComplete: null,
-    log: null,
-    lz: null,
+    Utils: undefined,
+    Titles: undefined,
+    SiteApp: undefined,
+    AccountAutoComplete: undefined,
+    log: undefined,
+    lz: undefined,
 
     /* Service state. Filled by server side.*/
     ServiceState: {
