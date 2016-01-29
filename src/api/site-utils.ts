@@ -182,6 +182,11 @@ function countdown(refreshSeconds, formatter, timeBlockId, timeLeftBlockId, comp
     }, refreshSeconds * 1000);
 }
 
+function showHighStocksOnClick(accountKey:string, elementSelector:string) {
+    $(elementSelector).click(function (eventObject) {
+
+    });
+}
 
 export default {
     setTitle: setTitle,
@@ -197,5 +202,6 @@ export default {
     limitTextArea: limitTextArea,
     enableScrollTop: enableScrollTop,
     moveCaretToEnd: moveCaretToEnd,
-    countdown: countdown
+    countdown: countdown,
+    showHighStocksOnClick: showHighStocksOnClick
 };
