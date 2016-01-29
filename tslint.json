@@ -8,13 +8,12 @@
       true,
       "spaces"
     ],
-    "interface-name": true,
     "jsdoc-format": true,
     "label-position": true,
     "label-undefined": true,
     "max-line-length": [
       true,
-      140
+      160
     ],
     "member-access": true,
     "member-ordering": [
