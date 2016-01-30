@@ -62,10 +62,14 @@ function applyDateTimePicker(e:JQuery):void {
 
 function sortClick(event:Event):boolean {
     event = event || window.event;
-    let elem = event.target || event.srcElement;
-    if (elem.nodeName === "TH") {
-        elem.getElementsByTagName("A")[0].click();
-        return false;
+    let elem:HTMLElement = <HTMLElement>(event.target || event.srcElement);
+    if (elem.nodeName && elem.nodeName === "TH") {
+        let children = elem.getElementsByTagName("A");
+        if (children.length > 0) {
+            let a = <HTMLElement>children[0];
+            a.click();
+            return false;
+        }
     }
     return true;
 }
@@ -199,4 +203,4 @@ export default {
     enableScrollTop: enableScrollTop,
     moveCaretToEnd: moveCaretToEnd,
     countdown: countdown
-};
+}

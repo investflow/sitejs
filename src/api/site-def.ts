@@ -1,4 +1,5 @@
 export default {
+    Highcharts: undefined,
     Utils: undefined,
     Titles: undefined,
     SiteApp: undefined,

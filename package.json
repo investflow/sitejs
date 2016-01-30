@@ -9,7 +9,8 @@
     "devbridge-autocomplete": "global:$.Autocomplete",
     "jquery": "global:$",
     "parsleyjs": "global:Parsley",
-    "vue": "global:Vue"
+    "vue": "global:Vue",
+    "highcharts": "global:Highcharts"
   },
   "devDependencies": {
     "browserify": "^13.0.0",
@@ -30,8 +31,10 @@
     "vinyl-source-stream": "^1.1.0"
   },
   "dependencies": {
+    "bootstrap": "^3.3.6",
     "devbridge-autocomplete": "^1.2.24",
     "es6-promise": "^3.0.2",
+    "highcharts": "^4.2.1",
     "jquery": "v=1.11.3",
     "loglevel": "^1.4.0",
     "lz-string": "^1.4.4",

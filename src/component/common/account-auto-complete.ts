@@ -8,8 +8,8 @@ import * as log from "loglevel";
 const MAX_SUGGESTIONS:number = 40;
 export default {
     attach: (selector:string):void => {
-        //noinspection JSUnusedGlobalSymbols
         let $el:JQuery = $(selector);
+        //noinspection JSUnusedGlobalSymbols
         $el.devbridgeAutocomplete({
             lookup: (query:string, done:Function) => {
                 log.trace("AAC: lookup: " + query);

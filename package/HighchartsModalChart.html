@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Highcharts</title>
+
+    <link rel="stylesheet" href="./../node_modules/bootstrap/dist/css/bootstrap.css">
+
+
+    <script src="./../node_modules/jquery/dist/jquery.js"></script>
+    <script src="./../node_modules/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="./../node_modules/highcharts/highstock.js"></script>
+
+    <script src="./../node_modules/es6-promise/dist/es6-promise.js"></script>
+    <script src="./../node_modules/vue/dist/vue.js"></script>
+    <script src="./../node_modules/parsleyjs/dist/parsley.js"></script>
+    <script src="./../package/js/site.js"></script>
+
+</head>
+
+<body style="padding: 30px;">
+
+<a href="" id="link">Click Me</a>
+
+<script>
+    window.$site.Highcharts.attachModalAccountChart("#link", "some account key");
+</script>
+
+</body>
+</html>

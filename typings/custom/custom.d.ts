@@ -3,4 +3,5 @@
 interface JQuery {
     bootstrapSwitch(): void;
     datetimepicker(options:any) : void;
+    devbridgeAutocomplete(options:any) : void;
 }

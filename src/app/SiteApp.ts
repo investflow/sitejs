@@ -9,6 +9,8 @@ export default {
         Vue.component("add-account-form", AddAccountForm);
         Vue.component("add-pamm-account", AddPammAccountPanel);
         Vue.component("add-free-account", AddFreeAccountPanel);
+
+        //noinspection TsLint
         new Vue({el: selector});
     }
 };
