@@ -1,3 +1,4 @@
 .idea
 node_modules
-/package/js
+npm-debug.log
+/package/js/site.js

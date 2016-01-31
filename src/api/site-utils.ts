@@ -43,35 +43,39 @@ function clickOnCtrlEnter(event:KeyboardEvent, id:number):void {
 }
 
 function renderSwitches():void {
-    $(".make-switch")["bootstrapSwitch"]();
+    $(".make-switch").bootstrapSwitch();
 }
 
-function applyDateTimePicker(e):void {
+function applyDateTimePicker(e:JQuery):void {
     let now = new Date();
-    //noinspection JSUnresolvedFunction,JSUnusedGlobalSymbols
+    //noinspection JSUnusedGlobalSymbols
     e.datetimepicker({
         format: "dd.MM.yyyy hh:mm",
         language: "ru",
         weekStart: 1,
         pickSeconds: false,
-        onRender: function (date) {
+        onRender: function (date:Date) {
             return date.valueOf() > now.valueOf() ? "disabled" : "";
         }
     });
 }
 
-function sortClick(event):boolean {
+function sortClick(event:Event):boolean {
     event = event || window.event;
-    let elem = event.target || event.srcElement;
-    if (elem.nodeName === "TH") {
-        elem.getElementsByTagName("A")[0].click();
-        return false;
+    let elem:HTMLElement = <HTMLElement>(event.target || event.srcElement);
+    if (elem.nodeName && elem.nodeName === "TH") {
+        let children = elem.getElementsByTagName("A");
+        if (children.length > 0) {
+            let a = <HTMLElement>children[0];
+            a.click();
+            return false;
+        }
     }
     return true;
 }
 
 
-function showMenuByClick(e, id):boolean {
+function showMenuByClick(e:Event, id:string):boolean {
     let evt = e ? e : window.event;
     if (evt && evt.stopPropagation) {
         evt.stopPropagation();
@@ -85,10 +89,11 @@ function showMenuByClick(e, id):boolean {
 
 
 function getURLParameter(name:string):string {
-    return decodeURIComponent((new RegExp("[?|&]" + name + "=" + "([^&;]+?)(&|#|;|$)").exec(location.search) || [undefined, ""])[1].replace(/\+/g, "%20")) || undefined;
+    let regExp = new RegExp("[?|&]" + name + "=" + "([^&;]+?)(&|#|;|$)");
+    return decodeURIComponent((regExp.exec(location.search) || [undefined, ""])[1].replace(/\+/g, "%20")) || undefined;
 }
 
-function limitTextArea($textArea, $feedback, $button, maxTextLen, minRemainingToShow):void {
+function limitTextArea($textArea:JQuery, $feedback:JQuery, $button:JQuery, maxTextLen:number, minRemainingToShow:number):void {
     let f = function () {
         let remaining = maxTextLen - $textArea.val().length;
         if (remaining <= minRemainingToShow) {
@@ -138,8 +143,8 @@ function enableScrollTop():void {
     });
 }
 
-function moveCaretToEnd(el):void {
-    if (typeof el.selectionStart == "number") {
+function moveCaretToEnd(el:HTMLTextAreaElement):void {
+    if (typeof el.selectionStart === "number") {
         el.selectionStart = el.selectionEnd = el.value.length;
     } else if (typeof el.createTextRange !== "undefined") {
         el.focus();
@@ -149,7 +154,7 @@ function moveCaretToEnd(el):void {
     }
 }
 
-function countdown(refreshSeconds, formatter, timeBlockId, timeLeftBlockId, completionCallback):void {
+function countdown(refreshSeconds:number, formatter:Function, timeBlockId:string, timeLeftBlockId:string, completionCallback:Function):void {
     let timeBlock = document.getElementById(timeBlockId);
     if (!timeBlock) {
         return;
@@ -182,11 +187,6 @@ function countdown(refreshSeconds, formatter, timeBlockId, timeLeftBlockId, comp
     }, refreshSeconds * 1000);
 }
 
-function showHighStocksOnClick(accountKey:string, elementSelector:string) {
-    $(elementSelector).click(function (eventObject) {
-
-    });
-}
 
 export default {
     setTitle: setTitle,
@@ -202,6 +202,5 @@ export default {
     limitTextArea: limitTextArea,
     enableScrollTop: enableScrollTop,
     moveCaretToEnd: moveCaretToEnd,
-    countdown: countdown,
-    showHighStocksOnClick: showHighStocksOnClick
-};
+    countdown: countdown
+}
