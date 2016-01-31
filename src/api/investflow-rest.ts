@@ -1,4 +1,4 @@
-import * as log from "loglevel"
+import * as log from "loglevel";
 
 let SERVER_URL = ((window.location.protocol == "https:") ? "https" : "http") + "://investflow.ru";
 const docUrl = document && typeof document.URL === "string" ? document.URL : "";
@@ -7,6 +7,7 @@ if (docUrl.indexOf("localhost:8080") >= 0 || docUrl.indexOf("127.0.0.1") >= 0) {
     SERVER_URL = "http://127.0.0.1:8080";
 }
 const OP_LIST_ACCOUNTS = "/api/list-accounts?v=1";
+const OP_ACCOUNT_INFO = "/api/account-info?v=1";
 const REQUEST_TIMEOUT_MILLIS = 30 * 1000;
 
 function query(path:string):Promise<Object> {
@@ -28,13 +29,30 @@ function query(path:string):Promise<Object> {
         }
     );
 }
-export class ListAccountsResponse {
-    result:string;
 
-    constructor(result:string) {
-        this.result = result;
-    }
+export interface ListAccountsResponse {
+    result:string;
 }
+
 export function listAccounts():Promise<ListAccountsResponse> {
     return query(OP_LIST_ACCOUNTS);
+}
+
+export interface AccountInfoResponse {
+    /** Account number */
+    account: string,
+    /** Broker id */
+    broker: number,
+    /** Account name */
+    name: string,
+    /** Profit history. Array of pairs: [time, percent] */
+    profitHistory: Array<Array<number>>,
+    /** Full url to account page*/
+    url: string,
+    /** if any -> there was an error processing data on server */
+    error: string
+}
+
+export function getAccountInfo(brokerId:number, account:string):Promise<AccountInfoResponse> {
+    return query(OP_ACCOUNT_INFO + "&broker=" + brokerId + "&account=" + account);
 }

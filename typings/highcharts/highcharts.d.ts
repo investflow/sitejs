@@ -6315,4 +6315,6 @@ interface JQuery {
      * @return current {JQuery} selector the current JQuery selector
      **/
     highcharts(options:HighchartsOptions, callback:(chart:HighchartsChartObject) => void): JQuery;
+
+    highcharts(name:string, options:HighchartsOptions): JQuery;
 }
