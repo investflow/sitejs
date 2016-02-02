@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Highcharts</title>
+
+    <link rel="stylesheet" href="./../node_modules/bootstrap/dist/css/bootstrap.css">
+
+
+    <script src="./../node_modules/jquery/dist/jquery.js"></script>
+    <script src="./../node_modules/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="./../node_modules/highcharts/highstock.js"></script>
+
+    <script src="./../node_modules/es6-promise/dist/es6-promise.js"></script>
+    <script src="./../node_modules/vue/dist/vue.js"></script>
+    <script src="./../node_modules/parsleyjs/dist/parsley.js"></script>
+    <script src="./../package/js/site.js"></script>
+
+</head>
+
+<body style="padding: 30px;">
+
+<div id="chart" class="col-md-9" style="height: 600px;">
+</div>
+
+<script>
+    var profitHistory = [[1445806799000, 10.370000000000005],
+        [1446411599000, 31.590000000000003],
+        [1447016399000, 35.099999999999994],
+        [1447621199000, 37.650000000000006],
+        [1448225999000, 39.83000000000001],
+        [1448830799000, 42.25999999999999]];
+
+    window.$site.Highcharts.addAccountChart("#chart", "Имя счета", profitHistory);
+</script>
+</body>
+</html>
