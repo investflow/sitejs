@@ -1,4 +1,5 @@
 import * as $ from "jquery";
+import * as log from "loglevel";
 import {getAccountInfo, AccountInfoResponse} from "./investflow-rest";
 
 const HIGHCHARTS_MODAL_DIV_ID = "iflow_highcharts_modal";
@@ -45,9 +46,27 @@ function getRangeButtons(firstEventMillis:number, lastEventMillis:number):Array<
     buttons.push({type: "all", count: 1, text: "Все"});
     return buttons;
 }
+export interface IProfitChartOptions {
+    fullAccountName:string,
+    valueSuffix:string;
+}
 
+export class ProfitChartOptions implements IProfitChartOptions {
+    //noinspection JSUnusedLocalSymbols
+    constructor(public fullAccountName:string, public valueSuffix = "") {
+    }
+}
 
-function prepareProfitChartOptions(fullAccountName:string, profitHistory:Array<Array<number>>):any {
+function deriveDecimalPrecision(profitHistory:Array<Array<number>>):number {
+    let maxValue:number = 0;
+    for (let i = 0; i < profitHistory.length; i++) {
+        let val = profitHistory[i][1];
+        maxValue = Math.max(maxValue, val);
+    }
+    return maxValue > 10000 ? 0 : (maxValue < 10 ? 4 : 2);
+}
+
+function prepareProfitChartOptions(profitHistory:Array<Array<number>>, options:IProfitChartOptions):any {
     let firstEventMillis = -1;
     let lastEventMillis = -1;
     if (profitHistory.length > 0) {
@@ -55,6 +74,8 @@ function prepareProfitChartOptions(fullAccountName:string, profitHistory:Array<A
         lastEventMillis = profitHistory[profitHistory.length - 1][0];
     }
     let buttons:Array<any> = getRangeButtons(firstEventMillis, lastEventMillis);
+    let valueDecimals = deriveDecimalPrecision(profitHistory);
+    log.debug("decimals on chart: " + valueDecimals);
     return {
         title: {
             text: "",
@@ -66,25 +87,25 @@ function prepareProfitChartOptions(fullAccountName:string, profitHistory:Array<A
         rangeSelector: {
             allButtonsEnabled: true,
             buttons: buttons,
-            selected: buttons.length - 1 // All button
+            selected: buttons.length - 1 // All button is active by default
         },
         tooltip: {
             xDateFormat: "%Y-%m-%d",
-            valueSuffix: "%"
+            valueSuffix: options.valueSuffix
         },
         plotOptions: {
             line: {
-                dataLabels: {
-                    format: "{point.y:.2f}%",
-                    enabled: true
-                }
+                //dataLabels: {
+                //    format: "{point.y:." + valueDecimals + "f}",
+                //    enabled: true
+                //}
             }
         },
         series: [{
-            name: fullAccountName,
+            name: options.fullAccountName,
             data: profitHistory,
             tooltip: {
-                valueDecimals: 2
+                valueDecimals: valueDecimals
             }
         }]
     };
@@ -110,7 +131,7 @@ function showChart(accountInfo:AccountInfoResponse) {
 
     // set new contents
     var profitHistory = accountInfo.profitHistory;
-    var options = prepareProfitChartOptions(fullAccountName, profitHistory);
+    var options = prepareProfitChartOptions(profitHistory, new ProfitChartOptions(fullAccountName));
     options.chart.width = $dialog.width() - 30;
     options.chart.height = $dialog.height() - 30;
     $modalDiv.find(".iflow-modal-chart").highcharts("StockChart", options);
@@ -129,8 +150,9 @@ export default {
         });
     },
 
-    addAccountChart: function (elementSelector:string, fullAccountName:string, profitHistory:Array<Array<number>>) {
-        var options = prepareProfitChartOptions(fullAccountName, profitHistory);
-        $(elementSelector).highcharts("StockChart", options);
+    addAccountChart: function (elementSelector:string, accountName:string, profitHistory:Array<Array<number>>) {
+        var options = new ProfitChartOptions(accountName);
+        var highchartOptions = prepareProfitChartOptions(profitHistory, options);
+        $(elementSelector).highcharts("StockChart", highchartOptions);
     }
 }
