@@ -46,15 +46,10 @@ function getRangeButtons(firstEventMillis:number, lastEventMillis:number):Array<
     buttons.push({type: "all", count: 1, text: "Все"});
     return buttons;
 }
-export interface IProfitChartOptions {
-    fullAccountName:string,
-    valueSuffix:string;
-}
-
-export class ProfitChartOptions implements IProfitChartOptions {
-    //noinspection JSUnusedLocalSymbols
-    constructor(public fullAccountName:string, public valueSuffix = "") {
-    }
+export interface ProfitChartOptions {
+    chartElementSelector: string,
+    titleLabelSelector:string;
+    fullAccountName:string
 }
 
 function deriveDecimalPrecision(profitHistory:Array<Array<number>>):number {
@@ -66,7 +61,7 @@ function deriveDecimalPrecision(profitHistory:Array<Array<number>>):number {
     return maxValue > 10000 ? 0 : (maxValue < 10 ? 4 : 2);
 }
 
-function prepareProfitChartOptions(profitHistory:Array<Array<number>>, options:IProfitChartOptions):any {
+function prepareProfitChartOptions(profitHistory:Array<Array<number>>, options:ProfitChartOptions):any {
     let firstEventMillis = -1;
     let lastEventMillis = -1;
     if (profitHistory.length > 0) {
@@ -91,7 +86,7 @@ function prepareProfitChartOptions(profitHistory:Array<Array<number>>, options:I
         },
         tooltip: {
             xDateFormat: "%Y-%m-%d",
-            valueSuffix: options.valueSuffix
+            //  valueSuffix: options.valueSuffix
         },
         plotOptions: {
             line: {
@@ -99,6 +94,15 @@ function prepareProfitChartOptions(profitHistory:Array<Array<number>>, options:I
                 //    format: "{point.y:." + valueDecimals + "f}",
                 //    enabled: true
                 //}
+            }
+        },
+        xAxis: {
+            events: {
+                setExtremes: function (e) {
+                    if (options.titleLabelSelector) {
+                        $(options.titleLabelSelector).text(e.max + " - " + e.min);
+                    }
+                }
             }
         },
         series: [{
@@ -122,6 +126,8 @@ function showChart(accountInfo:AccountInfoResponse) {
     $modalDiv.empty();
     $modalDiv.append(HIGHCHARTS_MODAL_DIV_HTML);
     let fullAccountName = accountInfo.name + "/" + accountInfo.account;
+    let titleId = "title_" + Date.now();
+    $modalDiv.find(".modal-title").attr("id", titleId);
     $modalDiv.find(".modal-title").text("Доходность счета " + fullAccountName);
     $modalDiv.find(".account-url").attr("href", accountInfo.url);
 
@@ -131,7 +137,11 @@ function showChart(accountInfo:AccountInfoResponse) {
 
     // set new contents
     var profitHistory = accountInfo.profitHistory;
-    var options = prepareProfitChartOptions(profitHistory, new ProfitChartOptions(fullAccountName));
+    var options = prepareProfitChartOptions(profitHistory, {
+        chartElementSelector: undefined,
+        fullAccountName: fullAccountName,
+        titleLabelSelector: "#" + titleId
+    });
     options.chart.width = $dialog.width() - 30;
     options.chart.height = $dialog.height() - 30;
     $modalDiv.find(".iflow-modal-chart").highcharts("StockChart", options);
@@ -150,9 +160,8 @@ export default {
         });
     },
 
-    addAccountChart: function (elementSelector:string, accountName:string, profitHistory:Array<Array<number>>) {
-        var options = new ProfitChartOptions(accountName);
+    addAccountChart: function (profitHistory:Array<Array<number>>, options:ProfitChartOptions) {
         var highchartOptions = prepareProfitChartOptions(profitHistory, options);
-        $(elementSelector).highcharts("StockChart", highchartOptions);
+        $(options.chartElementSelector).highcharts("StockChart", highchartOptions);
     }
 }
