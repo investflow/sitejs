@@ -1,7 +1,6 @@
 import * as $ from "jquery";
 import * as log from "loglevel";
 import {getAccountInfo, AccountInfoResponse} from "./investflow-rest";
-
 const HIGHCHARTS_MODAL_DIV_ID = "iflow_highcharts_modal";
 
 const HIGHCHARTS_MODAL_DIV_HTML =
@@ -10,7 +9,10 @@ const HIGHCHARTS_MODAL_DIV_HTML =
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">Доходность счета</h4>
+                    <h4 class="modal-title">
+                        <span class="modal-title-text">Доходность счета</span>
+                        <span class="txt-muted itl pl15 modal-title-profit" title="Доходность за выбранный период."></span>
+                    </h4>
                 </div>
                 <div class="modal-body">
                     <div class="iflow-modal-chart"></div>
@@ -46,15 +48,18 @@ function getRangeButtons(firstEventMillis:number, lastEventMillis:number):Array<
     buttons.push({type: "all", count: 1, text: "Все"});
     return buttons;
 }
+
 export interface ProfitChartOptions {
     chartElementSelector: string,
-    titleLabelSelector:string;
+    profitLabelSelector:string;
     fullAccountName:string
 }
 
-function deriveDecimalPrecision(profitHistory:Array<Array<number>>):number {
+function deriveDecimalPrecision(profitHistory:Array<Array<number>>, minIdx?:number, maxIdx?:number):number {
     let maxValue:number = 0;
-    for (let i = 0; i < profitHistory.length; i++) {
+    var fromIdx = typeof minIdx === "undefined" ? 0 : minIdx;
+    let toIdx = typeof  maxIdx === "undefined" ? profitHistory.length : maxIdx;
+    for (let i = fromIdx; i < toIdx; i++) {
         let val = profitHistory[i][1];
         maxValue = Math.max(maxValue, val);
     }
@@ -62,13 +67,13 @@ function deriveDecimalPrecision(profitHistory:Array<Array<number>>):number {
 }
 
 function percentBetween(startValue:number, endValue:number):number {
-    if (startValue <= 0) {
+    if (startValue < 0) {
         return 0;
     }
     return 100 * (endValue - startValue) / (startValue + 100);
 }
 
-function getIdxBefore(timestamp:number, profitHistory:Array<Array<number>>):number {
+function getIdxBeforeOrEquals(timestamp:number, profitHistory:Array<Array<number>>):number {
     for (let i = 0; i < profitHistory.length; i++) {
         let t = profitHistory[i][0];
         if (t > timestamp) {
@@ -76,6 +81,24 @@ function getIdxBefore(timestamp:number, profitHistory:Array<Array<number>>):numb
         }
     }
     return profitHistory.length - 1;
+}
+
+function selectValue(profitHistory:Array<Array<number>>, fromIdx:number, toIdx:number, fn:(n1:number, n2:number)=>number):number {
+    let res = profitHistory[fromIdx][1];
+    for (let i = fromIdx + 1; i < toIdx; i++) {
+        res = fn(profitHistory[i][1], res);
+    }
+    return res;
+}
+
+function updateProfitLabel($profitLabel:JQuery, profitHistory:Array<Array<number>>, startEventIdx:number, endEventIdx:number, decimals:number) {
+    if ($profitLabel.length == 0) {
+        return;
+    }
+    let startValue = profitHistory[startEventIdx][1];
+    let endValue = profitHistory[endEventIdx][1];
+    let change = percentBetween(startValue, endValue);
+    $profitLabel.text(change.toFixed(decimals) + "%");
 }
 
 function prepareProfitChartOptions(profitHistory:Array<Array<number>>, options:ProfitChartOptions):any {
@@ -86,10 +109,16 @@ function prepareProfitChartOptions(profitHistory:Array<Array<number>>, options:P
         lastEventMillis = profitHistory[profitHistory.length - 1][0];
     }
     let buttons:Array<any> = getRangeButtons(firstEventMillis, lastEventMillis);
-    let valueDecimals = deriveDecimalPrecision(profitHistory);
-    log.debug("decimals on chart: " + valueDecimals);
-    let minShownIdx = 0;
-    let maxShownIdx = profitHistory.length - 1;
+    let vState = {
+        valueDecimals: deriveDecimalPrecision(profitHistory),
+        minShownIdx: 0,
+        maxShownIdx: profitHistory.length - 1,
+        maxValue: undefined,
+        minValue: undefined
+    };
+    updateProfitLabel($(options.profitLabelSelector), profitHistory, 0, profitHistory.length - 1, vState.valueDecimals);
+
+    log.debug("decimals on chart: " + vState.valueDecimals);
     return {
         title: {
             text: "",
@@ -112,16 +141,12 @@ function prepareProfitChartOptions(profitHistory:Array<Array<number>>, options:P
                 dataLabels: {
                     enabled: true,
                     formatter: function () {
-                        let series:HighchartsSeriesObject = this["series"];
-                        let firstPoint = series.data[0];
-                        let lastPoint = series.data[series.data.length - 1];
-                        let firstShownX = minShownIdx >= 0 ? profitHistory[minShownIdx][0] : firstPoint.x;
-                        let lastShownX = maxShownIdx >= 0 ? profitHistory[maxShownIdx][0] : lastPoint.x;
-                        let point:HighchartsPointObject = this["point"];
-                        log.trace("min: " + firstShownX + ", max: " + lastShownX + ",  point: " + point.x);
-                        if (point.x === firstShownX || point.x === lastShownX) {
-                            return point.y.toFixed(2);
-                        }
+                        //let firstX = profitHistory[vState.minShownIdx][0];
+                        //let lastX = profitHistory[vState.maxShownIdx][0];
+                        //let point:HighchartsPointObject = this["point"];
+                        //if (point.x === firstX || point.x === lastX /*|| point.y === vState.minValue || point.y === vState.maxValue*/) {
+                        //    return point.y === 0 ? 0 : point.y.toFixed(vState.valueDecimals);
+                        //}
                         return "";
                     }
                 }
@@ -130,23 +155,21 @@ function prepareProfitChartOptions(profitHistory:Array<Array<number>>, options:P
         xAxis: {
             events: {
                 setExtremes: function (e) {
-                    if (options.titleLabelSelector) {
-                        var $title = $(options.titleLabelSelector);
-                        if (e.min && e.max) { //todo: check if defined.
-                            let startIdx = Math.max(0, getIdxBefore(e.min, profitHistory));
-                            let startValue = profitHistory[startIdx][1];
-                            let endIdx = Math.max(0, getIdxBefore(e.max, profitHistory));
-                            let endValue = profitHistory[endIdx][1];
-                            let change = percentBetween(startValue, endValue);
-                            minShownIdx = startIdx;
-                            maxShownIdx = endIdx;
-                            log.trace("value before: " + minShownIdx + ", value" + maxShownIdx);
-                            $title.show();
-                            $title.text("Доходность за выбранный период: " + change.toFixed(2) + "%");
-                        } else {
-                            $title.hide();
-                        }
+                    if (options.profitLabelSelector) {
+                        var $profitLabel = $(options.profitLabelSelector);
+                        if ($profitLabel.length > 0 && typeof e.min !== "undefined" && typeof e.max !== "undefined") {
+                            let startEventIdx = Math.max(0, getIdxBeforeOrEquals(e.min, profitHistory));
+                            let endEventIdx = Math.max(startEventIdx, getIdxBeforeOrEquals(e.max, profitHistory));
 
+                            updateProfitLabel($profitLabel, profitHistory, startEventIdx, endEventIdx, vState.valueDecimals);
+                            //vState.minShownIdx = e.min == profitHistory[startEventIdx][0] ? startEventIdx : (startEventIdx + 1);
+                            //vState.maxShownIdx = endEventIdx;
+                            //vState.valueDecimals = deriveDecimalPrecision(profitHistory, vState.minShownIdx, vState.maxShownIdx + 1);
+                            //vState.minValue = selectValue(profitHistory, vState.minShownIdx, vState.maxShownIdx + 1, Math.min);
+                            //vState.maxValue = selectValue(profitHistory, vState.minShownIdx, vState.maxShownIdx + 1, Math.max);
+                        } else {
+                            $profitLabel.text("");
+                        }
                     }
                 }
             }
@@ -155,8 +178,13 @@ function prepareProfitChartOptions(profitHistory:Array<Array<number>>, options:P
             name: options.fullAccountName,
             data: profitHistory,
             tooltip: {
-                valueDecimals: valueDecimals
-            }
+                valueDecimals: vState.valueDecimals
+            },
+            marker: {
+                enabled: true,
+                radius: 4
+            },
+            shadow: true,
         }]
     };
 }
@@ -172,9 +200,9 @@ function showChart(accountInfo:AccountInfoResponse) {
     $modalDiv.empty();
     $modalDiv.append(HIGHCHARTS_MODAL_DIV_HTML);
     let fullAccountName = accountInfo.name + "/" + accountInfo.account;
-    let titleId = "title_" + Date.now();
-    $modalDiv.find(".modal-title").attr("id", titleId);
-    $modalDiv.find(".modal-title").text("Доходность счета " + fullAccountName);
+    let profitLabelId = "profit_label_" + Date.now();
+    $modalDiv.find(".modal-title-text").text("Доходность счета " + fullAccountName);
+    $modalDiv.find(".modal-title-profit").attr("id", profitLabelId);
     $modalDiv.find(".account-url").attr("href", accountInfo.url);
 
     var $dialog = $modalDiv.find(".modal-dialog");
@@ -186,7 +214,7 @@ function showChart(accountInfo:AccountInfoResponse) {
     var options = prepareProfitChartOptions(profitHistory, {
         chartElementSelector: undefined,
         fullAccountName: fullAccountName,
-        titleLabelSelector: "#" + titleId
+        profitLabelSelector: "#" + profitLabelId
     });
     options.chart.width = $dialog.width() - 30;
     options.chart.height = $dialog.height() - 30;
