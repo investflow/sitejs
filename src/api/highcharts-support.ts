@@ -61,6 +61,23 @@ function deriveDecimalPrecision(profitHistory:Array<Array<number>>):number {
     return maxValue > 10000 ? 0 : (maxValue < 10 ? 4 : 2);
 }
 
+function percentBetween(startValue:number, endValue:number):number {
+    if (startValue <= 0) {
+        return 0;
+    }
+    return 100 * (endValue - startValue) / (startValue + 100);
+}
+
+function getIdxBefore(timestamp:number, profitHistory:Array<Array<number>>):number {
+    for (let i = 0; i < profitHistory.length; i++) {
+        let t = profitHistory[i][0];
+        if (t > timestamp) {
+            return i - 1;
+        }
+    }
+    return profitHistory.length - 1;
+}
+
 function prepareProfitChartOptions(profitHistory:Array<Array<number>>, options:ProfitChartOptions):any {
     let firstEventMillis = -1;
     let lastEventMillis = -1;
@@ -71,6 +88,8 @@ function prepareProfitChartOptions(profitHistory:Array<Array<number>>, options:P
     let buttons:Array<any> = getRangeButtons(firstEventMillis, lastEventMillis);
     let valueDecimals = deriveDecimalPrecision(profitHistory);
     log.debug("decimals on chart: " + valueDecimals);
+    let minShownIdx = 0;
+    let maxShownIdx = profitHistory.length - 1;
     return {
         title: {
             text: "",
@@ -90,17 +109,44 @@ function prepareProfitChartOptions(profitHistory:Array<Array<number>>, options:P
         },
         plotOptions: {
             line: {
-                //dataLabels: {
-                //    format: "{point.y:." + valueDecimals + "f}",
-                //    enabled: true
-                //}
+                dataLabels: {
+                    enabled: true,
+                    formatter: function () {
+                        let series:HighchartsSeriesObject = this["series"];
+                        let firstPoint = series.data[0];
+                        let lastPoint = series.data[series.data.length - 1];
+                        let firstShownX = minShownIdx >= 0 ? profitHistory[minShownIdx][0] : firstPoint.x;
+                        let lastShownX = maxShownIdx >= 0 ? profitHistory[maxShownIdx][0] : lastPoint.x;
+                        let point:HighchartsPointObject = this["point"];
+                        log.trace("min: " + firstShownX + ", max: " + lastShownX + ",  point: " + point.x);
+                        if (point.x === firstShownX || point.x === lastShownX) {
+                            return point.y.toFixed(2);
+                        }
+                        return "";
+                    }
+                }
             }
         },
         xAxis: {
             events: {
                 setExtremes: function (e) {
                     if (options.titleLabelSelector) {
-                        $(options.titleLabelSelector).text(e.max + " - " + e.min);
+                        var $title = $(options.titleLabelSelector);
+                        if (e.min && e.max) { //todo: check if defined.
+                            let startIdx = Math.max(0, getIdxBefore(e.min, profitHistory));
+                            let startValue = profitHistory[startIdx][1];
+                            let endIdx = Math.max(0, getIdxBefore(e.max, profitHistory));
+                            let endValue = profitHistory[endIdx][1];
+                            let change = percentBetween(startValue, endValue);
+                            minShownIdx = startIdx;
+                            maxShownIdx = endIdx;
+                            log.trace("value before: " + minShownIdx + ", value" + maxShownIdx);
+                            $title.show();
+                            $title.text("Доходность за выбранный период: " + change.toFixed(2) + "%");
+                        } else {
+                            $title.hide();
+                        }
+
                     }
                 }
             }
