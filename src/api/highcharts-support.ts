@@ -57,7 +57,7 @@ export interface ProfitChartOptions {
 
 function deriveDecimalPrecision(profitHistory:Array<Array<number>>, minIdx?:number, maxIdx?:number):number {
     let maxValue:number = 0;
-    var fromIdx = typeof minIdx === "undefined" ? 0 : minIdx;
+    let fromIdx = typeof minIdx === "undefined" ? 0 : minIdx;
     let toIdx = typeof  maxIdx === "undefined" ? profitHistory.length : maxIdx;
     for (let i = fromIdx; i < toIdx; i++) {
         let val = profitHistory[i][1];
@@ -83,13 +83,13 @@ function getIdxBeforeOrEquals(timestamp:number, profitHistory:Array<Array<number
     return profitHistory.length - 1;
 }
 
-function selectValue(profitHistory:Array<Array<number>>, fromIdx:number, toIdx:number, fn:(n1:number, n2:number)=>number):number {
+/*function selectValue(profitHistory:Array<Array<number>>, fromIdx:number, toIdx:number, fn:(n1:number, n2:number)=>number):number {
     let res = profitHistory[fromIdx][1];
     for (let i = fromIdx + 1; i < toIdx; i++) {
         res = fn(profitHistory[i][1], res);
     }
     return res;
-}
+}*/
 
 function updateProfitLabel($profitLabel:JQuery, profitHistory:Array<Array<number>>, startEventIdx:number, endEventIdx:number, decimals:number) {
     if ($profitLabel.length == 0) {
@@ -138,8 +138,9 @@ function prepareProfitChartOptions(profitHistory:Array<Array<number>>, options:P
         },
         plotOptions: {
             line: {
+                color: "#0093C6",
                 dataLabels: {
-                    enabled: true,
+                    enabled: false,
                     formatter: function () {
                         //let firstX = profitHistory[vState.minShownIdx][0];
                         //let lastX = profitHistory[vState.maxShownIdx][0];
@@ -156,7 +157,7 @@ function prepareProfitChartOptions(profitHistory:Array<Array<number>>, options:P
             events: {
                 setExtremes: function (e) {
                     if (options.profitLabelSelector) {
-                        var $profitLabel = $(options.profitLabelSelector);
+                        let $profitLabel = $(options.profitLabelSelector);
                         if ($profitLabel.length > 0 && typeof e.min !== "undefined" && typeof e.max !== "undefined") {
                             let startEventIdx = Math.max(0, getIdxBeforeOrEquals(e.min, profitHistory));
                             let endEventIdx = Math.max(startEventIdx, getIdxBeforeOrEquals(e.max, profitHistory));
@@ -181,10 +182,9 @@ function prepareProfitChartOptions(profitHistory:Array<Array<number>>, options:P
                 valueDecimals: vState.valueDecimals
             },
             marker: {
-                enabled: true,
-                radius: 4
+                enabled: false,
+                //radius: 4
             },
-            shadow: true,
         }]
     };
 }
@@ -205,37 +205,51 @@ function showChart(accountInfo:AccountInfoResponse) {
     $modalDiv.find(".modal-title-profit").attr("id", profitLabelId);
     $modalDiv.find(".account-url").attr("href", accountInfo.url);
 
-    var $dialog = $modalDiv.find(".modal-dialog");
+    let $dialog = $modalDiv.find(".modal-dialog");
     $dialog.width(window.innerWidth * 0.8);
     $dialog.height(window.innerHeight * 0.8);
 
     // set new contents
-    var profitHistory = accountInfo.profitHistory;
-    var options = prepareProfitChartOptions(profitHistory, {
+    let profitHistory = accountInfo.profitHistory;
+    let options = prepareProfitChartOptions(profitHistory, {
         chartElementSelector: undefined,
         fullAccountName: fullAccountName,
         profitLabelSelector: "#" + profitLabelId
     });
     options.chart.width = $dialog.width() - 30;
     options.chart.height = $dialog.height() - 30;
-    $modalDiv.find(".iflow-modal-chart").highcharts("StockChart", options);
+    let $chartEl = $modalDiv.find(".iflow-modal-chart");
+    let chart = $chartEl.highcharts("StockChart", options);
+    enableZoom($chartEl);
 
     // show modal window
     $modalDiv.find(".modal").first().modal();
 }
+
+function enableZoom($container:JQuery):void {
+    let chart:any = $container.highcharts();
+    chart.pointer.cmd = chart.pointer.onContainerMouseDown;
+    chart.pointer.onContainerMouseDown = function (a) {
+        //noinspection JSUnusedGlobalSymbols
+        this.zoomX = this.zoomHor = this.hasZoom = a.shiftKey;
+        this.cmd(a);
+    };
+}
+
 export default {
     attachModalAccountChart: function (elementSelector:string, brokerId:number, account:string):void {
         $(elementSelector).click(function (e:Event) {
             e.preventDefault();
             getAccountInfo(brokerId, account).then((accountInfo:AccountInfoResponse)=> {
-                    showChart(accountInfo);
-                }
-            );
+                showChart(accountInfo);
+            });
         });
     },
 
     addAccountChart: function (profitHistory:Array<Array<number>>, options:ProfitChartOptions) {
-        var highchartOptions = prepareProfitChartOptions(profitHistory, options);
-        $(options.chartElementSelector).highcharts("StockChart", highchartOptions);
+        let highchartOptions = prepareProfitChartOptions(profitHistory, options);
+        var $chartEl = $(options.chartElementSelector);
+        $chartEl.highcharts("StockChart", highchartOptions);
+        enableZoom($chartEl);
     }
 }
