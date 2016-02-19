@@ -26,7 +26,8 @@
 
 
 <script>
-    var profitHistory = [[1445806799000, 10.370000000000005],
+    var profitData1 = [[1455483599000,-42.5945],[1456088399000,-17.114900000000006]];
+    var profitData2 = [[1445806799000, 10.370000000000005],
         [1446411599000, 31.590000000000003],
         [1447016399000, 35.099999999999994],
         [1447621199000, 37.650000000000006],
@@ -35,10 +36,11 @@
         [1448840799000, 46.25999999999999],
         [1448850799000, 49.25999999999999]];
 
-    window.$site.Highcharts.addAccountChart(profitHistory, {
+    window.$site.Highcharts.addAccountChart(profitData1, {
         chartElementSelector: "#chart",
         profitLabelSelector: "#title",
-        fullAccountName: "Имя счета"
+        fullAccountName: "Имя счета",
+        brokerId: 11
     });
 </script>
 </body>

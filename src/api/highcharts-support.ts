@@ -1,6 +1,7 @@
 import * as $ from "jquery";
 import * as log from "loglevel";
 import {getAccountInfo, AccountInfoResponse} from "./investflow-rest";
+import {Broker} from "./broker";
 const HIGHCHARTS_MODAL_DIV_ID = "iflow_highcharts_modal";
 
 const HIGHCHARTS_MODAL_DIV_HTML =
@@ -52,7 +53,8 @@ function getRangeButtons(firstEventMillis:number, lastEventMillis:number):Array<
 export interface ProfitChartOptions {
     chartElementSelector: string,
     profitLabelSelector:string;
-    fullAccountName:string
+    fullAccountName:string;
+    brokerId?:number
 }
 
 function deriveDecimalPrecision(profitHistory:Array<Array<number>>, minIdx?:number, maxIdx?:number):number {
@@ -67,7 +69,7 @@ function deriveDecimalPrecision(profitHistory:Array<Array<number>>, minIdx?:numb
 }
 
 function percentBetween(startValue:number, endValue:number):number {
-    if (startValue < 0) {
+    if (startValue <= -100) {
         return 0;
     }
     return 100 * (endValue - startValue) / (startValue + 100);
@@ -84,12 +86,12 @@ function getIdxBeforeOrEquals(timestamp:number, profitHistory:Array<Array<number
 }
 
 /*function selectValue(profitHistory:Array<Array<number>>, fromIdx:number, toIdx:number, fn:(n1:number, n2:number)=>number):number {
-    let res = profitHistory[fromIdx][1];
-    for (let i = fromIdx + 1; i < toIdx; i++) {
-        res = fn(profitHistory[i][1], res);
-    }
-    return res;
-}*/
+ let res = profitHistory[fromIdx][1];
+ for (let i = fromIdx + 1; i < toIdx; i++) {
+ res = fn(profitHistory[i][1], res);
+ }
+ return res;
+ }*/
 
 function updateProfitLabel($profitLabel:JQuery, profitHistory:Array<Array<number>>, startEventIdx:number, endEventIdx:number, decimals:number) {
     if ($profitLabel.length == 0) {
@@ -110,7 +112,7 @@ function prepareProfitChartOptions(profitHistory:Array<Array<number>>, options:P
     }
     let buttons:Array<any> = getRangeButtons(firstEventMillis, lastEventMillis);
     let vState = {
-        valueDecimals: deriveDecimalPrecision(profitHistory),
+        valueDecimals: Broker.getBrokerById(options.brokerId) == Broker.MOEX ? deriveDecimalPrecision(profitHistory) : 2,
         minShownIdx: 0,
         maxShownIdx: profitHistory.length - 1,
         maxValue: undefined,
@@ -214,7 +216,8 @@ function showChart(accountInfo:AccountInfoResponse) {
     let options = prepareProfitChartOptions(profitHistory, {
         chartElementSelector: undefined,
         fullAccountName: fullAccountName,
-        profitLabelSelector: "#" + profitLabelId
+        profitLabelSelector: "#" + profitLabelId,
+        brokerId: accountInfo.broker
     });
     options.chart.width = $dialog.width() - 30;
     options.chart.height = $dialog.height() - 30;

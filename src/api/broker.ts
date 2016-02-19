@@ -40,6 +40,9 @@ export class Broker {
     }
 
     public static getBrokerById(id:number):Broker {
+        if (!id) {
+            return undefined;
+        }
         for (let b of Broker.ACTIVE_BROKERS) {
             if (b.id === id) {
                 return b;
