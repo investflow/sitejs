@@ -5,6 +5,7 @@ import AccountAutoComplete from "./component/common/account-auto-complete";
 import * as log from "loglevel";
 import * as lzString from "lz-string";
 import Highcharts from "./api/highcharts-support";
+import Flot from "./api/flot-support";
 import site from "./api/site-def";
 import "./api/parsley-translations";
 
@@ -28,6 +29,9 @@ site.lz = lzString;
 
 /* Highcharts helpers */
 site.Highcharts = Highcharts;
+
+/* Flot helpers */
+site.Flot = Flot;
 
 (<any>window).$site = site;
 

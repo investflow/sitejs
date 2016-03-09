@@ -8,4 +8,5 @@
 /// <reference path="custom/custom.d.ts" />
 /// <reference path="es6-promise/es6-promise.d.ts" />
 /// <reference path="parsley/parsley.d.ts" />
+/// <reference path="flot/jquery.flot.d.ts" />
 
