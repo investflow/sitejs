@@ -49,9 +49,10 @@ function preparePiconData(profitLevel:Array<number>, alg:PiconChartAlgorithm):Ar
             percents.push(p);
         }
         var total = 0;
+        result.push([0, 0]);
         for (var i = 0; i < percents.length; i++) {
             total += percents[i];
-            result.push([i, total]);
+            result.push([i + 1, total]);
         }
     }
     return [result];
@@ -62,9 +63,11 @@ function drawPicon(selector:string, profit:Array<number>, alg?:PiconChartAlgorit
         alg = PiconChartAlgorithm.Reinvest;
     }
     let processedData = preparePiconData(profit, alg);
-    if (!opts) {
-        opts = defaultPiconOptions;
-    }
+    // clone options to adjust legend status
+    opts = $.extend(true, {}, opts ? opts : defaultPiconOptions);
+    // if (processedData[0].length <= 1) {
+    //     opts.yaxis.show = false;
+    // }
     var $el = $(selector);
     $.plot($el, processedData, opts);
 }
