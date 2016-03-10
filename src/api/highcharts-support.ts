@@ -1,5 +1,6 @@
 import * as $ from "jquery";
 import * as log from "loglevel";
+import {percentBetween} from "./calc";
 import {getAccountInfo, AccountInfoResponse} from "./investflow-rest";
 import {Broker} from "./broker";
 const HIGHCHARTS_MODAL_DIV_ID = "iflow_highcharts_modal";
@@ -66,13 +67,6 @@ function deriveDecimalPrecision(profitHistory:Array<Array<number>>, minIdx?:numb
         maxValue = Math.max(maxValue, val);
     }
     return maxValue > 10000 ? 0 : (maxValue < 10 ? 4 : 2);
-}
-
-function percentBetween(startValue:number, endValue:number):number {
-    if (startValue <= -100) {
-        return 0;
-    }
-    return 100 * (endValue - startValue) / (startValue + 100);
 }
 
 function getIdxBeforeOrEquals(timestamp:number, profitHistory:Array<Array<number>>):number {

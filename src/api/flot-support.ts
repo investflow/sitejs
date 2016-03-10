@@ -1,9 +1,11 @@
 import plotOptions = jquery.flot.plotOptions;
+import * as $ from "jquery";
+import {percentBetweenEquity} from "./calc";
 
-const piconOptions:plotOptions = {
+const defaultPiconOptions:plotOptions = {
     yaxis: {
         color: "#545454",
-        tickColor:"#CCCCCC",
+        tickColor: "#CCCCCC",
         labelWidth: 40,
         font: {family: "sans-serif", variant: "small-caps"},
         tickFormatter: function (n) {
@@ -17,13 +19,58 @@ const piconOptions:plotOptions = {
     },
     grid: {
         borderWidth: 1,
-        borderColor: '#AAAAAA',
+        borderColor: "#AAAAAA",
         minBorderMargin: 1,
         margin: 0
     },
-    colors: ['#D18B2C', '#00854E']
+    colors: ["#00854E", "#D18B2C"]
 };
 
+enum PiconChartAlgorithm {
+    Reinvest,
+    NoReinvest
+}
+
+/**
+ * @param profitLevel equity - 100, where 100 is start equity.
+ * @param alg
+ * @returns {Array[]}
+ */
+function preparePiconData(profitLevel:Array<number>, alg:PiconChartAlgorithm):Array<Array<Array<number>>> {
+    var result = [];
+    if (alg == PiconChartAlgorithm.Reinvest) {
+        for (var i = 0; i < profitLevel.length; i++) {
+            result.push([i, profitLevel[i]]);
+        }
+    } else if (alg == PiconChartAlgorithm.NoReinvest) {
+        var percents = [];
+        for (var i = 1; i < profitLevel.length; i++) {
+            var p = percentBetweenEquity(100 + profitLevel[i - 1], 100 + profitLevel[i]); // percent between (equityBefore, equityAfter)
+            percents.push(p);
+        }
+        var total = 0;
+        for (var i = 0; i < percents.length; i++) {
+            total += percents[i];
+            result.push([i, total]);
+        }
+    }
+    return [result];
+}
+
+function drawPicon(selector:string, profit:Array<number>, alg?:PiconChartAlgorithm, opts?:plotOptions) {
+    if (!alg) {
+        alg = PiconChartAlgorithm.Reinvest;
+    }
+    let processedData = preparePiconData(profit, alg);
+    if (!opts) {
+        opts = defaultPiconOptions;
+    }
+    var $el = $(selector);
+    $.plot($el, processedData, opts);
+}
+
 export default {
-    piconOptions: piconOptions
+    piconOptions: defaultPiconOptions,
+    picon: drawPicon,
+    PiconChartAlgorithm: PiconChartAlgorithm
 }
