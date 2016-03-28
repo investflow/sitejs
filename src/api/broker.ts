@@ -14,6 +14,7 @@ export class Broker {
     public static WELTRADE:Broker = new Broker(12, "WELTRADE");
     public static MOEX:Broker = new Broker(30, "ММВБ-РТС");
     public static SHARE4YOU:Broker = new Broker(31, "Share4you");
+    public static MQL5_COM:Broker = new Broker(32, "MQL5.com");
 
     public static ACTIVE_BROKERS:Array<Broker> = [
         Broker.ALFAFOREX,
@@ -31,6 +32,7 @@ export class Broker {
         Broker.TENKOFX,
         Broker.WELTRADE,
         Broker.MOEX,
+        Broker.MQL5_COM,
     ];
 
     constructor(public id:number, public name:string) {
