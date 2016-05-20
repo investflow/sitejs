@@ -52,13 +52,13 @@ export default {
                         let account = accountsToShow[i];
                         let nameString = account.name + "/" + account.account;
                         let typeName = account.isAlpariIndex() ? ", портфель" : account.isAlpariFund() ? ", фонд" : "";
-                        let closedTxt = account.open ? "" : ", закрыт";
+                        let closedTxt = account.open ? "" : ", неактивен";
                         let detailedString = nameString + " (" + account.broker.name + typeName + closedTxt + ")";
                         let category = "";
                         if (disabledBrokers[account.broker.id]) {
                             category = "--- выкл. площадки ---";
                         } else if (!account.open) {
-                            category = "--- закрытые счета ---";
+                            category = "--- неактивные счета ---";
                         }
                         result.suggestions.push({value: detailedString, data: {category: category}});
                     }

@@ -29,11 +29,11 @@ export class Account {
     }
 
     isAlpariFund():boolean {
-        return this.index && this.broker == Broker.ALPARI;
+        return this.fund && this.broker == Broker.ALPARI;
     }
 
     isAlpariIndex():boolean {
-        return this.fund && this.broker == Broker.ALPARI;
+        return this.index && this.broker == Broker.ALPARI;
     }
 }
 
