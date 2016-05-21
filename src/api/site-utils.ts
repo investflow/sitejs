@@ -187,6 +187,14 @@ function countdown(refreshSeconds:number, formatter:Function, timeBlockId:string
     }, refreshSeconds * 1000);
 }
 
+function toValueWithSuffix(value) {
+    if (value == 0) return "0";
+    var k = 1000;
+    var sizes = ['', 'k', 'm', 'b'];
+    var i = Math.floor(Math.log(value) / Math.log(k));
+    return parseFloat((value / Math.pow(k, i)).toFixed(0))  + sizes[i];
+}
+
 
 export default {
     setTitle: setTitle,
@@ -202,5 +210,6 @@ export default {
     limitTextArea: limitTextArea,
     enableScrollTop: enableScrollTop,
     moveCaretToEnd: moveCaretToEnd,
-    countdown: countdown
+    countdown: countdown,
+    toValueWithSuffix: toValueWithSuffix
 }

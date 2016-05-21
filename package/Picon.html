@@ -35,11 +35,13 @@
 <div class="picon" id="picon1" style=";width:230px; height:55px;"></div>
 <div class="picon" id="picon2" style=";width:230px; height:55px;"></div>
 <div class="picon" id="picon3" style=";width:230px; height:55px;"></div>
+<div class="picon" id="picon4" style=";width:230px; height:55px;"></div>
 
 <script>
     $site.Flot.picon("#picon1", [1, 2, 3, 4, 5, 4, 3, 2, 1]);
     $site.Flot.picon("#picon2", [1, 2, 3, 4, 5, 4, 3, 2, 1], $site.Flot.PiconChartAlgorithm.NoReinvest);
     $site.Flot.picon("#picon3", [0, 0.5], $site.Flot.PiconChartAlgorithm.NoReinvest);
+    $site.Flot.picon("#picon4", [1000, 1000, 1000], $site.Flot.PiconChartAlgorithm.Value, $site.Flot.largeValuesPiconOptions);
 </script>
 </body>
 </html>
