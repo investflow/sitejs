@@ -52,7 +52,7 @@ function getRangeButtons(firstEventMillis:number, lastEventMillis:number):Array<
 }
 
 export interface ProfitChartOptions {
-    chartElementSelector: string,
+    chartElementSelector:string,
     profitLabelSelector:string;
     fullAccountName:string;
     brokerId?:number
@@ -150,6 +150,7 @@ function prepareProfitChartOptions(profitHistory:Array<Array<number>>, options:P
             }
         },
         xAxis: {
+            ordinal: false,
             events: {
                 setExtremes: function (e) {
                     if (options.profitLabelSelector) {
