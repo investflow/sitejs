@@ -13,7 +13,8 @@ export default {
         DOMUtils.setTitle(".pi-n-offers", "Число открытых оферт.", rootEl);
         DOMUtils.setTitle(".pi-percent", "Процент за календарную неделю.", rootEl);
         DOMUtils.setTitle(".pi-total", "Для Форекс: доходность счета в % за все время.\nДля биржи: текущее значение котировки.", rootEl);
-        DOMUtils.setTitle(".pi-fav", "Избранный ПАММ-счет.", rootEl);
+        DOMUtils.setTitle(".pi-fav", "Избранный инструмент.", rootEl);
+        DOMUtils.setTitle(".pi-rec", "Рекомендуемый счет.", rootEl);
         DOMUtils.setTitle(".pi-nc", "Есть новые комментарии!", rootEl);
         DOMUtils.setTitle(".pi-i-share", "Доля инвестора в лучшей оферте.", rootEl);
         DOMUtils.setTitle(".pi-i-min", "Минимальная инвестиция в валюте счета.", rootEl);
