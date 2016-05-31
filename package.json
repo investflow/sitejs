@@ -14,7 +14,8 @@
     "parsleyjs": "global:Parsley",
     "vue": "global:Vue",
     "highcharts": "global:Highcharts",
-    "flot": "global:$.plot"
+    "flot": "global:$.plot",
+    "autolinker": "global:Autolinker"
   },
   "devDependencies": {
     "browserify": "^13.0.0",
@@ -45,6 +46,7 @@
     "parsleyjs": "2.2.0",
     "store": "1.3.20",
     "vue": "^1.0.17",
-    "jquery-flot": "0.8.3"
+    "jquery-flot": "0.8.3",
+    "autolinker": "0.26.0"
   }
 }

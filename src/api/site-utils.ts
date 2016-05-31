@@ -1,4 +1,5 @@
 import * as $ from "jquery";
+import * as Autolinker from "autolinker";
 
 function setTitle(selector:string, title:string, root?:HTMLElement):void {
     root = root ? root : window.document.body;
@@ -8,16 +9,8 @@ function setTitle(selector:string, title:string, root?:HTMLElement):void {
         }
     });
 }
-
-function urlify(text:string, options?:any):string {
-    if (!text) {
-        return "";
-    }
-    let urlRegex = /(https?:\/\/[^\s\]]+)/g; // ']' character is used in HtmlUtils.getPlainTextFromHtml
-    if (options && options.shortLinks) {
-        return text.replace(urlRegex, "<a href='\$1' target='_blank'><i class='fa fa-external-link ml5 mr5'></i></a>");
-    }
-    return text.replace(urlRegex, "<a href='\$1' target='_blank'>$1</a>");
+function linkify(text:string):string {
+    return Autolinker.link(text);
 }
 
 function focusOnEnter(event:KeyboardEvent, id:string):void {
@@ -192,13 +185,13 @@ function toValueWithSuffix(value) {
     var k = 1000;
     var sizes = ['', 'k', 'm', 'b'];
     var i = Math.floor(Math.log(value) / Math.log(k));
-    return parseFloat((value / Math.pow(k, i)).toFixed(0))  + sizes[i];
+    return parseFloat((value / Math.pow(k, i)).toFixed(0)) + sizes[i];
 }
 
 
 export default {
     setTitle: setTitle,
-    urlify: urlify,
+    linkify: linkify,
     focusOnEnter: focusOnEnter,
     clickOnEnter: clickOnEnter,
     clickOnCtrlEnter: clickOnCtrlEnter,
