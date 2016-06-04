@@ -13,7 +13,6 @@
     <script src="./../node_modules/highcharts/highstock.js"></script>
 
     <script src="./../node_modules/es6-promise/dist/es6-promise.js"></script>
-    <script src="./../node_modules/vue/dist/vue.js"></script>
     <script src="./../node_modules/parsleyjs/dist/parsley.js"></script>
     <script src="./../node_modules/jquery-flot/jquery.flot.js"></script>
     <script src="./../package/js/site.js"></script>
@@ -36,12 +35,17 @@
 <div class="picon" id="picon2" style=";width:230px; height:55px;"></div>
 <div class="picon" id="picon3" style=";width:230px; height:55px;"></div>
 <div class="picon" id="picon4" style=";width:230px; height:55px;"></div>
+<div class="picon" id="picon5" style=";width:100px; height:30px;"></div>
 
 <script>
     $site.Flot.picon("#picon1", [1, 2, 3, 4, 5, 4, 3, 2, 1]);
     $site.Flot.picon("#picon2", [1, 2, 3, 4, 5, 4, 3, 2, 1], $site.Flot.PiconChartAlgorithm.NoReinvest);
     $site.Flot.picon("#picon3", [0, 0.5], $site.Flot.PiconChartAlgorithm.NoReinvest);
     $site.Flot.picon("#picon4", [1000, 1000, 1000], $site.Flot.PiconChartAlgorithm.Value, $site.Flot.largeValuesPiconOptions);
+    var opts = $site.Flot.smallHeightPiconOptions;
+    opts.yaxis.ticks = [];
+    opts.yaxis.labelWidth = 0;
+    $site.Flot.picon("#picon5", [1000, 1000, 1000], $site.Flot.PiconChartAlgorithm.Value, opts);
 </script>
 </body>
 </html>

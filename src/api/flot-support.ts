@@ -28,9 +28,14 @@ const defaultPiconOptions:plotOptions = {
 };
 
 const largeValuesPiconOptions:plotOptions = $.extend(true, {}, defaultPiconOptions);
-largeValuesPiconOptions["yaxis"]["tickFormatter"] = function (n) {
+largeValuesPiconOptions.yaxis.tickFormatter = function (n) {
     return utils.toValueWithSuffix(n)
 };
+
+const smallHeightPiconOptions = $.extend(true, {}, defaultPiconOptions);
+smallHeightPiconOptions.yaxis.ticks = [];
+smallHeightPiconOptions.yaxis.labelWidth = 0;
+smallHeightPiconOptions.yaxis.labelHeight = 0;
 
 enum PiconChartAlgorithm {
     Value,
@@ -86,6 +91,7 @@ function drawPicon(selector:string, values:Array<number>, alg?:PiconChartAlgorit
 export default {
     piconOptions: defaultPiconOptions,
     largeValuesPiconOptions: largeValuesPiconOptions,
+    smallHeightPiconOptions: smallHeightPiconOptions,
     picon: drawPicon,
     PiconChartAlgorithm: PiconChartAlgorithm
 }
