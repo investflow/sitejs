@@ -10,7 +10,29 @@ function setTitle(selector:string, title:string, root?:HTMLElement):void {
     });
 }
 function linkify(text:string):string {
-    return Autolinker.link(text);
+    var autolinker = new Autolinker({
+        urls: {
+            schemeMatches: true,
+            wwwMatches: true,
+            tldMatches: true
+        },
+        email: true,
+        phone: true,
+        twitter: false,
+        hashtag: false,
+
+        stripPrefix: true,
+        newWindow: true,
+
+        truncate: {
+            length: 30,
+            location: 'end'
+        },
+
+        className: ''
+    });
+
+    return autolinker.link(text);
 }
 
 function focusOnEnter(event:KeyboardEvent, id:string):void {
