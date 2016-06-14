@@ -12,15 +12,17 @@
 <body style="padding: 30px;">
 
 Avatar:
-<img width="60" height="60" avatar="Пример">
-<img width="60" height="60" avatar="Пример 2">
-<img width="60" height="60" avatar="Еще Пример">
-<img width="60" height="60" avatar="Михаил Фурсов">
-<img width="60" height="60" avatar="Mikhail Fursov">
+<img width="60" avatar="Пример">
+<img width="60" avatar="Пример 2">
+<img width="60" avatar="Еще Пример">
+<img width="60" avatar="Вася Пупкин">
+<img width="60" avatar="Kuku">
+<img id="id1" width="60" avatar="Kuku">
 
 
 <script>
-    $site.Utils.applyAvatars()
+    //    $site.Utils.applyAvatars()
+    $site.Utils.applyAvatar("#id1");
 </script>
 </body>
 </html>

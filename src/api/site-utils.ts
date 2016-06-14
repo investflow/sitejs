@@ -215,17 +215,23 @@ function createAvatar(name, size) {
     name = name || '';
     size = size || 60;
 
-    var colours = [
+    var colors = [
             "#1abc9c", "#2ecc71", "#3498db", "#9b59b6", "#34495e", "#16a085", "#27ae60", "#2980b9", "#8e44ad", "#2c3e50",
             "#f1c40f", "#e67e22", "#e74c3c", "#ecf0f1", "#95a5a6", "#f39c12", "#d35400", "#c0392b", "#bdc3c7", "#7f8c8d"
         ],
 
-        nameSplit = String(name).toUpperCase().split(' '),
+        nameSplit = String(name).split(' '),
         initials, charIndex, colourIndex, canvas, context, dataURI;
 
-
     if (nameSplit.length == 1) {
-        initials = nameSplit[0] ? nameSplit[0].charAt(0) : '?';
+        var firstName = nameSplit[0];
+        if (firstName) {
+            var firstChar = firstName.charAt(0).toUpperCase();
+            var secondChar = firstName.length > 1 ? firstName.charAt(1) : "";
+            initials = firstChar + secondChar;
+        } else {
+            initials = '?';
+        }
     } else {
         initials = nameSplit[0].charAt(0) + nameSplit[1].charAt(0);
     }
@@ -241,7 +247,7 @@ function createAvatar(name, size) {
     canvas.height = size;
     context = canvas.getContext("2d");
 
-    context.fillStyle = colours[colourIndex - 1];
+    context.fillStyle = colors[colourIndex - 1];
     context.fillRect(0, 0, canvas.width, canvas.height);
     context.font = Math.round(canvas.width / 2) + "px Arial";
     context.textAlign = "center";
@@ -256,10 +262,22 @@ function createAvatar(name, size) {
 
 function applyAvatars() {
     Array.prototype.forEach.call(document.querySelectorAll('img[avatar]'), function (img, name) {
-        name = img.getAttribute('avatar');
-        img.src = createAvatar(name, img.getAttribute('width'));
-        img.removeAttribute('avatar');
-        img.setAttribute('alt', name);
+        name = img.getAttribute("avatar");
+        img.src = createAvatar(name, img.getAttribute("width"));
+        img.removeAttribute("avatar");
+        img.setAttribute("alt", name);
+    });
+}
+
+function applyAvatar(selector:string) {
+    var $img = $(selector);
+    $img.each(function () {
+        var name = this.getAttribute("avatar");
+        if (name) {
+            this.src = createAvatar(name, this.getAttribute("width"));
+            this.removeAttribute("avatar");
+            this.setAttribute("alt", name);
+        }
     });
 }
 
@@ -279,5 +297,6 @@ export default {
     moveCaretToEnd: moveCaretToEnd,
     countdown: countdown,
     toValueWithSuffix: toValueWithSuffix,
-    applyAvatars: applyAvatars
+    applyAvatars: applyAvatars,
+    applyAvatar: applyAvatar
 }
