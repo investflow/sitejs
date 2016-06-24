@@ -1,5 +1,7 @@
 export default {
+    Broker: undefined,
     Highcharts: undefined,
+    QuoteCharts: undefined,
     Flot: undefined,
     Utils: undefined,
     Titles: undefined,
