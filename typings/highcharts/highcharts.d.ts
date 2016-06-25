@@ -5402,6 +5402,9 @@ interface HighchartsOptions {
     /** highstocks part */
     rangeSelector: {
         selected: number;
+        inputEnabled: boolean;
+        buttonTheme: any;
+        labelStyle: any;
     };
     /**
      * Options regarding the chart area and plot area as well as general chart options.

@@ -2,26 +2,11 @@ import {Broker} from "./broker";
 
 export interface QuoteChartItem {
     broker:Broker;
-    dataFile:string;
+    dataUrl:string;
 }
 
 export interface  QuoteChartOptions {
     series:Array<QuoteChartItem>;
-}
-
-
-function getBrokerMount(broker:Broker) {
-    switch (broker) {
-        case Broker.AMARKETS:
-            return "amarkets";
-        case Broker.ALPARI:
-            return "alpari";
-        case Broker.ALFAFOREX:
-            return "alfaforex";
-        case Broker.ROBOFOREX:
-            return "roboforex";
-    }
-    return "";
 }
 
 function parseDate(str:string):Date {
@@ -61,9 +46,6 @@ function addQuoteChart(chartSelector, options:QuoteChartOptions) {
 
     function createChart() {
         $(chartSelector).highcharts('StockChart', {
-            rangeSelector: {
-                selected: 4
-            },
             chart: {
                 type: 'arearange'
             },
@@ -76,6 +58,19 @@ function addQuoteChart(chartSelector, options:QuoteChartOptions) {
                 verticalAlign: 'middle',
                 enabled: true,
             },
+            exporting: {
+                enabled: true,
+            },
+            rangeSelector: {
+                selected: 4,
+                inputEnabled: false,
+                buttonTheme: {
+                    visibility: 'hidden'
+                },
+                labelStyle: {
+                    visibility: 'hidden'
+                }
+            },
             xAxis: {
                 ordinal: false,
             },
@@ -84,20 +79,27 @@ function addQuoteChart(chartSelector, options:QuoteChartOptions) {
     }
 
     $.each(options.series, function (i, quoteItem) {
-        let brokerMount = getBrokerMount(quoteItem.broker);
-        $.ajax("http://dio/" + brokerMount + "/" + quoteItem.dataFile, {
+        let processResponse = function (data) {
+            var seriesData = quotes2Series(data);
+            seriesOptions[i] = {
+                name: quoteItem.broker.name,
+                data: seriesData,
+                color: "rgba(" + quoteItem.broker.rgb + ", 0.65)"
+            };
+            seriesCounter += 1;
+            if (seriesCounter === options.series.length) {
+                createChart();
+            }
+        };
+
+        $.ajax(quoteItem.dataUrl, {
             crossDomain: true,
+            contentType: "text/plain; charset=utf-8",
             success: function (data) {
-                var seriesData = quotes2Series(data);
-                seriesOptions[i] = {
-                    name: quoteItem.broker.name,
-                    data: seriesData,
-                    color: "rgba(" + quoteItem.broker.rgb + ", 0.65)"
-                };
-                seriesCounter += 1;
-                if (seriesCounter === options.series.length) {
-                    createChart();
-                }
+                processResponse(data);
+            },
+            error: function () {
+                processResponse("");
             }
         });
     });

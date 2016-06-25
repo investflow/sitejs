@@ -12,6 +12,8 @@
     <script src="./../node_modules/bootstrap/dist/js/bootstrap.js"></script>
     <script src="./../node_modules/highcharts/highstock.js"></script>
     <script src="./../node_modules/highcharts/highcharts-more.js"></script>
+    <script src="http://code.highcharts.com/modules/exporting.js"></script>
+    <script src="http://code.highcharts.com/modules/offline-exporting.js"></script>
 
     <script src="./../node_modules/es6-promise/dist/es6-promise.js"></script>
     <script src="./../node_modules/vue/dist/vue.js"></script>
@@ -30,10 +32,12 @@
     window.$site.QuoteCharts.addQuoteChart("#chart",
             {
                 series: [
-                    {broker: window.$site.Broker.ALPARI, dataFile: "EURGBP_2016_6_23_10"},
-                    {broker: window.$site.Broker.ALFAFOREX, dataFile: "EURGBP_2016_6_23_10"},
-                    {broker: window.$site.Broker.AMARKETS, dataFile: "EURGBPb_2016_6_23_10"},
-                    {broker: window.$site.Broker.ROBOFOREX, dataFile: "EURGBP_2016_6_23_10"}
+                    {broker: window.$site.Broker.ALPARI, dataUrl: "http://dio1.investflow.ru/alpari/EURGBP_2016_6_24_15"},
+                    {broker: window.$site.Broker.ALFAFOREX, dataUrl: "http://dio1.investflow.ru/alfaforex/EURGBP_2016_6_24_15"},
+                    {broker: window.$site.Broker.AMARKETS, dataUrl: "http://dio1.investflow.ru/amarkets/EURGBPb_2016_6_24_15"},
+                    {broker: window.$site.Broker.FOREX4YOU, dataUrl: "http://dio2.investflow.ru/forex4you/EURGBP_2016_6_24_15"},
+                    {broker: window.$site.Broker.ROBOFOREX, dataUrl: "http://dio2.investflow.ru/roboforex/EURGBP_2016_6_24_15"},
+                    {broker: window.$site.Broker.WELTRADE, dataUrl: "http://dio2.investflow.ru/weltrade/EURGBP_2016_6_24_15"}
                 ]
             });
 </script>
