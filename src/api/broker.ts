@@ -42,9 +42,6 @@ export class Broker {
     ];
 
     constructor(public id:number, public name:string, public rgb:string) {
-        this.id = id;
-        this.name = name;
-        Object.freeze(this);
     }
 
     public static getBrokerById(id:number):Broker {

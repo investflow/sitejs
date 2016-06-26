@@ -1,7 +1,7 @@
 import {Broker} from "./broker";
 
 export interface QuoteChartItem {
-    broker:Broker;
+    account:AccountType;
     dataUrl:string;
 }
 
@@ -24,7 +24,7 @@ function parseDate(str:string):Date {
     return date;
 }
 
-function quotes2Series(data:string) {
+function quotes2Series(data:string):Array<any> {
     let lines = data.split("\n");
     let series = [];
 
@@ -74,10 +74,25 @@ function addQuoteChart(chartSelector, options:QuoteChartOptions) {
                 enabled: false
             },
             legend: {
-                layout: 'vertical',
-                align: 'right',
-                verticalAlign: 'middle',
+                layout: "vertical",
+                align: "right",
+                verticalAlign: "middle",
                 enabled: true,
+                title: {
+                    text: 'Тип счета<br/><span style="font-size: 10px; color: #999; font-weight: normal">(Нажмите чтобы вкл/выкл)</span><br/> <br/> ',
+                    style: {
+                        fontStyle: "italic",
+                        fontSize: "16px",
+                        fontWeight: "normal",
+                        color: "#555"
+                    }
+                },
+                useHTML: true,
+                labelFormatter: function () {
+                    var s = <HighchartsSeriesObject>this;
+                    var quoteItem:QuoteChartItem = s.options["quoteItem"];
+                    return "<span title='" + quoteItem.account.commissionInfo + "'>" + s.name + "</span title='" + quoteItem.account.commissionInfo + "'>";
+                }
             },
             exporting: {
                 enabled: true,
@@ -142,14 +157,17 @@ function addQuoteChart(chartSelector, options:QuoteChartOptions) {
 
     }
 
-    $.each(options.series, function (i, quoteItem) {
+    $.each(options.series, function (i:number, quoteItem:QuoteChartItem) {
         let processResponse = function (data) {
             var seriesData = quotes2Series(data);
-            seriesOptions[i] = {
-                name: quoteItem.broker.name,
-                data: seriesData,
-                color: "rgba(" + quoteItem.broker.rgb + ", 0.65)"
-            };
+            if (seriesData.length > 0) {
+                seriesOptions[i] = {
+                    quoteItem: quoteItem,
+                    name: quoteItem.account.broker.name + " [" + quoteItem.account.name + "]",
+                    data: seriesData,
+                    color: "rgba(" + quoteItem.account.broker.rgb + ", 0.65)"
+                };
+            }
             seriesCounter += 1;
             if (seriesCounter === options.series.length) {
                 createChart();
@@ -169,6 +187,20 @@ function addQuoteChart(chartSelector, options:QuoteChartOptions) {
     });
 }
 
+class AccountType {
+    public static ALFAFOREX_MT4:AccountType = new AccountType(1, "MT4", Broker.ALFAFOREX, "без комиссии", "https://www.alfa-forex.ru/ru/terms/traders/specs.html");
+    public static ALPARI_ECN1:AccountType = new AccountType(2, "ecn.mt4", Broker.ALPARI, "без комиссии", "http://www.alpari.ru/ru/trading/trading_terms/");
+    public static AMARKETS_ECN:AccountType = new AccountType(3, "ECN", Broker.AMARKETS, "комиссия: $5 за лот", "http://www.amarkets.org/trading/usloviya_torgovli/");
+    public static FOREX4YOU_CLASSIC_NDD:AccountType = new AccountType(4, "ecn.mt4", Broker.FOREX4YOU, "комиссия: $8 за лот", "http://www.forex4you.org/account/conditions/");
+    public static ROBOFOREX_ECN_PRO_NDD:AccountType = new AccountType(5, "ECN-Pro NDD", Broker.ROBOFOREX, "комиссия: $20 за $1млн оборота", "http://www.roboforex.ru/trade-conditions/account-types/");
+    public static WELTRADE_PRO:AccountType = new AccountType(6, "Pro", Broker.WELTRADE, "без комиссии", "https://www.instaforex.com/ru/account_types");
+
+    constructor(public id:number, public name:string, public broker:Broker, public commissionInfo:string, public tradingInfoUrl:string) {
+    }
+
+}
+
 export default {
-    addQuoteChart: addQuoteChart
+    addQuoteChart: addQuoteChart,
+    AccountType: AccountType
 }

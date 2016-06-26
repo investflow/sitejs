@@ -1731,6 +1731,7 @@ interface HighchartsCSSObject {
     position?: string;
     top?: string;
     textShadow?: string;
+    fontStyle?: string;
 }
 
 interface HighchartsCreditsOptions {
