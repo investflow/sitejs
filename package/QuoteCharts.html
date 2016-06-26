@@ -25,12 +25,20 @@
 <body style="padding: 30px;">
 
 <div id="title"></div>
-<div id="chart" class="col-md-9" style="width: 100%; height: 800px;"></div>
+<div id="chart" class="col-md-9" style="width: 100%; height: 400px;"></div>
+<a href="#" id="zoom-in">zoom-in</a>
+<br>
+<a href="#" id="zoom-out">zoom-out</a>
+<br>
+<a href="#" id="zoom-reset">reset</a>
 
 
 <script>
     window.$site.QuoteCharts.addQuoteChart("#chart",
             {
+                zoomResetControlSelector: "#zoom-reset",
+                zoomInControlSelector: "#zoom-in",
+                zoomOutControlSelector: "#zoom-out",
                 series: [
                     {broker: window.$site.Broker.ALPARI, dataUrl: "http://dio1.investflow.ru/alpari/EURGBP_2016_6_24_15"},
                     {broker: window.$site.Broker.ALFAFOREX, dataUrl: "http://dio1.investflow.ru/alfaforex/EURGBP_2016_6_24_15"},

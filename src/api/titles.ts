@@ -19,5 +19,7 @@ export default {
         DOMUtils.setTitle(".pi-i-share", "Доля инвестора в лучшей оферте", rootEl);
         DOMUtils.setTitle(".pi-i-min", "Минимальная инвестиция в валюте счета", rootEl);
         DOMUtils.setTitle(".pi-age", "Возраст счета", rootEl);
+        DOMUtils.setTitle(".pi-prt", "Счет входит в один из портфелей пользователя", rootEl);
+        DOMUtils.setTitle(".pi-lst", "Счет входит в один списков пользователя", rootEl);
     }
 };
