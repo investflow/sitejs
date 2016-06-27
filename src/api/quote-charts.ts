@@ -12,19 +12,18 @@ export interface  QuoteChartOptions {
     zoomResetControlSelector?:string;
 }
 
-function parseDate(str:string):Date {
-    let date = new Date();
+function parseDate(str:string, hourDate:Date):Date {
+    let date = new Date(hourDate.getTime());
     let hourEnd = str.indexOf(":");
     let minuteEnd = str.indexOf(":", hourEnd + 1);
     let secondEnd = str.indexOf(".", minuteEnd + 1);
-    date.setHours(parseInt(str.substr(0, hourEnd)));
     date.setMinutes(parseInt(str.substr(hourEnd + 1, minuteEnd)));
     date.setSeconds(parseInt(str.substr(minuteEnd + 1, secondEnd)));
     date.setMilliseconds(parseInt(str.substr(secondEnd + 1)));
     return date;
 }
 
-function quotes2Series(data:string):Array<any> {
+function quotes2Series(data:string, hourDate:Date):Array<any> {
     let lines = data.split("\n");
     let series = [];
 
@@ -34,7 +33,7 @@ function quotes2Series(data:string):Array<any> {
             continue
         }
         let tokens = line.trim().split(",");
-        let date = parseDate(tokens[0]);
+        let date = parseDate(tokens[0], hourDate);
         let bid = parseFloat(tokens[1]);
         let ask = parseFloat(tokens[2]);
         series.push([date.getTime(), bid, ask]);
@@ -56,6 +55,24 @@ function zoomIn(chart, rangeK) {
         return;
     }
     axis.setExtremes(axis.min + visibleRange * rangeK, axis.max - visibleRange * rangeK);
+}
+
+function dateFromUrl(dataUrl:string):Date {
+    //todo: fix this hack with parsing & TZ
+    let yearStart = dataUrl.indexOf("_2") + 1;
+    let monthStart = dataUrl.indexOf("_", yearStart + 1) + 1;
+    let dayStart = dataUrl.indexOf("_", monthStart + 1) + 1;
+    let hourStart = dataUrl.indexOf("_", dayStart + 1) + 1;
+    if (hourStart <= 0) {
+        return new Date();
+    }
+    let year = dataUrl.substr(yearStart, 4);
+    let month = dataUrl.substr(monthStart, dayStart - monthStart - 1);
+    let day = dataUrl.substr(dayStart, hourStart - dayStart - 1);
+    let hour = dataUrl.substr(hourStart);
+    let utcMillis = Date.UTC(parseInt(year), parseInt(month) - 1, parseInt(day), parseInt(hour));
+
+    return new Date(utcMillis + 3 * 60 * 60 * 1000); //TODO: hack: MSK TZ
 }
 
 function addQuoteChart(chartSelector, options:QuoteChartOptions) {
@@ -158,8 +175,8 @@ function addQuoteChart(chartSelector, options:QuoteChartOptions) {
     }
 
     $.each(options.series, function (i:number, quoteItem:QuoteChartItem) {
-        let processResponse = function (data) {
-            var seriesData = quotes2Series(data);
+        let processResponse = function (data, hourDate:Date) {
+            var seriesData = quotes2Series(data, hourDate);
             if (seriesData.length > 0) {
                 seriesOptions[i] = {
                     quoteItem: quoteItem,
@@ -174,14 +191,15 @@ function addQuoteChart(chartSelector, options:QuoteChartOptions) {
             }
         };
 
+        let hourDate = dateFromUrl(quoteItem.dataUrl);
         $.ajax(quoteItem.dataUrl, {
             crossDomain: true,
             contentType: "text/plain; charset=utf-8",
             success: function (data) {
-                processResponse(data);
+                processResponse(data, hourDate);
             },
             error: function () {
-                processResponse("");
+                processResponse("", hourDate);
             }
         });
     });
