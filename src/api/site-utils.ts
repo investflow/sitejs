@@ -204,6 +204,9 @@ function countdown(refreshSeconds:number, formatter:Function, timeBlockId:string
 
 function toValueWithSuffix(value) {
     if (value == 0) return "0";
+    if (value < 0) {
+        return "-" + toValueWithSuffix(-value);
+    }
     var k = 1000;
     var sizes = ['', 'k', 'm', 'b'];
     var i = Math.floor(Math.log(value) / Math.log(k));

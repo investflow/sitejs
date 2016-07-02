@@ -36,6 +36,7 @@
 <div class="picon" id="picon3" style=";width:230px; height:55px;"></div>
 <div class="picon" id="picon4" style=";width:230px; height:55px;"></div>
 <div class="picon" id="picon5" style=";width:100px; height:30px;"></div>
+<div class="picon" id="picon6" style=";width:230px; height:55px;"></div>
 
 <script>
     $site.Flot.picon("#picon1", [1, 2, 3, 4, 5, 4, 3, 2, 1]);
@@ -46,6 +47,8 @@
     opts.yaxis.ticks = [];
     opts.yaxis.labelWidth = 0;
     $site.Flot.picon("#picon5", [1000, 1000, 1000], $site.Flot.PiconChartAlgorithm.Value, opts);
+    $site.Flot.picon("#picon6", [0, 21, 10, 18, -3, -5, -5], $site.Flot.PiconChartAlgorithm.Value);
+
 </script>
 </body>
 </html>
