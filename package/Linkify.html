@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Picon</title>
+
+    <link rel="stylesheet" href="./../node_modules/bootstrap/dist/css/bootstrap.css">
+
+
+    <script src="./../node_modules/jquery/dist/jquery.js"></script>
+    <script src="./../node_modules/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="./../node_modules/highcharts/highstock.js"></script>
+
+    <script src="./../node_modules/es6-promise/dist/es6-promise.js"></script>
+    <script src="./../node_modules/parsleyjs/dist/parsley.js"></script>
+    <script src="./../node_modules/jquery-flot/jquery.flot.js"></script>
+    <script src="./../node_modules/autolinker/dist/Autolinker.js"></script>
+    <script src="./../package/js/site.js"></script>
+
+</head>
+
+<body style="padding: 30px;">
+
+<div id="link"></div>
+
+<script>
+    document.write($site.Utils.linkify("http://investflow.ru/img/logox.png", {skipMediaLinks: true}));
+    document.write("<br>");
+    document.write($site.Utils.linkify("http://google.com"));
+    document.write("<br>");
+    document.write($site.Utils.linkify("http://investflow.ru/img/logox.png"));
+    document.write("<br>");
+    document.write($site.Utils.linkify("This is link: http://google.com, this is image: http://previews.123rf.com/images/gorkemdemir/gorkemdemir1409/gorkemdemir140901191/31675984-EXAMPLE-red-rubber-stamp-over-a-white-background--Stock-Vector.jpg"));
+    document.write("<br>");
+    document.write($site.Utils.linkify("http://investflow.ru/pamm/alfaforex/134058/Deposit%20PLUS%202.0%20%28RUR%29#comments"));
+    document.write("<br>");
+</script>
+</body>
+</html>

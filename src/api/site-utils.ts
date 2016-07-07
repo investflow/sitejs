@@ -1,5 +1,6 @@
 import * as $ from "jquery";
 import * as Autolinker from "autolinker";
+import links from "./links";
 
 function setTitle(selector:string, title:string, root?:HTMLElement):void {
     root = root ? root : window.document.body;
@@ -9,7 +10,12 @@ function setTitle(selector:string, title:string, root?:HTMLElement):void {
         }
     });
 }
-function linkify(text:string):string {
+
+interface LinkifyOptions {
+    skipMediaLinks:boolean;
+}
+
+function linkify(text:string, options:LinkifyOptions):string {
     var autolinker = new Autolinker({
         urls: {
             schemeMatches: true,
@@ -25,14 +31,23 @@ function linkify(text:string):string {
         newWindow: true,
 
         truncate: {
-            length: 30,
-            location: 'end'
+            length: 60,
+            location: "end"
         },
 
-        className: ''
+        className: ""
     });
 
-    return autolinker.link(text);
+    var res = autolinker.link(text);
+    if (options && options.skipMediaLinks) {
+        return res;
+    }
+    try {
+        return links.processMediaLinks(res);
+    } catch (err) {
+        log.error(err);
+        return res;
+    }
 }
 
 function focusOnEnter(event:KeyboardEvent, id:string):void {
