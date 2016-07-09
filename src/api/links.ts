@@ -65,9 +65,9 @@ function getLinkReplacement(link:string):string {
 
 function processMediaLinks(text:string):string {
     var res = text;
-    var startIdx = text.indexOf("<a href=");
+    var startIdx = res.indexOf("<a href=");
     while (startIdx >= 0) {
-        var endIdx = text.indexOf("</a>", startIdx);
+        var endIdx = res.indexOf("</a>", startIdx);
         if (endIdx < 0) {
             break;
         }
@@ -77,11 +77,11 @@ function processMediaLinks(text:string):string {
             var link = res.substring(hrefStartIdx, hrefEndIdx);
             var replacement = getLinkReplacement(link);
             if (replacement != null) {
-                res = res.substr(0, startIdx) + replacement + res.substr(endIdx + 4);
-                startIdx = hrefStartIdx + replacement.length;
+                res = res.substring(0, startIdx) + replacement + res.substring(endIdx + 4);
+                endIdx = hrefStartIdx + replacement.length;
             }
         }
-        startIdx = text.indexOf("<a href=", endIdx);
+        startIdx = res.indexOf("<a href=", endIdx);
     }
     return res;
 }
