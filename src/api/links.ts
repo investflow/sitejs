@@ -19,6 +19,7 @@ function playYoutube() {
 
     // The height and width of the iFrame should be the same as parent
     var iframe = $('<iframe/>', {'frameborder': '0', 'src': iframeUrl, 'width': $(this).width(), 'height': $(this).height()});
+    iframe.attr("allowfullscreen", "allowfullscreen");
 
     // Replace the YouTube thumbnail with YouTube HTML5 Player
     $(this).replaceWith(iframe);
