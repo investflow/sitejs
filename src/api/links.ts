@@ -4,11 +4,11 @@ KnownImageExtensions["png"] = true;
 KnownImageExtensions["jpg"] = true;
 KnownImageExtensions["gif"] = true;
 
-// TODO: alpari funds / indexes
 // TODO: portfolios
 // TODO: youtube embeds
 
 let PAMM_URL_PREFIX = "investflow.ru/pamm/";
+let ALPARI_FUND_PAMM_URL_PREFIX = "investflow.ru/invest/fund/alpari/";
 
 function replaceWithPammLink(url:string, fallbackLink:string):string {
     if (url.indexOf(PAMM_URL_PREFIX) != 0) {
@@ -42,6 +42,25 @@ function replaceWithPammLink(url:string, fallbackLink:string):string {
     return "<a href='http://" + url + "' style='color:rgb(" + broker.rgb + ")' target='_blank' title='" + title + "'>" + name + "</a>"
 }
 
+function replaceWithAlpariFundLink(url:string, fallbackLink:string):string {
+    if (url.indexOf(ALPARI_FUND_PAMM_URL_PREFIX) != 0) {
+        return fallbackLink;
+    }
+    var nameStartIdx = ALPARI_FUND_PAMM_URL_PREFIX.length;
+    var nameEndIdx = url.indexOf("#", nameStartIdx);
+    if (nameEndIdx < 0) {
+        nameEndIdx = url.length;
+    }
+    var name = decodeURIComponent(url.substr(nameStartIdx, nameEndIdx - nameStartIdx));
+    var sepIdx = name.indexOf("/"); // now name is in <account-number>/<account-name> form. Swap it parts.
+    if (sepIdx > 0) {
+        name = name.substr(sepIdx + 1) + "/" + name.substr(0, sepIdx);
+    }
+    var title = "Фонд. Брокер Альпари";
+    //noinspection CssInvalidFunction
+    return "<a href='http://" + url + "' style='color:rgb(" + Broker.ALPARI.rgb + ")' target='_blank' title='" + title + "'>" + name + "</a>"
+}
+
 
 function getLinkReplacement(link:string):string {
     var lcLink = link.toLocaleLowerCase();
@@ -59,6 +78,8 @@ function getLinkReplacement(link:string):string {
 
     if (lcUrl.indexOf(PAMM_URL_PREFIX) == 0) {
         return replaceWithPammLink(url, null);
+    } else if (lcUrl.indexOf(ALPARI_FUND_PAMM_URL_PREFIX) == 0) {
+        return replaceWithAlpariFundLink(url, null)
     }
     return null;
 }
