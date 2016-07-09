@@ -99,7 +99,7 @@ function processMediaLinks(text:string):string {
             var replacement = getLinkReplacement(link);
             if (replacement != null) {
                 res = res.substring(0, startIdx) + replacement + res.substring(endIdx + 4);
-                endIdx = hrefStartIdx + replacement.length;
+                endIdx = startIdx + replacement.length;
             }
         }
         startIdx = res.indexOf("<a href=", endIdx);
