@@ -316,5 +316,6 @@ export default {
     countdown: countdown,
     toValueWithSuffix: toValueWithSuffix,
     applyAvatars: applyAvatars,
-    applyAvatar: applyAvatar
+    applyAvatar: applyAvatar,
+    playYoutube: links.playYoutube
 }
