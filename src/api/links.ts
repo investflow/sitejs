@@ -10,19 +10,19 @@ KnownImageExtensions["gif"] = true;
 let PAMM_URL_PREFIX = "investflow.ru/pamm/";
 let ALPARI_FUND_PAMM_URL_PREFIX = "investflow.ru/invest/fund/alpari/";
 
-function playYoutube() {
+function playYoutube(el:HTMLElement) {
     // Create an iFrame with autoplay set to true
-    var iframeUrl = "https://www.youtube.com/embed/" + this.id + "?autoplay=1&autohide=1";
-    if ($(this).data('params')) {
+    var iframeUrl = "https://www.youtube.com/embed/" + el.id + "?autoplay=1&autohide=1";
+    if ($(el).data('params')) {
         iframeUrl += '&' + $(this).data('params')
     }
 
     // The height and width of the iFrame should be the same as parent
-    var iframe = $('<iframe/>', {'frameborder': '0', 'src': iframeUrl, 'width': $(this).width(), 'height': $(this).height()});
+    var iframe = $('<iframe/>', {'frameborder': '0', 'src': iframeUrl, 'width': $(el).width(), 'height': $(el).height()});
     iframe.attr("allowfullscreen", "allowfullscreen");
 
     // Replace the YouTube thumbnail with YouTube HTML5 Player
-    $(this).replaceWith(iframe);
+    $(el).replaceWith(iframe);
 }
 
 interface YoutubeVideoIdExtractor {
@@ -79,9 +79,7 @@ function replaceWithYoutubeEmbed(url:string, fallback:string) {
         return fallback;
     }
     var style = "background-image: url(https://img.youtube.com/vi/" + videoId + "/mqdefault.jpg);";
-    var block = "<div id='" + videoId + "' class='youtube' style='" + style + "'>" + "<div class='play'></div></div>";
-    var script = "<script>$(document).delegate('#" + videoId + "', 'click', $site.Utils.playYoutube);</script>";
-    return block + script;
+    return "<div id='" + videoId + "' class='youtube' style='" + style + "' onclick='$site.Utils.playYoutube(this);'>" + "<div class='play'></div></div>";
 }
 
 function replaceWithPammLink(url:string, fallbackLink:string):string {
