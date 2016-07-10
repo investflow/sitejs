@@ -2,7 +2,7 @@ import * as log from "loglevel";
 
 let SERVER_URL = ((window.location.protocol == "https:") ? "https" : "http") + "://investflow.ru";
 const docUrl = document && typeof document.URL === "string" ? document.URL : "";
-if (docUrl.indexOf("localhost:8080") >= 0 || docUrl.indexOf("127.0.0.1") >= 0) {
+if (docUrl.indexOf("localhost:") >= 0 || docUrl.indexOf("127.0.0.1") >= 0) {
     log.info("IR: using local instance for queries!");
     SERVER_URL = "http://127.0.0.1:8080";
 }
@@ -11,7 +11,6 @@ const OP_ACCOUNT_INFO = "/api/account-info?v=1";
 const REQUEST_TIMEOUT_MILLIS = 30 * 1000;
 
 function query(path:string):Promise<Object> {
-    log.trace("IR:query: " + path);
     return new Promise((resolve, reject) => {
             let request = new XMLHttpRequest(); // ActiveX blah blah
             request.open("GET", SERVER_URL + path, true);
@@ -40,17 +39,23 @@ export function listAccounts():Promise<ListAccountsResponse> {
 
 export interface AccountInfoResponse {
     /** Account number */
-    account: string,
+    account:string,
     /** Broker id */
-    broker: number,
+    broker:number,
     /** Account name */
-    name: string,
+    name:string,
     /** Profit history. Array of pairs: [time, percent] */
-    profitHistory: Array<Array<number>>,
+    profitData:Array<Array<number>>,
+    /** Balance history. Array of pairs: [time, amount] */
+    balanceData?:Array<Array<number>>,
+    /** Equity history. Array of pairs: [time, amount] */
+    equityData?:Array<Array<number>>,
+    currencyPrefix?:string,
+    currencySuffix?:string,
     /** Full url to account page*/
-    url: string,
+    url:string,
     /** if any -> there was an error processing data on server */
-    error: string
+    error:string
 }
 
 export function getAccountInfo(brokerId:number, account:string):Promise<AccountInfoResponse> {
