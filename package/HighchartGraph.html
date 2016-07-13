@@ -10,7 +10,8 @@
 
     <script src="./../node_modules/jquery/dist/jquery.js"></script>
     <script src="./../node_modules/bootstrap/dist/js/bootstrap.js"></script>
-    <script src="./../node_modules/highcharts/highstock.js"></script>
+    <!--<script src="./../node_modules/highcharts/highstock.js"></script>-->
+    <script src="http://code.highcharts.com/stock/highstock.js"></script>
 
     <script src="./../node_modules/es6-promise/dist/es6-promise.js"></script>
     <script src="./../node_modules/vue/dist/vue.js"></script>
@@ -22,7 +23,8 @@
 <body style="padding: 30px;">
 
 <div id="title"></div>
-<div id="chart" class="col-md-9" style="height: 600px;"></div>
+<div id="chart" class="col-md-9" ></div>
+<div id="chart2" class="col-md-9"></div>
 
 
 <script>
@@ -52,6 +54,34 @@
         [1448830799000, 300],
         [1448840799000, 120],
         [1448850799000, 440]];
+
+    (function () {
+        var options = {
+            chart: {
+                renderTo: 'chart2'
+            },
+            yAxis: {
+                maxPadding: .05,
+                endOnTick: true
+            },
+
+            series: [{
+                type: 'line',
+                data: [
+                    [1276290000000, 0],
+                    [1276549200000, -0.0566666666666666666666666700],
+                    [1276635600000, 0.4900],
+                    [1276722000000, 0.5166666666666666666666666700],
+                    [1276808400000, 0.6266666666666666666666666700],
+                    [1276894800000, 0.6800],
+                    [1277154000000, 0.5766666666666666666666666700],
+                    [1277240400000, -0.0366666666666666666666666700],
+                    [1277326800000, -0.1500]
+                ]
+            }]
+        };
+        new Highcharts.StockChart(options);
+    })();
 
     window.$site.Highcharts.addAccountChart({
         profitData: profitData2,

@@ -124,9 +124,6 @@ function prepareAccountProfitChartOptions(options:AccountChartOptions):any {
 
     let profitChartColor = "#00854E";
     var res = {
-        title: {
-            text: "",
-        },
         credits: {
             enabled: false
         },
@@ -207,8 +204,12 @@ function prepareAccountProfitChartOptions(options:AccountChartOptions):any {
     });
     res.yAxis.push({
         labels: {
-            format: "{value}" + profitSuffix
-        }
+            format: "{value}" + profitSuffix,
+            style: {
+                color: profitChartColor
+            }
+        },
+        maxPadding: 0.05
     });
 
     var cp = options.currencyPrefix ? options.currencyPrefix : "";
@@ -217,14 +218,19 @@ function prepareAccountProfitChartOptions(options:AccountChartOptions):any {
     var hasBalance = options.balanceData && options.balanceData.length > 0;
     if (hasEquity || hasBalance) {
         res.yAxis.push({
-            opposite: false
+            maxPadding: 0.05,
+            labels: {
+                style: {
+                    color: "#5b81a4"
+                }
+            }
         });
     }
     if (hasBalance) {
         //balanceData chart
         res.series.push({
             name: "Баланс",
-            color: "#ABB2B9",
+            color: "#9cb3c9",
             data: options.balanceData,
             marker: {
                 enabled: false,
@@ -233,13 +239,13 @@ function prepareAccountProfitChartOptions(options:AccountChartOptions):any {
                 valuePrefix: cp,
                 valueSuffix: cs
             },
-            yAxis: 1
+            yAxis: res.yAxis.length - 1
         });
     }
     if (hasEquity) {
         res.series.push({
             name: "Средства",
-            color: "#34495E",
+            color: "#5b81a4",
             data: options.equityData,
             marker: {
                 enabled: false,
@@ -248,7 +254,7 @@ function prepareAccountProfitChartOptions(options:AccountChartOptions):any {
                 valuePrefix: cp,
                 valueSuffix: cs
             },
-            yAxis: 1
+            yAxis: res.yAxis.length - 1
         });
     }
     return res;
