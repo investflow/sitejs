@@ -1,5 +1,5 @@
 import * as store from "store";
-import {listAccounts, ListAccountsResponse} from "./investflow-rest";
+import {listAccounts, ListAccountsResponse} from "./investflow-api";
 import $site from "./site-def"
 import {Broker} from "./broker"
 import * as lzString from "lz-string"

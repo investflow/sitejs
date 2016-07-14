@@ -1,7 +1,7 @@
 import * as $ from "jquery";
 import * as log from "loglevel";
 import {percentBetween} from "./calc";
-import {getAccountInfo, AccountInfoResponse} from "./investflow-rest";
+import {getAccountInfo, AccountInfoResponse} from "./investflow-api";
 import {Broker} from "./broker";
 const HIGHCHARTS_MODAL_DIV_ID = "iflow_highcharts_modal";
 
@@ -149,12 +149,6 @@ function prepareAccountProfitChartOptions(options:AccountChartOptions):any {
                 dataLabels: {
                     enabled: false,
                     formatter: function () {
-                        //let firstX = profitData[vState.minShownIdx][0];
-                        //let lastX = profitData[vState.maxShownIdx][0];
-                        //let point:HighchartsPointObject = this["point"];
-                        //if (point.x === firstX || point.x === lastX /*|| point.y === vState.minValue || point.y === vState.maxValue*/) {
-                        //    return point.y === 0 ? 0 : point.y.toFixed(vState.valueDecimals);
-                        //}
                         return "";
                     }
                 }
@@ -172,11 +166,6 @@ function prepareAccountProfitChartOptions(options:AccountChartOptions):any {
                             let endEventIdx = Math.max(startEventIdx, getIdxBeforeOrEquals(e.max, profitData));
 
                             updateProfitLabel($profitLabel, profitData, startEventIdx, endEventIdx, vState.valueDecimals);
-                            //vState.minShownIdx = e.min == profitData[startEventIdx][0] ? startEventIdx : (startEventIdx + 1);
-                            //vState.maxShownIdx = endEventIdx;
-                            //vState.valueDecimals = deriveDecimalPrecision(profitData, vState.minShownIdx, vState.maxShownIdx + 1);
-                            //vState.minValue = selectValue(profitData, vState.minShownIdx, vState.maxShownIdx + 1, Math.min);
-                            //vState.maxValue = selectValue(profitData, vState.minShownIdx, vState.maxShownIdx + 1, Math.max);
                         } else {
                             $profitLabel.text("");
                         }
@@ -186,37 +175,41 @@ function prepareAccountProfitChartOptions(options:AccountChartOptions):any {
         },
         series: []
     };
+
+    var cp = options.currencyPrefix ? options.currencyPrefix : "";
+    var cs = options.currencySuffix ? options.currencySuffix : "";
+    var hasEquity = options.equityData && options.equityData.length > 0;
+    var hasBalance = options.balanceData && options.balanceData.length > 0;
+    const hasEquityOrBalance = hasEquity || hasBalance;
+
     //profit chart
     var profitSuffix = options.broker == Broker.MOEX.id ? "" : "%";
     res.series.push({
         name: "Доходность",
         data: profitData,
         color: profitChartColor,
+        lineWidth: 4,
         tooltip: {
             valueDecimals: vState.valueDecimals,
             valueSuffix: profitSuffix
         },
         marker: {
             enabled: false,
-            //radius: 4
         },
-        yAxis: 0
+        yAxis: 0,
+        zIndex: 10
     });
     res.yAxis.push({
         labels: {
             format: "{value}" + profitSuffix,
             style: {
-                color: profitChartColor
+                color: hasEquityOrBalance ? profitChartColor : "#333333"
             }
         },
         maxPadding: 0.05
     });
 
-    var cp = options.currencyPrefix ? options.currencyPrefix : "";
-    var cs = options.currencySuffix ? options.currencySuffix : "";
-    var hasEquity = options.equityData && options.equityData.length > 0;
-    var hasBalance = options.balanceData && options.balanceData.length > 0;
-    if (hasEquity || hasBalance) {
+    if (hasEquityOrBalance) {
         res.yAxis.push({
             maxPadding: 0.05,
             labels: {
@@ -239,7 +232,8 @@ function prepareAccountProfitChartOptions(options:AccountChartOptions):any {
                 valuePrefix: cp,
                 valueSuffix: cs
             },
-            yAxis: res.yAxis.length - 1
+            yAxis: res.yAxis.length - 1,
+            zIndex: 1
         });
     }
     if (hasEquity) {
@@ -254,7 +248,8 @@ function prepareAccountProfitChartOptions(options:AccountChartOptions):any {
                 valuePrefix: cp,
                 valueSuffix: cs
             },
-            yAxis: res.yAxis.length - 1
+            yAxis: res.yAxis.length - 1,
+            zIndex: 2
         });
     }
     return res;
