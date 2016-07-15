@@ -122,12 +122,25 @@ function prepareAccountProfitChartOptions(options:AccountChartOptions):any {
 
     log.debug("decimals on chart: " + vState.valueDecimals);
 
+    var cp = options.currencyPrefix ? options.currencyPrefix : "";
+    var cs = options.currencySuffix ? options.currencySuffix : "";
+    var hasEquity = options.equityData && options.equityData.length > 0;
+    var hasBalance = options.balanceData && options.balanceData.length > 0;
+    const hasEquityOrBalance = hasEquity || hasBalance;
+
     let profitChartColor = "#00854E";
     var res = {
         credits: {
             enabled: false
         },
-        chart: {},
+        chart: {
+            marginBottom: hasEquityOrBalance ? 40 : 0
+        },
+        legend: {
+            enabled: hasEquityOrBalance,
+            align: "center",
+            layout: "horizontal",
+        },
         rangeSelector: {
             allButtonsEnabled: true,
             buttons: buttons,
@@ -176,19 +189,13 @@ function prepareAccountProfitChartOptions(options:AccountChartOptions):any {
         series: []
     };
 
-    var cp = options.currencyPrefix ? options.currencyPrefix : "";
-    var cs = options.currencySuffix ? options.currencySuffix : "";
-    var hasEquity = options.equityData && options.equityData.length > 0;
-    var hasBalance = options.balanceData && options.balanceData.length > 0;
-    const hasEquityOrBalance = hasEquity || hasBalance;
-
     //profit chart
     var profitSuffix = options.broker == Broker.MOEX.id ? "" : "%";
     res.series.push({
         name: "Доходность",
         data: profitData,
         color: profitChartColor,
-        lineWidth: 4,
+        lineWidth: 3,
         tooltip: {
             valueDecimals: vState.valueDecimals,
             valueSuffix: profitSuffix

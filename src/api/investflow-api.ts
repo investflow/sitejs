@@ -2,9 +2,9 @@ import * as log from "loglevel";
 
 let SERVER_URL = ((window.location.protocol == "https:") ? "https" : "http") + "://investflow.ru";
 const docUrl = document && typeof document.URL === "string" ? document.URL : "";
-if (docUrl.indexOf("localhost:") >= 0 || docUrl.indexOf("127.0.0.1") >= 0) {
+if (docUrl.indexOf("localhost:8080") >= 0) {
     // log.info("IR: using local instance for queries!");
-    // SERVER_URL = "http://127.0.0.1:8080";
+    SERVER_URL = "http://127.0.0.1:8080";
 }
 const OP_LIST_ACCOUNTS = "/api/list-accounts?v=1";
 const OP_ACCOUNT_INFO = "/api/account-info?v=1";
