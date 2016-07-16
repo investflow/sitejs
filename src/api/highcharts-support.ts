@@ -218,6 +218,7 @@ function prepareAccountProfitChartOptions(options:AccountChartOptions):any {
 
     if (hasEquityOrBalance) {
         res.yAxis.push({
+            min: 0,
             maxPadding: 0.05,
             labels: {
                 style: {
