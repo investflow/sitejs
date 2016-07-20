@@ -2,7 +2,7 @@
   "name": "investflow-site-js",
   "version": "0.0.1",
   "description": "Scripts and widgets for Investflow.Ru",
-  "author": "Mikhail Fursov <mike.fursov@gmail.com> (https://github.com/investflow/portfoliojs)",
+  "author": "Mikhail Fursov <mike.fursov@gmail.com> (https://github.com/investflow)",
   "license": "MIT",
   "repository": {
     "type": "git",

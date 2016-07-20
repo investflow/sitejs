@@ -6,7 +6,7 @@ export default {
         if (!rootEl) {
             return;
         }
-        DOMUtils.setTitle(".pi-lr", "Доходность за последние календарные месяцы. Новые снизу.", rootEl);
+        DOMUtils.setTitle(".pi-lr", "Доходность за последние календарные месяцы. Новые месяцы добавляются сверху.", rootEl);
         DOMUtils.setTitle(".pi-eq-usd", "Капитал счета в долларах США", rootEl);
         DOMUtils.setTitle(".pi-i-size", "Число счетов в портфеле/индексе", rootEl);
         DOMUtils.setTitle(".pi-cur", "Базовая валюта счета", rootEl);
