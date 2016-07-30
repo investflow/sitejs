@@ -299,6 +299,11 @@ function applyAvatar(selector:string) {
     });
 }
 
+function removeServerSideParsleyError(el:HTMLElement) {
+    var p: Parsley = $(el).parsley();
+    p.removeError("server-side-parsley-error");
+}
+
 export default {
     setTitle: setTitle,
     linkify: linkify,
@@ -317,5 +322,6 @@ export default {
     toValueWithSuffix: toValueWithSuffix,
     applyAvatars: applyAvatars,
     applyAvatar: applyAvatar,
-    playYoutube: links.playYoutube
+    playYoutube: links.playYoutube,
+    removeServerSideParsleyError: removeServerSideParsleyError
 }
