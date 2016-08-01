@@ -7,7 +7,7 @@ import Highcharts from "./api/highcharts-support";
 import QuoteCharts from "./api/quote-charts";
 import Flot from "./api/flot-support";
 import site from "./api/site-def";
-import "./api/parsley-translations";
+import "./api/parsley-support";
 import {Broker} from "./api/broker";
 
 /** Set of utility functions */

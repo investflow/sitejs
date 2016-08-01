@@ -2,6 +2,7 @@
 
 interface ParsleyStatic {
     addMessages(lang:string, options:any):void;
+    addValidator(lang:string, options:any):void;
     setLocale(lang:string):void;
 }
 

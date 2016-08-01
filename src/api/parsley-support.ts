@@ -5,7 +5,7 @@ if (window.Parsley) {
         defaultMessage: "Некорректное значение.",
         type: {
             email: "Введите адрес электронной почты.",
-            url: "Введите URL адрес.",
+            url: "Введите корректный адрес.",
             number: "Введите число.",
             integer: "Введите целое число.",
             digits: "Введите только цифры.",
@@ -24,6 +24,17 @@ if (window.Parsley) {
         maxcheck: "Выберите не более %s значений.",
         check: "Выберите от %s до %s значений.",
         equalto: "Это значение должно совпадать."
+    });
+
+    window.Parsley.addValidator("youtubeLink", {
+        validateString: function (value) {
+            console.log("Validate:" + value);
+            var p = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
+            return value.match(p) != null;
+        },
+        messages: {
+            ru: "Введите корректную ссылку на видео Youtube."
+        }
     });
 
     window.Parsley.setLocale("ru");
