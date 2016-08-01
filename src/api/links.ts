@@ -25,56 +25,13 @@ function playYoutube(el:HTMLElement) {
     $(el).replaceWith(iframe);
 }
 
-interface YoutubeVideoIdExtractor {
-    urlPrefix:string;
-    (urlSuffix:string):string;
-}
-var youtubeComExtractor = <YoutubeVideoIdExtractor> function (urlSuffix:string) {
-    var captured = /v=([^&]+)/.exec(urlSuffix)[1];
-    return captured ? captured : null;
-};
-youtubeComExtractor.urlPrefix = "youtube.com/watch";
-
-var youtubeExtractor = <YoutubeVideoIdExtractor> function (urlSuffix:string) {
-    var idx1 = urlSuffix.indexOf("/");
-    if (idx1 < 0) {
-        return urlSuffix;
-    } else if (idx1 > 0) {
-        return urlSuffix.substring(0, idx1);
-    }
-    urlSuffix = urlSuffix.substr(1);
-    var idx2 = urlSuffix.indexOf("/");
-    if (idx2 < 0) {
-        return urlSuffix;
-    }
-    return urlSuffix.substr(0, idx2);
-};
-youtubeExtractor.urlPrefix = "youtu.be";
-var YOUTUBE_VIDEO_ID_EXTRACTORS:Array<YoutubeVideoIdExtractor> = [youtubeComExtractor, youtubeExtractor];
-
-function findYoutubeVideoIdExtractor(url:string):YoutubeVideoIdExtractor {
-    if (!url || url.length == 0) {
-        return null;
-    }
-    if (url.indexOf("www.") == 0) {
-        url = url.substring(4);
-    }
-    url = url.toLocaleLowerCase();
-    for (var i = 0; i < YOUTUBE_VIDEO_ID_EXTRACTORS.length; i++) {
-        var e = YOUTUBE_VIDEO_ID_EXTRACTORS[i];
-        if (url.indexOf(e.urlPrefix) == 0) {
-            return e;
-        }
-    }
-    return null;
+function getYoutubeVideoId(url:string):string {
+    var p = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
+    return (url.match(p)) ? RegExp.$1 : null;
 }
 
 function replaceWithYoutubeEmbed(url:string, fallback:string) {
-    var e = findYoutubeVideoIdExtractor(url);
-    if (e == null) {
-        return null;
-    }
-    var videoId = e(url.substr(e.urlPrefix.length));
+    var videoId = getYoutubeVideoId(url);
     if (!videoId) {
         return fallback;
     }
@@ -150,7 +107,7 @@ function getLinkReplacement(link:string):string {
         return replaceWithPammLink(url, null);
     } else if (lcUrl.indexOf(ALPARI_FUND_PAMM_URL_PREFIX) == 0) {
         return replaceWithAlpariFundLink(url, null)
-    } else if (findYoutubeVideoIdExtractor(url) != null) {
+    } else if (getYoutubeVideoId(url) != null) {
         return replaceWithYoutubeEmbed(url, null);
     }
     return null;
