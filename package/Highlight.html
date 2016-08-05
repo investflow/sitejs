@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>HighlightJS</title>
+
+    <link rel="stylesheet" href="./../node_modules/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="./../node_modules/highlight.js/styles/idea.css">
+
+
+    <script src="./../node_modules/jquery/dist/jquery.js"></script>
+    <script src="./../node_modules/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="./../node_modules/highcharts/highstock.js"></script>
+
+    <script src="./../node_modules/es6-promise/dist/es6-promise.js"></script>
+    <script src="./../node_modules/parsleyjs/dist/parsley.js"></script>
+    <script src="./../node_modules/jquery-flot/jquery.flot.js"></script>
+    <script src="./../node_modules/autolinker/dist/Autolinker.js"></script>
+    <script src="./../node_modules/highlight.js/lib/highlight.js"></script>
+    <script src="./../package/js/site.js"></script>
+
+<body style="padding: 30px;font-family: monospace;">
+
+<pre id="b1" style="background-color: white"></pre>
+
+<pre id="b2" style="background-color: white">
+    //--------------------------------------------------------------------
+    // possible.mq4
+    // To be used as an example in MQL4 book.
+    //--------------------------------------------------------------------
+    int Count=0; // Global variable
+    //--------------------------------------------------------------------
+    int start() // Special funct. start()
+    {
+    double Price = Bid; // Local variable
+    Count++;
+    Alert("New tick ",Count," Price = ",Price);// Alert
+    return; // exit start()
+    }
+    //--------------------------------------------------------------------
+    int init() // Special funct. init()
+    {
+    Alert ("Function init() triggered at start");// Alert
+    return; // Exit init()
+    }
+    //--------------------------------------------------------------------
+    int deinit() // Special funct. deinit()
+    {
+    Alert ("Function deinit() triggered at exit");// Alert
+    return; // Exit deinit()
+    }
+    //--------------------------------------------------------------------
+</pre>
+<script>
+    var b1 = document.getElementById("b1");
+    b1.innerHTML = $site.Mql.highlight("void foo(int x){}").value;
+
+    var b2 = document.getElementById("b2");
+    b2.innerHTML = $site.Mql.highlight(b2.textContent).value;
+
+</script>
+</body>
+</html>

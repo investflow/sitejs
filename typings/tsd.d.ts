@@ -9,4 +9,5 @@
 /// <reference path="parsley/parsley.d.ts" />
 /// <reference path="flot/jquery.flot.d.ts" />
 /// <reference path="autolinker/autolinker.d.ts" />
+/// <reference path="highlight-js/highlight-js.d.ts" />
 

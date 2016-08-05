@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>HighlightJS</title>
+
+    <link rel="stylesheet" href="./../node_modules/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="./../node_modules/highlight.js/styles/vs.css">
+
+
+    <script src="./../node_modules/jquery/dist/jquery.js"></script>
+    <script src="./../node_modules/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="./../node_modules/highcharts/highstock.js"></script>
+
+    <script src="./../node_modules/es6-promise/dist/es6-promise.js"></script>
+    <script src="./../node_modules/parsleyjs/dist/parsley.js"></script>
+    <script src="./../node_modules/jquery-flot/jquery.flot.js"></script>
+    <script src="./../node_modules/autolinker/dist/Autolinker.js"></script>
+    <script src="./../node_modules/highlight.js/lib/highlight.js"></script>
+    <script src="./../package/js/site.js"></script>
+
+<body style="padding: 30px;font-family: monospace;">
+
+<form>
+    <input type="file" onchange="$site.Mql.annotate({input:this, targetSelector: '#code', feedbackSelector:'#feedback'})">
+</form>
+<div id="feedback"></div>
+<pre id="code" style="background-color: white"></pre>
+
+</body>
+</html>
