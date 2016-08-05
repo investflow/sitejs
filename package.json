@@ -15,7 +15,7 @@
     "highcharts": "global:Highcharts",
     "flot": "global:$.plot",
     "autolinker": "global:Autolinker",
-    "hljs": "global:hljs"
+    "highlight.js": "global:hljs"
   },
   "devDependencies": {
     "browserify": "^13.0.1",
@@ -47,6 +47,6 @@
     "store": "1.3.20",
     "jquery-flot": "0.8.3",
     "autolinker": "0.26.0",
-    "highlight.js": "9.5.0"
+    "highlight.js": "latest"
   }
 }
