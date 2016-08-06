@@ -1,5 +1,5 @@
-import {Account, getCachedAccountsListing} from "./../../src/api/accounts-listing";
-import {Broker} from "./../../src/api/broker";
+import {Account, getCachedAccountsListing} from "../../src/site/accounts-listing";
+import {Broker} from "../../src/site/broker";
 import * as store from "store";
 
 describe("AccountListing test suite", () => {

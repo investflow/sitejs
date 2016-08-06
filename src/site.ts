@@ -1,22 +1,17 @@
-import SiteUtils from "./api/site-utils";
-import MqlSupport from "./api/mql-support";
-import Titles from "./api/titles";
+import SiteUtils from "./site/site-utils";
+import Titles from "./site/titles";
 import AccountAutoComplete from "./component/account-auto-complete";
 import * as log from "loglevel";
 import * as lzString from "lz-string";
-import Highcharts from "./api/highcharts-support";
-import QuoteCharts from "./api/quote-charts";
-import Flot from "./api/flot-support";
-import site from "./api/site-def";
-import {Broker} from "./api/broker";
-import "./api/parsley-support";
-import "./api/mql-highlight";
+import Highcharts from "./site/highcharts-support";
+import QuoteCharts from "./site/quote-charts";
+import Flot from "./site/flot-support";
+import site from "./site/site-def";
+import {Broker} from "./site/broker";
+import "./site/parsley-support";
 
 /** Set of utility functions */
 site.Utils = SiteUtils;
-
-/** Support for MQL4/5 languages */
-site.Mql = MqlSupport;
 
 /** Dynamic titles */
 site.Titles = Titles;

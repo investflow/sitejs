@@ -1,4 +1,4 @@
-import {listAccounts, ListAccountsResponse} from "../../src/api/investflow-api";
+import {listAccounts, ListAccountsResponse} from "../../src/site/investflow-api";
 
 describe("REST service test suite", () => {
     it("REST.listAccounts must return valid results", (done) => {

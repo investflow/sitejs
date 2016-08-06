@@ -1,6 +1,6 @@
 import * as $ from "jquery";
-import {Account, getCachedAccountsListing} from "../api/accounts-listing";
-import $site from "../api/site-def";
+import {Account, getCachedAccountsListing} from "../site/accounts-listing";
+import $site from "../site/site-def";
 import * as log from "loglevel";
 
 //TODO: defer subsequent requests.

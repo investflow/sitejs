@@ -10,4 +10,5 @@
 /// <reference path="flot/jquery.flot.d.ts" />
 /// <reference path="autolinker/autolinker.d.ts" />
 /// <reference path="highlightjs/highlightjs.d.ts" />
+/// <reference path="require/require.d.ts" />
 

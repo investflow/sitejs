@@ -9,7 +9,6 @@ export default {
     AccountAutoComplete: undefined,
     log: undefined,
     lz: undefined,
-    Mql:undefined,
 
     /* Service state. Filled by server side.*/
     ServiceState: {

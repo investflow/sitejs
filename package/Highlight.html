@@ -11,14 +11,8 @@
 
     <script src="./../node_modules/jquery/dist/jquery.js"></script>
     <script src="./../node_modules/bootstrap/dist/js/bootstrap.js"></script>
-    <script src="./../node_modules/highcharts/highstock.js"></script>
-
-    <script src="./../node_modules/es6-promise/dist/es6-promise.js"></script>
-    <script src="./../node_modules/parsleyjs/dist/parsley.js"></script>
-    <script src="./../node_modules/jquery-flot/jquery.flot.js"></script>
-    <script src="./../node_modules/autolinker/dist/Autolinker.js"></script>
     <script src="./../node_modules/highlight.js/lib/highlight.js"></script>
-    <script src="./../package/js/site.js"></script>
+    <script src="./../package/js/mql.js"></script>
 
 <body style="padding: 30px;font-family: monospace;">
 
@@ -54,10 +48,10 @@
 </pre>
 <script>
     var b1 = document.getElementById("b1");
-    b1.innerHTML = $site.Mql.highlight("void foo(int x){}").value;
+    b1.innerHTML = $mql.Highlight.highlight("void foo(int x){}").value;
 
     var b2 = document.getElementById("b2");
-    b2.innerHTML = $site.Mql.highlight(b2.textContent).value;
+    b2.innerHTML = $mql.Highlight.highlight(b2.textContent).value;
 
 </script>
 </body>

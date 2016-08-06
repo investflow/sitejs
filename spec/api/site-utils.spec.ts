@@ -1,5 +1,5 @@
 import * as $ from "jquery";
-import SiteUtils from "./../../src/api/site-utils";
+import SiteUtils from "../../src/site/site-utils";
 
 describe("SiteUtils test suite", () => {
     it("Title must be replaced with setTitle by #id", () => {
