@@ -1,3 +1,4 @@
 export default {
-    Highlight: undefined
+    Highlight: undefined,
+    Info: undefined
 }

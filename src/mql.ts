@@ -1,9 +1,11 @@
 import mql from "./mql/mql-def";
-import MqlHighlight from "./mql/mql-highlight";
+import Highlight from "./mql/mql-highlight";
+import Info from "./mql/mql-info";
 import "./mql/mql4-grammar";
 
 
 /** Set of utility functions */
-mql.Highlight = MqlHighlight;
+mql.Highlight = Highlight;
+mql.Info = Info;
 
 (<any>window).$mql = mql;

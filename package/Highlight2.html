@@ -16,7 +16,7 @@
 <body style="padding: 30px;font-family: monospace;">
 
 <form>
-    <input type="file" onchange="$mql.Highlight.annotate({input:this, targetSelector: '#code', feedbackSelector:'#feedback'})">
+    <input type="file" onchange="$mql.Highlight.annotateFile({input:this, targetSelector: '#code', feedbackSelector:'#feedback'})">
 </form>
 <div id="feedback"></div>
 <pre id="code" style="background-color: white"></pre>

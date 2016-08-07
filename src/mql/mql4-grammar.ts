@@ -1,8 +1,10 @@
 import * as hljs from "highlight.js";
 import mqlInfo from "./mql-info";
 
-hljs.registerLanguage("mql4", function () {
-    var CPP_PRIMITIVE_TYPES = {
+hljs.registerLanguage("mql4", mql4_grammar);
+
+function mql4_grammar() {
+    var PRIMITIVE_TYPES = {
         className: 'keyword',
         begin: '\\b[a-z\\d_]*_t\\b'
     };
@@ -36,6 +38,7 @@ hljs.registerLanguage("mql4", function () {
         relevance: 0
     };
 
+    //noinspection SpellCheckingInspection
     var PREPROCESSOR = {
         className: 'meta',
         begin: /#\s*[a-z]+\b/, end: /$/,
@@ -59,20 +62,14 @@ hljs.registerLanguage("mql4", function () {
 
     var FUNCTION_TITLE = hljs.IDENT_RE + '\\s*\\(';
 
-    // https://docs.mql4.com/basis/syntax/reserved
-    var MQL4_KEYWORDS = {
-        keyword: "bool enum struct char float uchar class int uint color long ulong datetime short ushort double string void " +
-        "const private protected public virtual " +
-        "extern input static " +
-        "break dynamic_cast return case else sizeof continue for switch default if while delete new do operator " +
-        "false this template true typename strict",
-
+    var KEYWORDS = {
+        keyword: mqlInfo.getMql4KeywordsNames(),
         built_in: mqlInfo.getMql4FunctionNames(),
-        literal: "true false " + mqlInfo.getMql4ConstantsNames()
+        literal: mqlInfo.getMql4ConstantsNames()
     };
 
     var EXPRESSION_CONTAINS = [
-        CPP_PRIMITIVE_TYPES,
+        PRIMITIVE_TYPES,
         hljs.C_LINE_COMMENT_MODE,
         hljs.C_BLOCK_COMMENT_MODE,
         NUMBERS,
@@ -81,18 +78,18 @@ hljs.registerLanguage("mql4", function () {
 
     return {
         aliases: ['mq4', 'mqh'],
-        keywords: MQL4_KEYWORDS,
+        keywords: KEYWORDS,
         illegal: '</',
         contains: EXPRESSION_CONTAINS.concat([
             PREPROCESSOR,
             {
                 begin: '\\b(list|queue|stack|vector|map|set|array)\\s*<', end: '>',
-                keywords: MQL4_KEYWORDS,
-                contains: ['self', CPP_PRIMITIVE_TYPES]
+                keywords: KEYWORDS,
+                contains: ['self', PRIMITIVE_TYPES]
             },
             {
                 begin: hljs.IDENT_RE + '::',
-                keywords: MQL4_KEYWORDS
+                keywords: KEYWORDS
             },
             {
                 // This mode covers expression context where we can't expect a function
@@ -103,11 +100,11 @@ hljs.registerLanguage("mql4", function () {
                     {begin: /\(/, end: /\)/},
                     {beginKeywords: 'new throw return else', end: /;/}
                 ],
-                keywords: MQL4_KEYWORDS,
+                keywords: KEYWORDS,
                 contains: EXPRESSION_CONTAINS.concat([
                     {
                         begin: /\(/, end: /\)/,
-                        keywords: MQL4_KEYWORDS,
+                        keywords: KEYWORDS,
                         contains: EXPRESSION_CONTAINS.concat(['self']),
                         relevance: 0
                     }
@@ -119,8 +116,8 @@ hljs.registerLanguage("mql4", function () {
                 begin: '(' + hljs.IDENT_RE + '[\\*&\\s]+)+' + FUNCTION_TITLE,
                 returnBegin: true, end: /[{;=]/,
                 excludeEnd: true,
-                keywords: MQL4_KEYWORDS,
-                illegal: /[^\w\s\*&]/,
+                keywords: KEYWORDS,
+                illegal: /[^\w\s*&]/,
                 contains: [
                     {
                         begin: FUNCTION_TITLE, returnBegin: true,
@@ -130,14 +127,14 @@ hljs.registerLanguage("mql4", function () {
                     {
                         className: 'params',
                         begin: /\(/, end: /\)/,
-                        keywords: MQL4_KEYWORDS,
+                        keywords: KEYWORDS,
                         relevance: 0,
                         contains: [
                             hljs.C_LINE_COMMENT_MODE,
                             hljs.C_BLOCK_COMMENT_MODE,
                             STRINGS,
                             NUMBERS,
-                            CPP_PRIMITIVE_TYPES
+                            PRIMITIVE_TYPES
                         ]
                     },
                     hljs.C_LINE_COMMENT_MODE,
@@ -149,7 +146,7 @@ hljs.registerLanguage("mql4", function () {
         exports: {
             preprocessor: PREPROCESSOR,
             strings: STRINGS,
-            keywords: MQL4_KEYWORDS
+            keywords: KEYWORDS
         }
     };
-});
+}
