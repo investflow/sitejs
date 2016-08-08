@@ -42,9 +42,16 @@ interface TextInputOption {
 }
 
 function annotateText(options: TextInputOption) {
-    const highlightedText = highlight(options.text);
+    const highlightedData = highlight(options.text);
     const $target = $(options.targetSelector);
-    $target.html(highlightedText.value);
+    const highlightedText = highlightedData.value;
+    let lineNumbersBlock = "<span class='hljs-line-number'>";
+    var num = highlightedText.split(/\n/).length;
+    for (var j = 0; j < num; j++) {
+        lineNumbersBlock += '<span>' + (j + 1) + '</span>';
+    }
+    lineNumbersBlock += "</span>";
+    $target.html("<div class='hljs-root'>" + lineNumbersBlock + "<div class='hljs-code'>" + highlightedText + "</div>" + "<span class='hljs-line-number-cl'></span></div>");
 
     $target.popover({
         html: true,

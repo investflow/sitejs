@@ -7,19 +7,157 @@
 
     <link rel="stylesheet" href="./../node_modules/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="./../node_modules/highlight.js/styles/vs.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 
     <script src="./../node_modules/jquery/dist/jquery.js"></script>
     <script src="./../node_modules/bootstrap/dist/js/bootstrap.js"></script>
     <script src="./../node_modules/highlight.js/lib/highlight.js"></script>
     <script src="./../package/js/mql.js"></script>
+    <!--suppress CssUnusedSymbol -->
+    <style>
+        .hljs-root {
+            background-color: white;
+            overflow: auto;
+            margin: 0 0 1em;
+            padding: .5em 1em;
+        }
 
-<body style="padding: 30px;font-family: monospace;">
+        .hljs-code {
+            white-space: pre;
+            font: normal normal 14px "Courier New", Courier, Monospace;
+            display: block;
+        }
 
-<form>
-    <input type="file" onchange="$mql.Highlight.annotateFile({input:this, targetSelector: '#code', feedbackSelector:'#feedback'})">
-</form>
-<div id="feedback"></div>
-<pre id="code" style="background-color: white"></pre>
+        .hljs-root .hljs-line-number {
+            font: normal normal 14px "Courier New", Courier, Monospace;
+            color: #CCC;
+            display: block;
+        }
+
+        .hljs-root .hljs-line-number {
+            float: left;
+            margin: 0 1em 0 -1em;
+            border-right: 1px solid;
+            border-color: #CCC;
+            text-align: right;
+        }
+
+        .hljs-root .hljs-line-number span {
+            display: block;
+            padding: 0 .5em 0 1em;
+        }
+
+        .hljs-root .hljs-line-number-cl {
+            display: block;
+            clear: both;
+        }
+    </style>
+<body style="padding: 30px;">
+
+<div class="content-fluid w100 center-block mb50">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3 ">
+            <div style="text-align: center;">
+
+                <h1>Чтение MQL4 кода</h1>
+
+                <form style="margin-top: 20px;">
+                    <div>
+                        <label class="btn btn-default btn-file" title="Загрузить код MQL4 из локального файла">
+                            <i class="fa fa-folder-open-o"></i> Выбрать файл
+                            <input type="file" style="display: none;"
+                                   onchange="mqlReaderPage_clearFeedback();$mql.Highlight.annotateFile({input:this, targetSelector: '#code', feedbackSelector:'#mql-file-feedback'})">
+                        </label>
+
+                        <a href="#" class="btn btn-default" data-toggle="modal" data-target="#mql-paste-modal" title="Вставить код MQL4 из буфера обмена">
+                            <i class="fa fa-clipboard"></i> Вставить
+                        </a>
+
+                        <a href="#" class="btn btn-default" data-toggle="modal" data-target="#mql-library-modal" title="Выбрать файл из библиотеки Investflow">
+                            <i class="fa fa-flask"></i> Библиотека
+                        </a>
+                    </div>
+                    <div id="mql-file-feedback" class="text-warning" style="margin-top: 10px;"></div>
+                </form>
+            </div>
+
+            <div id="code" style="margin-top: 20px;"></div>
+        </div>
+    </div>
+
+    <div id="mql-paste-modal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <form>
+                        <textarea id="mql-paste-textarea" class="form-control" placeholder="Скопируйте MQL4 текст в эту форму" style="min-height: 400px;"></textarea>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" style="float: left" onclick="mqlReaderPage_onClearTextArea()">Очистить</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Отменить</button>
+                    <button type="button" class="btn btn-primary" onclick="mqlReaderPage_onApplyTextArea();">Применить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="mql-library-modal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <div class="modal-header"><h4 class="modal-title">Библиотека MQL4</h4></div>
+
+                <div class="modal-body">
+                    <div>
+                        Сегодня в библиотеке только один обучающий советник.
+                    </div>
+                    <p style="margin-top: 10px">
+                        <a href="#" onclick="mqlReaderPage_onApplyLibraryItem('edu/tradingexpert.mq4')">Нажмите на эту ссылку</a> чтобы выбрать его.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        function mqlReaderPage_clearFeedback() {
+            $("#mql-file-feedback").empty();
+        }
+
+        function mqlReaderPage_onClearTextArea() {
+            $("#mql-paste-textarea").val("");
+        }
+
+        function mqlReaderPage_onApplyTextArea() {
+            $mql.Highlight.annotateText({targetSelector: '#code', text: $("#mql-paste-textarea").val()});
+            mqlReaderPage_clearFeedback();
+            $("#mql-paste-modal").modal('hide')
+        }
+
+        function mqlReaderPage_onApplyLibraryItem(path) {
+            mqlReaderPage_clearFeedback();
+            var prefix = "https://raw.githubusercontent.com/investflow/mql4/master/";
+            var url = prefix + path;
+            $.ajax({
+                url: url,
+                success: function (data) {
+                    $mql.Highlight.annotateText({targetSelector: '#code', text: data});
+                    $("#mql-library-modal").modal('hide')
+                },
+                error: function (xhr, status, error) {
+                    $("#mql-file-feedback").append("Ошибка доступа!");
+                    $("#mql-library-modal").modal('hide');
+                }
+            });
+        }
+
+    </script>
+</div>
 
 </body>
 </html>
