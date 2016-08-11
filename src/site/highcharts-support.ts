@@ -5,7 +5,7 @@ import {Broker} from "./broker";
 
 const HIGHCHARTS_MODAL_DIV_ID = "iflow_highcharts_modal";
 
-var localized = false;
+var localizationInstalled = false;
 
 function getRangeButtons(firstEventMillis: number, lastEventMillis: number): Array<any> {
     let buttons: Array<any> = [];
@@ -105,6 +105,7 @@ function updateProfitLabel($profitLabel: JQuery, profitData: Array<Array<number>
 }
 
 function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
+    ensureLocalizationIsInstalled();
     let firstEventMillis = -1;
     let lastEventMillis = -1;
     let profitData = options.profitData;
@@ -160,6 +161,7 @@ function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
             formatter: function () {
                 var s = "<span style='font-size: 10px'>" + Highcharts.dateFormat("%Y-%m-%d", this.x) + "</span><br/>";
                 $.each(this.points, function () {
+                    //noinspection TypeScriptUnresolvedVariable
                     var to = this.series.tooltipOptions;
                     var val = to.valuePrefix + this.point.y.toFixed(to.valueDecimals !== "undefined" ? to.valueDecimals : 2) + to.valueSuffix;
                     s += `<span style="color:${this.color}">\u25CF</span> ${this.series.name}: <b>${val}</b><br/>`
@@ -277,8 +279,11 @@ function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
     return res;
 }
 
-function localize() {
-    localized = true;
+function ensureLocalizationIsInstalled() {
+    if (localizationInstalled) {
+        return;
+    }
+    localizationInstalled = true;
     let langObject: HighchartsLangObject = {
         months: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
         shortMonths: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
@@ -297,9 +302,6 @@ function localize() {
     Highcharts.setOptions(options);
 }
 function showChart(accountInfo: AccountInfoResponse) {
-    if (!localized) {
-        localize();
-    }
     // find modal window, create if not found
     let $modalDiv = $("#" + HIGHCHARTS_MODAL_DIV_ID);
     if ($modalDiv.length === 0) {
@@ -317,7 +319,7 @@ function showChart(accountInfo: AccountInfoResponse) {
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title">
-                        <span class="modal-title-text"></span> <span class="txt-muted itl pl15 modal-title-profit" title="${titleAttr}"></span>
+                        <span class="modal-title-text"></span><span class="txt-muted itl pl15 modal-title-profit" title="${titleAttr}"></span>
                     </h4>
                 </div>
                 <div class="modal-body">
