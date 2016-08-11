@@ -174,10 +174,10 @@ interface HighchartsAxisLabels {
 }
 
 interface HighchartsMousePlotEvents {
-    click?: (event:Event) => void;
-    mouseover?: (event:Event) => void;
-    mouseout?: (event:Event) => void;
-    mousemove?: (event:Event) => void;
+    click?: (event: Event) => void;
+    mouseover?: (event: Event) => void;
+    mouseout?: (event: Event) => void;
+    mousemove?: (event: Event) => void;
 }
 
 /**
@@ -488,19 +488,19 @@ interface HighchartsAxisOptions {
          * An event fired after the breaks have rendered.
          * @since 4.1.0
          */
-        afterBreaks?: (event:Event) => void;
+        afterBreaks?: (event: Event) => void;
         /**
          * As opposed to the setExtremes event, this event fires after the final min and max values are computed and
          * corrected for minRange.
          * The this keyword refers to the {@link HighchartsAxisObject|Axis} object.
          * @since 2.3
          */
-        afterSetExtremes?: (event:HighchartsAxisEvent) => void;
+        afterSetExtremes?: (event: HighchartsAxisEvent) => void;
         /**
          * An event fired when a break from this axis occurs on a point.
          * The this keyword refers to the {@link HighchartsAxisObject|Axis} object.
          */
-        pointBreak?: (event:Event) => void;
+        pointBreak?: (event: Event) => void;
         /**
          * Fires when the minimum and maximum is set for the axis, either by calling the .setExtremes() method or by
          * selecting an area in the chart. One parameter, event, is passed to the function. This contains common event
@@ -513,7 +513,7 @@ interface HighchartsAxisOptions {
          * The this keyword refers to the {@link HighchartsAxisObject|Axis} object.
          * @since 1.2.0
          */
-        setExtremes?: (event:HighchartsAxisEvent) => void;
+        setExtremes?: (event: HighchartsAxisEvent) => void;
     };
     /**
      * The lowest allowed value for automatically computed axis extremes.
@@ -773,7 +773,7 @@ interface HighchartsAxisOptions {
      * behaviour of tickPixelInterval and tickInterval. The automatic tick positions are accessible through
      * this.tickPositions and can be modified by the callback.
      */
-    tickPositioner?: (min:number, max:number) => void;
+    tickPositioner?: (min: number, max: number) => void;
     /**
      * An array defining where the ticks are laid out on the axis. This overrides the default behaviour of
      * tickPixelInterval and tickInterval.
@@ -863,7 +863,7 @@ interface HighchartsColorAxisOptions {
          * corrected for minRange.
          * The this keyword refers to the {@link HighchartsAxisObject|Axis} object.
          */
-        afterSetExtremes?: (event:HighchartsAxisEvent) => void;
+        afterSetExtremes?: (event: HighchartsAxisEvent) => void;
         /**
          * Fires when the minimum and maximum is set for the axis, either by calling the .setExtremes() method or by
          * selecting an area in the chart. One parameter, event, is passed to the function. This contains common event
@@ -875,7 +875,7 @@ interface HighchartsColorAxisOptions {
          *
          * The this keyword refers to the {@link HighchartsAxisObject|Axis} object.
          */
-        setExtremes?: (event:HighchartsAxisEvent) => void;
+        setExtremes?: (event: HighchartsAxisEvent) => void;
     };
     /**
      * Color of the grid lines extending from the axis across the gradient.
@@ -1068,7 +1068,7 @@ interface HighchartsColorAxisOptions {
      * A callback function returning array defining where the ticks are laid out on the axis. This overrides the default
      * behaviour of tickPixelInterval and tickInterval.
      */
-    tickPositioner?: (min:number, max:number) => void;
+    tickPositioner?: (min: number, max: number) => void;
     /**
      * An array defining where the ticks are laid out on the axis. This overrides the default behaviour of
      * tickPixelInterval and tickInterval.
@@ -1186,19 +1186,19 @@ interface HighchartsChartEvents {
      * The this keyword refers to the Chart object.
      * @since 1.2.0
      */
-    addSeries?: (event:HighchartsAddSeriesEvent) => boolean|void;
+    addSeries?: (event: HighchartsAddSeriesEvent) => boolean|void;
     /**
      * Fires after a chart is printed through the context menu item or the Chart.print method. Requires the exporting
      * module.
      * @since 4.1.0
      */
-    afterPrint?: (event:Event) => void;
+    afterPrint?: (event: Event) => void;
     /**
      * Fires before a chart is printed through the context menu item or the Chart.print method. Requires the exporting
      * module.
      * @since 4.1.0
      */
-    beforePrint?: (event:Event) => void;
+    beforePrint?: (event: Event) => void;
     /**
      * Fires when clicking on the plot background. One parameter, event, is passed to the function. This contains common
      * event information based on jQuery or MooTools depending on which library is used as the base for Highcharts.
@@ -1214,17 +1214,17 @@ interface HighchartsChartEvents {
      * The this keyword refers to the Chart object.
      * @since 1.2.0
      */
-    click?: (event:HighchartsChartClickEvent) => void;
+    click?: (event: HighchartsChartClickEvent) => void;
     /**
      * Fires when a drilldown point is clicked, before the new series is added.
      * @since 3.0.8
      */
-    drilldown?: (event:HighchartsChartDrilldownEvent) => void;
+    drilldown?: (event: HighchartsChartDrilldownEvent) => void;
     /**
      * Fires when drilling up from a drilldown series.
      * @since 3.0.8
      */
-    drillup?: (event:Event) => void;
+    drillup?: (event: Event) => void;
     /**
      * Fires when the chart is finished loading. One parameter, event, is passed to the function. This contains common
      * event information based on jQuery or MooTools depending on which library is used as the base for Highcharts.
@@ -1234,7 +1234,7 @@ interface HighchartsChartEvents {
      *
      * The this keyword refers to the Chart object.
      */
-    load?: (event:Event) => void;
+    load?: (event: Event) => void;
     /**
      * Fires when the chart is redrawn, either after a call to chart.redraw() or after an axis, series or point is
      * modified with the redraw option set to true. One parameter, event, is passed to the function. This contains
@@ -1244,7 +1244,7 @@ interface HighchartsChartEvents {
      * The this keyword refers to the Chart object.
      * @since 1.2.0
      */
-    redraw?: (event:Event) => void;
+    redraw?: (event: Event) => void;
     /**
      * Fires when an area of the chart has been selected. Selection is enabled by setting the chart's zoomType. One
      * parameter, event, is passed to the function. This contains common event information based on jQuery or MooTools
@@ -1265,7 +1265,7 @@ interface HighchartsChartEvents {
      * 		console.log(event.yAxis[0].min, event.yAxis[0].max);
      * }
      */
-    selection?: (event:HighchartsChartSelectionEvent) => void;
+    selection?: (event: HighchartsChartSelectionEvent) => void;
 }
 
 interface HighchartsLinearGradient {
@@ -1285,12 +1285,12 @@ interface HighchartsGradient {
      * Brighten the color
      * @param {number} alpha
      */
-    brighten?(alpha:number): HighchartsGradient;
+    brighten?(alpha: number): HighchartsGradient;
     /**
      * Return the color a specified format
      * @param {string} format
      */
-    get?(format:string): string;
+    get?(format: string): string;
     /**
      * The raw input
      */
@@ -1304,7 +1304,7 @@ interface HighchartsGradient {
      * @param  {number} alpha
      * @return {HighchartsGradient}
      */
-    setOpacity?(alpha:number): HighchartsGradient;
+    setOpacity?(alpha: number): HighchartsGradient;
 }
 
 interface HighchartsChartOptions3dFrame {
@@ -1787,7 +1787,7 @@ interface HighchartsDataOptions {
      * extended with additional options and passed directly to the chart constructor.
      * @since 4.0
      */
-    complete?: (options:HighchartsOptions) => void;
+    complete?: (options: HighchartsOptions) => void;
     /**
      * A comma delimited string to be parsed. Related options are startRow, endRow, startColumn and endColumn to delimit
      * what part of the table is used. The lineDelimiter and itemDelimiter options define the CSV delimiter formats.
@@ -1856,14 +1856,14 @@ interface HighchartsDataOptions {
      * timestamp on success.
      * @since 4.0
      */
-    parseDate?: (val:any) => number;
+    parseDate?: (val: any) => number;
     /**
      * A callback function to access the parsed columns, the two-dimentional input data array directly, before they are
      * interpreted into series data and categories. Return false to stop completion, or call this.complete() to continue
      * async.
      * @since 4.0
      */
-    parsed?: (columns:[string|number][]) => boolean | void;
+    parsed?: (columns: [string|number][]) => boolean | void;
     /**
      * The same as the columns input option, but defining rows intead of columns.
      * @since 4.0
@@ -2223,7 +2223,7 @@ interface HighchartsGlobalObject {
      * charts in specific time zones using their local DST crossover dates, with the help of external libraries.
      * @since 4.1.0
      */
-    getTimezoneOffset?: (timestamp:number) => number;
+    getTimezoneOffset?: (timestamp: number) => number;
     /**
      * The timezone offset in minutes. Positive values are west, negative values are east of UTC, as in the ECMAScript
      * getTimezoneOffset method. Use this to display UTC based data in a predefined time zone.
@@ -2362,6 +2362,11 @@ interface HighchartsLangObject {
      * @default ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
      */
     weekdays?: string[];
+
+    //Highstock's range selector
+    rangeSelectorZoom?: string;
+    rangeSelectorFrom?: string;
+    rangeSelectorTo?: string;
 }
 
 interface HighchartsLegendNavigationOptions {
@@ -2990,7 +2995,7 @@ interface HighchartsPlotEvents {
      * The this keyword refers to the Series object.
      * @since 4.0
      */
-    afterAnimate?: (event:Event) => void;
+    afterAnimate?: (event: Event) => void;
     /**
      * Fires when the checkbox next to the series' name in the legend is clicked. One parameter, event, is passed to the
      * function. The state of the checkbox is found by event.checked. The checked item is found by event.item. Return
@@ -2999,7 +3004,7 @@ interface HighchartsPlotEvents {
      * The this keyword refers to the Series object.
      * @since 1.2.0
      */
-    checkboxClick?: (event:HighchartsAreaCheckboxEvent) => boolean|void;
+    checkboxClick?: (event: HighchartsAreaCheckboxEvent) => boolean|void;
     /**
      * Fires when the series is clicked. One parameter, event, is passed to the function. This contains common event
      * information based on jQuery or MooTools depending on which library is used as the base for Highcharts.
@@ -3007,7 +3012,7 @@ interface HighchartsPlotEvents {
      *
      * The this keyword refers to the Series object.
      */
-    click?: (event:HighchartsAreaClickEvent) => void;
+    click?: (event: HighchartsAreaClickEvent) => void;
     /**
      * Fires when the series is hidden after chart generation time, either by clicking the legend item or by calling
      * .hide().
@@ -3023,7 +3028,7 @@ interface HighchartsPlotEvents {
      *
      * The this keyword refers to the Series object.
      */
-    legendItemClick?: (event:Event) => boolean|void;
+    legendItemClick?: (event: Event) => boolean|void;
     /**
      * Fires when the mouse leaves the graph. One parameter, event, is passed to the function. This contains common
      * event information based on jQuery or MooTools depending on which library is used as the base for Highcharts. If
@@ -3032,14 +3037,14 @@ interface HighchartsPlotEvents {
      *
      * The this keyword refers to the Series object.
      */
-    mouseOut?: (event:Event) => void;
+    mouseOut?: (event: Event) => void;
     /**
      * Fires when the mouse enters the graph. One parameter, event, is passed to the function. This contains common
      * event information based on jQuery or MooTools depending on which library is used as the base for Highcharts.
      *
      * The this keyword refers to the Series object.
      */
-    mouseOver?: (event:Event) => void;
+    mouseOver?: (event: Event) => void;
     /**
      * Fires when the series is shown after chart generation time, either by clicking the legend item or by calling
      * .show().
@@ -3137,7 +3142,7 @@ interface HighchartsPointEvents {
      *
      * The this keyword refers to the Point object.
      */
-    click?: (event:Event) => boolean;
+    click?: (event: Event) => boolean;
     /**
      * Fires when the mouse leaves the area close to the point. One parameter, event, is passed to the function. This
      * contains common event information based on jQuery or MooTools depending on which library is used as the base for
@@ -3145,7 +3150,7 @@ interface HighchartsPointEvents {
      *
      * The this keyword refers to the Point object.
      */
-    mouseOut?: (event:Event) => void;
+    mouseOut?: (event: Event) => void;
     /**
      * Fires when the mouse enters the area close to the point. One parameter, event, is passed to the function. This
      * contains common event information based on jQuery or MooTools depending on which library is used as the base for
@@ -3153,7 +3158,7 @@ interface HighchartsPointEvents {
      *
      * The this keyword refers to the Point object.
      */
-    mouseOver?: (event:Event) => void;
+    mouseOver?: (event: Event) => void;
     /**
      * Fires when the point is removed using the .remove() method. One parameter, event, is passed to the function.
      * Returning false cancels the operation.
@@ -3161,7 +3166,7 @@ interface HighchartsPointEvents {
      * The this keyword refers to the Point object.
      * @since 1.2.0
      */
-    remove?: (event:Event) => boolean|void;
+    remove?: (event: Event) => boolean|void;
     /**
      * Fires when the point is selected either programmatically or following a click on the point. One parameter, event,
      * is passed to the function. Returning false cancels the operation.
@@ -3169,7 +3174,7 @@ interface HighchartsPointEvents {
      * The this keyword refers to the Point object.
      * @since 1.2.0
      */
-    select?: (event:Event) => boolean|void;
+    select?: (event: Event) => boolean|void;
     /**
      * Fires when the point is unselected either programmatically or following a click on the point. One parameter,
      * event, is passed to the function. Returning false cancels the operation.
@@ -3177,7 +3182,7 @@ interface HighchartsPointEvents {
      * The this keyword refers to the Point object.
      * @since 1.2.0
      */
-    unselect?: (event:Event) => boolean|void;
+    unselect?: (event: Event) => boolean|void;
     /**
      * Fires when the point is updated programmatically through the .update() method. One parameter, event, is passed to
      * the function. The new point options can be accessed through event.options. Returning false cancels the operation.
@@ -3185,7 +3190,7 @@ interface HighchartsPointEvents {
      * The this keyword refers to the Point object.
      * @since 1.2.0
      */
-    update?: (event:Event) => boolean|void;
+    update?: (event: Event) => boolean|void;
 }
 
 interface HighchartsHalo {
@@ -5272,7 +5277,7 @@ interface HighchartsTooltipOptions extends HighchartsSeriesTooltipOptions {
      * The return should be an object containing x and y values, for example { x: 100, y: 100 }.
      * @since 2.2.4
      */
-    positioner?: (labelWidth:number, labelHeight:number, point:HighchartsPlotPoint) => { x: number; y: number; };
+    positioner?: (labelWidth: number, labelHeight: number, point: HighchartsPlotPoint) => { x: number; y: number; };
     /**
      * Whether to apply a drop shadow to the tooltip.
      * @default true
@@ -5521,7 +5526,7 @@ interface HighchartsGlobalOptions extends HighchartsOptions {
      * Global options that don't apply to each chart. These options, like the lang options, must be set using the
      * Highcharts.setOptions method.
      */
-    global?: HighchartsGlobalObject;
+        global?: HighchartsGlobalObject;
     /**
      * Language object. The language object is global and it can't be set on each chart initiation. Instead, use
      * Highcharts.setOptions to set it before any chart is initiated.
@@ -5530,7 +5535,7 @@ interface HighchartsGlobalOptions extends HighchartsOptions {
 }
 
 interface HighchartsDateFormatSpecifiers {
-    [index: string]: (timestamp:number) => string;
+    [index: string]: (timestamp: number) => string;
 }
 
 /**
@@ -5555,13 +5560,13 @@ interface HighchartsAxisObject {
      * @param {HighchartsPlotBands} options A configuration object consisting of the same members as options.xAxis.plotBands
      * @since 1.2.0
      */
-    addPlotBand(options:HighchartsPlotBands): void;
+    addPlotBand(options: HighchartsPlotBands): void;
     /**
      * Add a plot line after render time.
      * @param {HighchartsPlotLines} options A configuration object consisting of the same members as options.xAxis.plotLines
      * @since 1.2.0
      */
-    addPlotLine(options:HighchartsPlotLines): void;
+    addPlotLine(options: HighchartsPlotLines): void;
     /**
      * Get the current extremes for the axis.
      * @since 1.2.0
@@ -5572,32 +5577,32 @@ interface HighchartsAxisObject {
      * @param [boolean] redraw Defaults to true. Whether to redraw the chart following the remove.
      * @since 3.0
      */
-    remove(redraw?:boolean): void;
+    remove(redraw?: boolean): void;
     /**
      * Remove a plot band by its id.
      * @param {string} id The plot band's id as given in the original configuration object or in the addPlotBand method.
      * @since 1.2.0
      */
-    removePlotBand(id:string): void;
+    removePlotBand(id: string): void;
     /**
      * Remove a plot line by its id.
      * @param {string} id The plot line's id as given in the original configuration object or in the addPlotLine method.
      * @since 1.2.0
      */
-    removePlotLine(id:string): void;
+    removePlotLine(id: string): void;
     /**
      * Set new categories for the axis. Redraws.
      * @param {string[]} categories The new category names.
      * @since 1.2.0
      */
-    setCategories(categories:string[]): void;
+    setCategories(categories: string[]): void;
     /**
      * Set new categories for the axis.
      * @param {string[]} categories The new category names.
      * @param {boolean}  redraw     Whether to redraw the axis or wait for an explicit call to chart.redraw().
      * @since 1.2.0
      */
-    setCategories(categories:string[], redraw:boolean): void;
+    setCategories(categories: string[], redraw: boolean): void;
     /**
      * Set the minimum and maximum of the axes after render time. If the startOnTick and endOnTick options are true, the
      * minimum and maximum values are rounded off to the nearest tick. To prevent this, these options can be set to
@@ -5609,14 +5614,14 @@ interface HighchartsAxisObject {
      * @param {boolean | HighchartsAnimation} animation When true, the resize will be animated with default animation options. The animation can also be a configuration object with properties duration and easing.
      * @since 1.2.0
      */
-    setExtremes(min?:number, max?:number, redraw?:boolean, animation?:boolean | HighchartsAnimation): void;
+    setExtremes(min?: number, max?: number, redraw?: boolean, animation?: boolean | HighchartsAnimation): void;
     /**
      * Update the title of the axis after render time.
      * @param {HighchartsAxisTitle} title  The new title options on the same format as given in xAxis.title.
      * @param {boolean}             redraw Whether to redraw the chart now or hold until the next chart.redraw()
      * @since 2.2
      */
-    setTitle(title:HighchartsAxisTitle, redraw?:boolean): void;
+    setTitle(title: HighchartsAxisTitle, redraw?: boolean): void;
     /**
      * Translates a value in terms of axis units in to pixels within the chart.
      * @param  {number}  value           A value in terms of axis units.
@@ -5624,7 +5629,7 @@ interface HighchartsAxisObject {
      * @return {number}
      * @since 3.0
      */
-    toPixels(value:number, paneCoordinates?:boolean): number;
+    toPixels(value: number, paneCoordinates?: boolean): number;
     /**
      * Translate a pixel position along the axis to a value in terms of axis units.
      * @param  {number}  pixel           A pixel position along the axis.
@@ -5632,7 +5637,7 @@ interface HighchartsAxisObject {
      * @return {number}
      * @since 3.0
      */
-    toValue(pixel:number, paneCoordinates?:boolean): number;
+    toValue(pixel: number, paneCoordinates?: boolean): number;
     /**
      * Update an axis object with a new set of options. The options are merged with the existing options, so only new or
      * altered options need to be specified.
@@ -5640,7 +5645,7 @@ interface HighchartsAxisObject {
      * @param {boolean}               redraw  Defaults to true. Whether to redraw the chart after the new options are set.
      * @since 3.0
      */
-    update(options:HighchartsAxisOptions, redraw?:boolean): void;
+    update(options: HighchartsAxisOptions, redraw?: boolean): void;
 }
 
 /**
@@ -5660,7 +5665,7 @@ interface HighchartsChartObject {
      * @return {HighchartsAxisObject}
      * @since 3.0
      */
-    addAxis(options:HighchartsAxisOptions, isX?:boolean, redraw?:boolean, animation?:boolean | HighchartsAnimation): HighchartsAxisObject;
+    addAxis(options: HighchartsAxisOptions, isX?: boolean, redraw?: boolean, animation?: boolean | HighchartsAnimation): HighchartsAxisObject;
     /**
      * Add a series to the chart after render time. Note that this method should never be used when adding data
      * synchronously at chart render time, as it adds expense to the calculations and rendering. When adding data at the
@@ -5669,7 +5674,7 @@ interface HighchartsChartObject {
      * @param [boolean] redraw
      * @since 1.2.0
      */
-    addSeries<T extends HighchartsIndividualSeriesOptions>(options:T, redraw?:boolean, animation?:boolean | HighchartsAnimation): T;
+    addSeries<T extends HighchartsIndividualSeriesOptions>(options: T, redraw?: boolean, animation?: boolean | HighchartsAnimation): T;
     /**
      * Add a series to the chart as drilldown from a specific point in the parent series. This method is used for async
      * drilldown, when clicking a point in a series should result in loading and displaying a more high-resolution
@@ -5678,7 +5683,7 @@ interface HighchartsChartObject {
      * @param {HighchartsIndividualSeriesOptions} seriesOptions The series options, as documented under plotOptions.series and under the plotOptions for each series type.
      * @since 3.0.8
      */
-    addSeriesAsDrilldown(point:HighchartsPointObject, seriesOptions:HighchartsIndividualSeriesOptions): void;
+    addSeriesAsDrilldown(point: HighchartsPointObject, seriesOptions: HighchartsIndividualSeriesOptions): void;
     /**
      * A reference to the containing HTML element, dynamically inserted into the element given in chart.renderTo.
      * @since 1.2.5
@@ -5707,7 +5712,7 @@ interface HighchartsChartObject {
      * @param {HighchartsExportingOptions} options Exporting options. Out of the exporting options, the following options can be given as parameters to the exportChart method. All options default to the values given in the exporting config options. filename: the filename for the export without extension, url: the URL for the server module to do the conversion, width: the width of the PNG or JPEG image generated on the server, type: the MIME type of the converted image, sourceWidth: the width of the source (in-page) chart, sourceHeight: the height of the source chart.
      * @since 2.0
      */
-    exportChart(options:HighchartsExportingOptions): void;
+    exportChart(options: HighchartsExportingOptions): void;
     /**
      * Exporting module required. Submit an SVG version of the chart to a server along with some parameters for
      * conversion.
@@ -5715,21 +5720,21 @@ interface HighchartsChartObject {
      * @param {HighchartsOptions} chartOptions Additional chart options for the exported chart. For example a different background color can be added here.
      * @since 2.0
      */
-    exportChart(options:HighchartsExportingOptions, chartOptions:HighchartsOptions): void;
+    exportChart(options: HighchartsExportingOptions, chartOptions: HighchartsOptions): void;
     /**
      * Get an axis, series or point by its id as given in the configuration options.
      * @param  {string} id The id of the axis, series or point to get.
      * @return {HighchartsAxisObject|HighchartsSeriesObject|HighchartsPointObject}
      * @since 1.2.0
      */
-    get(id:string): HighchartsAxisObject | HighchartsSeriesObject | HighchartsPointObject;
+    get(id: string): HighchartsAxisObject | HighchartsSeriesObject | HighchartsPointObject;
     /**
      * Exporting module required. Get an SVG string representing the chart.
      * @param  {HighchartsOptions} additionalOptions Chart options to add to the exported chart in addition to the options given for the original chart. For example if series.lineWidth should be greater in the exported chart than in the original, or the chart should have a different background color, this is added here.
      * @return {string}
      * @since 2.0
      */
-    getSVG(additionalOptions?:HighchartsOptions): string;
+    getSVG(additionalOptions?: HighchartsOptions): string;
     /**
      * Returns an array of all currently selected points in the chart. Points can be selected either programmatically by
      * the point.select() method or by clicking.
@@ -5769,7 +5774,7 @@ interface HighchartsChartObject {
      * @param [boolean | HighchartsAnimation] animation Defaults to true. When true, the update will be animated with default animation options. The animation can also be a configuration object with properties duration and easing.
      * @since 1.2.0
      */
-    redraw(animation?:boolean | HighchartsAnimation): void;
+    redraw(animation?: boolean | HighchartsAnimation): void;
     /**
      * Reflows the chart to its container. By default, the chart reflows automatically to its container following a
      * window.resize event, as per the chart.reflow option. However, there are no reliable events for div resize, so if
@@ -5788,7 +5793,7 @@ interface HighchartsChartObject {
      * @param {number} height The new pixel height of the chart.
      * @param {boolean | HighchartsAnimation} animation Defaults to true. When true, the resize will be animated with default animation options. The animation can also be a configuration object with properties duration and easing.
      */
-    setSize(width:number, height:number, animation?:boolean | HighchartsAnimation): void;
+    setSize(width: number, height: number, animation?: boolean | HighchartsAnimation): void;
     /**
      * Set a new title or subtitle for the chart
      * @param {HighchartsTitleOptions} title A configuration object for the new title as defined at #title.
@@ -5796,13 +5801,13 @@ interface HighchartsChartObject {
      * @param [boolean] redraw Whether to redraw the chart. Defaults to true.
      * @since 2.1.0
      */
-    setTitle(title:HighchartsTitleOptions, subtitle?:HighchartsSubtitleOptions, redraw?:boolean): void;
+    setTitle(title: HighchartsTitleOptions, subtitle?: HighchartsSubtitleOptions, redraw?: boolean): void;
     /**
      * Dim the chart's plot area and show a loading label text. Options for the loading screen are defined at
      * options.loading. A custom text can be given as a parameter for loading.
      * @since 2.0.5
      */
-    showLoading(str?:string): void;
+    showLoading(str?: string): void;
     /**
      * This method is deprecated as of 2.0.1. Updating the chart position after a move operation is no longer necessary.
      * @since 1.2.5
@@ -5829,21 +5834,21 @@ interface HighchartsChart {
      * @param  {HighchartsOptions} options The chart options
      * @return {HighchartsChartObject}
      */
-    new (options:HighchartsOptions): HighchartsChartObject;
+    new (options: HighchartsOptions): HighchartsChartObject;
     /**
      * This is the constructor for creating a new chart object.
      * @param {HighchartsOptions} options The chart options
      * @param callback A function to execute when the chart object is finished loading and rendering. In most cases the chart is built in one thread, but in Internet Explorer version 8 or less the chart is sometimes initiated before the document is ready, and in these cases the chart object will not be finished directly after callingnew Highcharts.Chart(). As a consequence, code that relies on the newly built Chart object should always run in the callback. Defining a chart.event.load handler is equivalent.
      * @return {HighchartsChartObject}
      */
-    new (options:HighchartsOptions, callback:(chart:HighchartsChartObject) => void): HighchartsChartObject;
+    new (options: HighchartsOptions, callback: (chart: HighchartsChartObject) => void): HighchartsChartObject;
     /**
      * This is the constructor for creating a new chart object.
      * @param {string|HTMLElement} renderTo The id or a reference to a DOM element where the chart should be rendered (since v4.2.0).
      * @param {HighchartsOptions} options The chart options
      * @return {HighchartsChartObject}
      */
-    new (renderTo:string | HTMLElement, options:HighchartsOptions): HighchartsChartObject;
+    new (renderTo: string | HTMLElement, options: HighchartsOptions): HighchartsChartObject;
     /**
      * This is the constructor for creating a new chart object.
      * @param {string|HTMLElement} renderTo The id or a reference to a DOM element where the chart should be rendered (since v4.2.0).
@@ -5851,7 +5856,7 @@ interface HighchartsChart {
      * @param callback A function to execute when the chart object is finished loading and rendering. In most cases the chart is built in one thread, but in Internet Explorer version 8 or less the chart is sometimes initiated before the document is ready, and in these cases the chart object will not be finished directly after callingnew Highcharts.Chart(). As a consequence, code that relies on the newly built Chart object should always run in the callback. Defining a chart.event.load handler is equivalent.
      * @return {HighchartsChartObject}
      */
-    new (renderTo:string | HTMLElement, options:HighchartsOptions, callback:(chart:HighchartsChartObject) => void): HighchartsChartObject;
+    new (renderTo: string | HTMLElement, options: HighchartsOptions, callback: (chart: HighchartsChartObject) => void): HighchartsChartObject;
 }
 
 /**
@@ -5866,7 +5871,7 @@ interface HighchartsElementObject {
      * @return {HighchartsElementObject}
      * @since 2.0
      */
-    add(parent?:HighchartsElementObject): HighchartsElementObject;
+    add(parent?: HighchartsElementObject): HighchartsElementObject;
     /**
      * Apply numeric attributes to the SVG/VML element by animation. See Element.attr() for more information on setting
      * attributes.
@@ -5875,7 +5880,7 @@ interface HighchartsElementObject {
      * @return {HighchartsElementObject}
      * @since 2.0
      */
-    animate(attributes:any, animation?:any): HighchartsElementObject;
+    animate(attributes: any, animation?: any): HighchartsElementObject;
     /**
      * Apply attributes to the SVG/VML elements. These attributes for the most parts correspond to SVG, but some are
      * specific to Highcharts, like zIndex and rotation.
@@ -5888,20 +5893,20 @@ interface HighchartsElementObject {
      * @return {HighchartsElementObject}
      * @since 2.0
      */
-    attr(hash:any): HighchartsElementObject;
+    attr(hash: any): HighchartsElementObject;
     /**
      * Apply some CSS properties to the element
      * @param {Object} hash The object literal of CSS properties to apply. Properties should be hyphenated, not camelCased.
      * @return {HighchartsElementObject}
      * @since 2.0
      */
-    css(hash:Object): HighchartsElementObject;
+    css(hash: Object): HighchartsElementObject;
     /**
      * Destroy the element and free up memory
      * @since 2.0
      */
     destroy(): void;
-    fadeOut(duration?:number): void;
+    fadeOut(duration?: number): void;
     /**
      * Get the bounding box of the element
      * @return An object containing x, y, width and height values for the element.
@@ -5915,7 +5920,7 @@ interface HighchartsElementObject {
      * @return {HighchartsElementObject}
      * @since 2.0
      */
-    on(eventType:string, handler:() => void): HighchartsElementObject;
+    on(eventType: string, handler: () => void): HighchartsElementObject;
     /**
      * Bring the element to the front. Alternatively, a zIndex attribute can be given.
      * @return {HighchartsElementObject} The element object
@@ -5948,7 +5953,7 @@ interface HighchartsRendererObject {
      * @return {HighchartsElementObject}
      * @since 2.0
      */
-    arc(centerX:number, centerY:number, outerRadius:number, innerRadius:number, start:number, end:number): HighchartsElementObject;
+    arc(centerX: number, centerY: number, outerRadius: number, innerRadius: number, start: number, end: number): HighchartsElementObject;
     /**
      * Draw circle on the renderer canvas.
      * @param  {number} centerX The x position of the circle's center in the SVG element.
@@ -5957,14 +5962,14 @@ interface HighchartsRendererObject {
      * @return {HighchartsElementObject}
      * @since 2.0
      */
-    circle(centerX:number, centerY:number, radius:number): HighchartsElementObject;
+    circle(centerX: number, centerY: number, radius: number): HighchartsElementObject;
     /**
      * Add an SVG/VML group.
      * @param [string] name The name of the group. This will be used in the class name, which will be 'highcharts-'+ name. Other Element objects are added to the group by using the group as the first parameter in .add() for the wrappers
      * @return {HighchartsElementObject}
      * @since 2.0
      */
-    g(name?:string): HighchartsElementObject;
+    g(name?: string): HighchartsElementObject;
     /**
      * Add an image from an external resource.
      * @param  {string} source The URL of the image.
@@ -5975,7 +5980,7 @@ interface HighchartsRendererObject {
      * @return {HighchartsElementObject}
      * @since 2.0
      */
-    image(source:string, x:number, y:number, width:number, height:number): HighchartsElementObject;
+    image(source: string, x: number, y: number, width: number, height: number): HighchartsElementObject;
     /**
      * Draw a label, which is an extended text element with support for border and background. Highcharts creates a g
      * element with a text and a path or rect inside, to make it behave somewhat like a HTML div. Border and background
@@ -5993,14 +5998,14 @@ interface HighchartsRendererObject {
      * @return {HighchartsElementObject}
      * @since 2.0
      */
-    label(str:string, x:number, y:number, shape?:string, anchorX?:number, anchorY?:number, useHTML?:boolean, baseline?:boolean, className?:string): HighchartsElementObject;
+    label(str: string, x: number, y: number, shape?: string, anchorX?: number, anchorY?: number, useHTML?: boolean, baseline?: boolean, className?: string): HighchartsElementObject;
     /**
      * Add a path based on SVG's path commands. In SVG capable browsers all path commands are supported, but in VML only
      * a subset is supported: absolute moveTo (M), absolute lineTo (L), absolute curveTo (C) and close (Z).
      * @param  {(string|number)[]} path An SVG path split up in array form.
      * @return {HighchartsElementObject}
      */
-    path(path:[string|number]): HighchartsElementObject;
+    path(path: [string|number]): HighchartsElementObject;
     /**
      * Add a rectangle.
      * @param  {number} x The x position of the rectangle's upper left corner.
@@ -6011,7 +6016,7 @@ interface HighchartsRendererObject {
      * @return {HighchartsElementObject}
      * @since 2.0
      */
-    rect(x:number, y:number, width:number, height:number, cornerRadius:number): HighchartsElementObject;
+    rect(x: number, y: number, width: number, height: number, cornerRadius: number): HighchartsElementObject;
     /**
      * Draw text. The text can contain a subset of HTML, like spans and anchors and some basic text styling of these.
      * For more advanced features like border and background, use label instead.
@@ -6021,28 +6026,28 @@ interface HighchartsRendererObject {
      * @return {HighchartsElementObject}
      * @since 2.0
      */
-    text(str:string, x:number, y:number): HighchartsElementObject;
+    text(str: string, x: number, y: number): HighchartsElementObject;
 }
 
 interface HighchartsRenderer {
-    new (parentNode:HTMLElement, width:number, height:number): HighchartsRendererObject;
+    new (parentNode: HTMLElement, width: number, height: number): HighchartsRendererObject;
 }
 
 interface HighchartsStatic {
     Chart: HighchartsChart;
     Renderer: HighchartsRenderer;
-    Color(color:string | HighchartsGradient): string | HighchartsGradient;
+    Color(color: string | HighchartsGradient): string | HighchartsGradient;
 
     /**
      * As Highcharts.Chart, but without need for the new keyword.
      * @since 4.2.0
      */
-    chart(options:HighchartsOptions, callback?:(chart:HighchartsChartObject) => void): HighchartsChartObject;
+    chart(options: HighchartsOptions, callback?: (chart: HighchartsChartObject) => void): HighchartsChartObject;
     /**
      * As Highcharts.Chart, but without need for the new keyword.
      * @since 4.2.0
      */
-    chart(renderTo:string | HTMLElement, options:HighchartsOptions, callback?:(chart:HighchartsChartObject) => void): HighchartsChartObject;
+    chart(renderTo: string | HTMLElement, options: HighchartsOptions, callback?: (chart: HighchartsChartObject) => void): HighchartsChartObject;
     /**
      * An array containing the current chart objects in the page. A chart's position in the array is preserved
      * throughout the page's lifetime. When a chart is destroyed, the array item becomes undefined.
@@ -6058,7 +6063,7 @@ interface HighchartsStatic {
      * @param  [boolean] capitalize Whether to capitalize words in the return string.
      * @return {string}
      */
-    dateFormat(format:string, time?:number, capitalize?:boolean): string;
+    dateFormat(format: string, time?: number, capitalize?: boolean): string;
     /**
      * A hook for defining additional date format specifiers. New specifiers are defined as key-value pairs by using the
      * specifier as key, and a function which takes the timestamp as value. This function returns the formatted portion
@@ -6074,24 +6079,24 @@ interface HighchartsStatic {
      * @param  {string} thousandsSep The thousands separator. Defaults to ' ' or to the string specified globally in options.lang.thousandsSep.
      * @return {string}
      */
-    numberFormat(value:number, decimals?:number, decimalPoint?:string, thousandsSep?:string): string;
+    numberFormat(value: number, decimals?: number, decimalPoint?: string, thousandsSep?: string): string;
     /**
      * Sets the options globally for all charts created after this has been called. Takes an options JavaScript object
      * structure as the argument. These options are merged with the default options and the result is returned.
      * @param options The chart configuration object.
      * @return {HighchartsOptions}
      */
-    setOptions(options:HighchartsGlobalOptions): HighchartsOptions;
+    setOptions(options: HighchartsGlobalOptions): HighchartsOptions;
     /**
      * Get the updated default options. Until 3.0.7, merely exposing defaultOptions for outside modules
      * wasn't enough because the setOptions method created a new object.
      */
     getOptions(): HighchartsOptions;
 
-    map(array:any[], fn:Function): any[];
+    map(array: any[], fn: Function): any[];
 }
 
-declare var Highcharts:HighchartsStatic;
+declare var Highcharts: HighchartsStatic;
 
 /**
  * The Point object is the JavaScript representation of each data point
@@ -6120,14 +6125,14 @@ interface HighchartsPointObject {
      * @param [boolean|HighchartsAnimation] animation Defaults to true. When true, the graph's updating will be animated with default animation options. The animation can also be a configuration object with properties duration and easing.
      * @since 1.2.0
      */
-    remove(redraw?:boolean, animation?:boolean|HighchartsAnimation): void;
+    remove(redraw?: boolean, animation?: boolean|HighchartsAnimation): void;
     /**
      * Select or unselect the point.
      * @param [boolean] select When true, the point is selected. When false, the point is unselected. When null or undefined, the selection state is toggled.
      * @param [boolean] accumulate When true, the selection is added to other selected points. When false, other selected points are deselected. Internally in Highcharts,selected points are accumulated on Control, Shift or Cmd clicking the point.
      * @since 1.2.0
      */
-    select(select?:boolean, accumulate?:boolean): void;
+    select(select?: boolean, accumulate?: boolean): void;
     /**
      * Whether the point is selected or not.
      * @since 1.2.0
@@ -6146,7 +6151,7 @@ interface HighchartsPointObject {
      * @param [boolean|HighchartsAnimation] animation Defaults to true. When true, the move will be animated with default animation options. The animation can also be a configuration object with properties duration and easing.
      * @since 1.2.0
      */
-    slice(sliced?:boolean, redraw?:boolean, animation?:boolean|HighchartsAnimation): void;
+    slice(sliced?: boolean, redraw?: boolean, animation?: boolean|HighchartsAnimation): void;
     /**
      * The total of a stack for stacked series, or pie in pie charts.
      */
@@ -6158,7 +6163,7 @@ interface HighchartsPointObject {
      * @param {boolean|HighchartsAnimation} animation Defaults to true. When true, the update will be animated with default animation options. The animation can also be a configuration object with properties duration and easing.
      * @since 1.2.0
      */
-    update(options:number | [number, number] | HighchartsDataPoint, redraw?:boolean, animation?:boolean | HighchartsAnimation): void;
+    update(options: number | [number, number] | HighchartsDataPoint, redraw?: boolean, animation?: boolean | HighchartsAnimation): void;
     /**
      * The x value for the point.
      * @since 1.2.0
@@ -6195,7 +6200,7 @@ interface HighchartsSeriesObject {
      * @param [(boolean|HighchartsAnimation)=false] animation - When shift is true, one point is shifted off the start of the series as one is appended to the end. Use this option for live charts monitoring a value over time.
      * @since 1.2.0
      */
-    addPoint(options:number |[number, number]| HighchartsDataPoint, redraw?:boolean, shift?:boolean, animation?:boolean | HighchartsAnimation): void;
+    addPoint(options: number |[number, number]| HighchartsDataPoint, redraw?: boolean, shift?: boolean, animation?: boolean | HighchartsAnimation): void;
     /**
      * Read only. The chart that the series belongs to.
      * @since 1.2.0
@@ -6227,7 +6232,7 @@ interface HighchartsSeriesObject {
      * @param [boolean=true] redraw - Whether to redraw the chart after the series is removed.If doing more operations on the chart, it is a good idea to set redraw to false and call chart.redraw() after.
      * @since 1.2.0
      */
-    remove(redraw?:boolean): void;
+    remove(redraw?: boolean): void;
     /**
      * Remove a point from the series. Unlike the Point.remove method, this can also be done on a point that is not
      * instanciated because it is outside the view or subject to data grouping.
@@ -6236,14 +6241,14 @@ interface HighchartsSeriesObject {
      * @param [boolean|HighchartsAnimation=true] animation - When true, the graph will be animated with default animation options. The animation can also be a configuration object with properties duration and easing.
      * @since 4.1.0
      */
-    removePoint(index:number, redraw?:boolean, animation?:boolean|HighchartsAnimation): void;
+    removePoint(index: number, redraw?: boolean, animation?: boolean|HighchartsAnimation): void;
     /**
      * Select or unselect the series. This means its selected property is set,the checkbox in the legend is toggled and
      * when selected, the series is returned in the chart.getSelectedSeries() method.
      * @param [boolean] selected - When true, the series is selected. When false it is unselected. When null or undefined, the series' selection state is toggled.
      * @since 1.2.0
      */
-    select(selected?:boolean): void;
+    select(selected?: boolean): void;
     /**
      * Read only. The series' selected state as set by series.select().
      * @since 1.2.0
@@ -6258,14 +6263,14 @@ interface HighchartsSeriesObject {
      * @param [boolean] updatePoints - When the updated data is the same length as the existing data, points will be updated instead of replace. This option prevents this, and makes setData behave like it did prior to Highcharts 3.0.10.
      * @since 1.2.0
      */
-    setData(data:number[] | number[][] | HighchartsDataPoint[], redraw?:boolean, animation?:boolean | HighchartsAnimation, updatePoints?:boolean): void;
+    setData(data: number[] | number[][] | HighchartsDataPoint[], redraw?: boolean, animation?: boolean | HighchartsAnimation, updatePoints?: boolean): void;
     /**
      * A utility function to show or hide the series with an optional redraw.
      * @param [boolean] visible - Whether to show or hide the series. If undefined, the visibility is toggled.
      * @param [boolean=true] redraw - Whether to redraw the chart after the series is altered.If doing more operations on the chart, it is a good idea to set redraw to false and call chart.redraw() after.
      * @since 1.2.0
      */
-    setVisible(visible?:boolean, redraw?:boolean): void;
+    setVisible(visible?: boolean, redraw?: boolean): void;
     /**
      * Shows the series if hidden.
      * @since 1.2.0
@@ -6284,7 +6289,7 @@ interface HighchartsSeriesObject {
      * @param [boolean] redraw - Whether to redraw the chart after the series is altered. If doing more operations on the chart, it is a good idea to set redraw to false and call chart.redraw() after.
      * @since 1.2.0
      */
-    update(options:HighchartsIndividualSeriesOptions, redraw?:boolean): void;
+    update(options: HighchartsIndividualSeriesOptions, redraw?: boolean): void;
     /**
      * Read only. The series' visibility state as set by series.show(), series.hide(), or the initial configuration.
      * @since 1.2.0
@@ -6310,7 +6315,7 @@ interface JQuery {
      * @param {HighchartsOptions} options Options for this chart
      * @return current {JQuery} selector the current JQuery selector
      **/
-    highcharts(options:HighchartsOptions): JQuery;
+    highcharts(options: HighchartsOptions): JQuery;
     /**
      * Creates a new Highcharts.Chart for the current JQuery selector; usually
      * a div selected by $('#container')
@@ -6318,7 +6323,7 @@ interface JQuery {
      * @param callback Callback function used to manipulate the constructed chart instance
      * @return current {JQuery} selector the current JQuery selector
      **/
-    highcharts(options:HighchartsOptions, callback:(chart:HighchartsChartObject) => void): JQuery;
+    highcharts(options: HighchartsOptions, callback: (chart: HighchartsChartObject) => void): JQuery;
 
-    highcharts(name:string, options:HighchartsOptions): JQuery;
+    highcharts(name: string, options: HighchartsOptions): JQuery;
 }

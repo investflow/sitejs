@@ -1,34 +1,14 @@
 import * as $ from "jquery";
-import * as log from "loglevel";
-import {percentBetween} from "./calc";
+import {percentBetweenPercents, percentBetweenEquity} from "./calc";
 import {getAccountInfo, AccountInfoResponse} from "./investflow-api";
 import {Broker} from "./broker";
+
 const HIGHCHARTS_MODAL_DIV_ID = "iflow_highcharts_modal";
 
-const HIGHCHARTS_MODAL_DIV_HTML =
-    `<div class="modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">
-                        <span class="modal-title-text">Доходность счета</span>
-                        <span class="txt-muted itl pl15 modal-title-profit" title="Доходность за выбранный период."></span>
-                    </h4>
-                </div>
-                <div class="modal-body">
-                    <div class="iflow-modal-chart"></div>
-                </div>
-                <div class="modal-footer">
-                    <a class="btn btn-success account-url" target="_blank" >Страница счета</a>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-                 </div>
-            </div>
-        </div>
-    </div>`;
+var localized = false;
 
-function getRangeButtons(firstEventMillis:number, lastEventMillis:number):Array<any> {
-    let buttons:Array<any> = [];
+function getRangeButtons(firstEventMillis: number, lastEventMillis: number): Array<any> {
+    let buttons: Array<any> = [];
     let millisPerMonth = 30 * 24 * 60 * 60 * 1000;
     let rangeMillis = lastEventMillis - firstEventMillis;
 
@@ -52,19 +32,27 @@ function getRangeButtons(firstEventMillis:number, lastEventMillis:number):Array<
 }
 
 export interface AccountChartOptions {
-    profitData:Array<Array<number>>,
-    balanceData?:Array<Array<number>>,
-    equityData?:Array<Array<number>>,
-    chartElementSelector:string,
-    profitLabelSelector:string;
-    fullAccountName:string;
-    broker?:number,
-    currencySuffix?:string,
-    currencyPrefix?:string
+    profitData: Array<Array<number>>,
+    balanceData?: Array<Array<number>>,
+    equityData?: Array<Array<number>>,
+    chartElementSelector: string,
+    profitLabelSelector: string;
+    fullAccountName: string;
+    broker?: number,
+    currencySuffix?: string,
+    currencyPrefix?: string
 }
 
-function deriveDecimalPrecision(profitData:Array<Array<number>>, minIdx?:number, maxIdx?:number):number {
-    let maxValue:number = 0;
+function emptyIfNull(val: string): string {
+    return val ? val : "";
+}
+
+function getDefaultLabelDecimalsForPercent(val: number) {
+    return val > 1000 ? 0 : val > 100 ? 1 : 2;
+}
+
+function deriveDecimalPrecision(profitData: Array<Array<number>>, minIdx?: number, maxIdx?: number): number {
+    let maxValue: number = 0;
     let fromIdx = typeof minIdx === "undefined" ? 0 : minIdx;
     let toIdx = typeof  maxIdx === "undefined" ? profitData.length : maxIdx;
     for (let i = fromIdx; i < toIdx; i++) {
@@ -74,7 +62,7 @@ function deriveDecimalPrecision(profitData:Array<Array<number>>, minIdx?:number,
     return maxValue > 10000 ? 0 : (maxValue < 10 ? 4 : 2);
 }
 
-function getIdxBeforeOrEquals(timestamp:number, profitData:Array<Array<number>>):number {
+function getIdxBeforeOrEquals(timestamp: number, profitData: Array<Array<number>>): number {
     for (let i = 0; i < profitData.length; i++) {
         let t = profitData[i][0];
         if (t > timestamp) {
@@ -92,17 +80,31 @@ function getIdxBeforeOrEquals(timestamp:number, profitData:Array<Array<number>>)
  return res;
  }*/
 
-function updateProfitLabel($profitLabel:JQuery, profitData:Array<Array<number>>, startEventIdx:number, endEventIdx:number, decimals:number) {
+function updateProfitLabel($profitLabel: JQuery, profitData: Array<Array<number>>, startEventIdx: number, endEventIdx: number, valueDecimals: number, options: AccountChartOptions) {
     if ($profitLabel.length == 0) {
         return;
     }
+
     let startValue = profitData[startEventIdx][1];
     let endValue = profitData[endEventIdx][1];
-    let change = percentBetween(startValue, endValue);
-    $profitLabel.text(change.toFixed(decimals) + "%");
+
+    let broker = Broker.getBrokerById(options.broker);
+    let text;
+    if (broker.isPercentBasedPrice()) {
+        let change = percentBetweenPercents(startValue, endValue);
+        const decimals = getDefaultLabelDecimalsForPercent(change);
+        text = (change > 0 ? "+" : "") + change.toFixed(decimals) + "%";
+    } else {
+        let percentChange = percentBetweenEquity(startValue, endValue);
+        let valueChange = endValue - startValue;
+        const percentDecimals = getDefaultLabelDecimalsForPercent(percentChange);
+        text = (valueChange > 0 ? "+" : "") + emptyIfNull(options.currencyPrefix) + valueChange.toFixed(valueDecimals) + emptyIfNull(options.currencySuffix)
+            + " или " + (percentChange > 0 ? "+" : "") + percentChange.toFixed(percentDecimals) + "%";
+    }
+    $profitLabel.text(text);
 }
 
-function prepareAccountProfitChartOptions(options:AccountChartOptions):any {
+function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
     let firstEventMillis = -1;
     let lastEventMillis = -1;
     let profitData = options.profitData;
@@ -110,20 +112,19 @@ function prepareAccountProfitChartOptions(options:AccountChartOptions):any {
         firstEventMillis = profitData[0][0];
         lastEventMillis = profitData[profitData.length - 1][0];
     }
-    let buttons:Array<any> = getRangeButtons(firstEventMillis, lastEventMillis);
+    let buttons: Array<any> = getRangeButtons(firstEventMillis, lastEventMillis);
+    var broker = Broker.getBrokerById(options.broker);
     let vState = {
-        valueDecimals: Broker.getBrokerById(options.broker) == Broker.MOEX ? deriveDecimalPrecision(profitData) : 2,
+        valueDecimals: broker.isPercentBasedPrice() ? deriveDecimalPrecision(profitData) : 2,
         minShownIdx: 0,
         maxShownIdx: profitData.length - 1,
         maxValue: undefined,
         minValue: undefined
     };
-    updateProfitLabel($(options.profitLabelSelector), profitData, 0, profitData.length - 1, vState.valueDecimals);
+    updateProfitLabel($(options.profitLabelSelector), profitData, 0, profitData.length - 1, vState.valueDecimals, options);
 
-    log.debug("decimals on chart: " + vState.valueDecimals);
-
-    var cp = options.currencyPrefix ? options.currencyPrefix : "";
-    var cs = options.currencySuffix ? options.currencySuffix : "";
+    var cp = emptyIfNull(options.currencyPrefix);
+    var cs = emptyIfNull(options.currencySuffix);
     var hasEquity = options.equityData && options.equityData.length > 0;
     var hasBalance = options.balanceData && options.balanceData.length > 0;
     const hasEquityOrBalance = hasEquity || hasBalance;
@@ -154,7 +155,18 @@ function prepareAccountProfitChartOptions(options:AccountChartOptions):any {
         },
         tooltip: {
             xDateFormat: "%Y-%m-%d",
-            shared: true
+            shared: true,
+            useHtml: true,
+            formatter: function () {
+                var s = "<span style='font-size: 10px'>" + Highcharts.dateFormat("%Y-%m-%d", this.x) + "</span><br/>";
+                $.each(this.points, function () {
+                    var to = this.series.tooltipOptions;
+                    var val = to.valuePrefix + this.point.y.toFixed(to.valueDecimals !== "undefined" ? to.valueDecimals : 2) + to.valueSuffix;
+                    s += `<span style="color:${this.color}">\u25CF</span> ${this.series.name}: <b>${val}</b><br/>`
+                });
+
+                return s;
+            }
         },
         plotOptions: {
             line: {
@@ -178,7 +190,7 @@ function prepareAccountProfitChartOptions(options:AccountChartOptions):any {
                             let startEventIdx = Math.max(0, getIdxBeforeOrEquals(e.min, profitData));
                             let endEventIdx = Math.max(startEventIdx, getIdxBeforeOrEquals(e.max, profitData));
 
-                            updateProfitLabel($profitLabel, profitData, startEventIdx, endEventIdx, vState.valueDecimals);
+                            updateProfitLabel($profitLabel, profitData, startEventIdx, endEventIdx, vState.valueDecimals, options);
                         } else {
                             $profitLabel.text("");
                         }
@@ -190,14 +202,16 @@ function prepareAccountProfitChartOptions(options:AccountChartOptions):any {
     };
 
     //profit chart
-    var profitSuffix = options.broker == Broker.MOEX.id ? "" : "%";
+    var profitPrefix = cp;
+    var profitSuffix = broker.isPercentBasedPrice() ? "%" : cs;
     res.series.push({
-        name: "Доходность",
+        name: broker.isPercentBasedPrice() ? "Доходность" : "Стоимость",
         data: profitData,
         color: profitChartColor,
         lineWidth: 3,
         tooltip: {
             valueDecimals: vState.valueDecimals,
+            valuePrefix: profitPrefix,
             valueSuffix: profitSuffix
         },
         marker: {
@@ -208,7 +222,7 @@ function prepareAccountProfitChartOptions(options:AccountChartOptions):any {
     });
     res.yAxis.push({
         labels: {
-            format: "{value}" + profitSuffix,
+            format: profitPrefix + "{value}" + profitSuffix,
             style: {
                 color: hasEquityOrBalance ? profitChartColor : "#333333"
             }
@@ -238,7 +252,7 @@ function prepareAccountProfitChartOptions(options:AccountChartOptions):any {
             },
             tooltip: {
                 valuePrefix: cp,
-                valueSuffix: cs
+                valueSuffix: cs,
             },
             yAxis: res.yAxis.length - 1,
             zIndex: 1
@@ -254,7 +268,7 @@ function prepareAccountProfitChartOptions(options:AccountChartOptions):any {
             },
             tooltip: {
                 valuePrefix: cp,
-                valueSuffix: cs
+                valueSuffix: cs,
             },
             yAxis: res.yAxis.length - 1,
             zIndex: 2
@@ -263,7 +277,29 @@ function prepareAccountProfitChartOptions(options:AccountChartOptions):any {
     return res;
 }
 
-function showChart(accountInfo:AccountInfoResponse) {
+function localize() {
+    localized = true;
+    let langObject: HighchartsLangObject = {
+        months: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+        shortMonths: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
+        weekdays: ['Воскресение', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'],
+        printChart: "Отправить на печать",
+        downloadPNG: 'Сохранить в формате PNG',
+        downloadJPEG: 'Сохранить в формате JPEG',
+        downloadPDF: 'Сохранить в формате PDF',
+        downloadSVG: 'Сохранить в формате SVG',
+        loading: 'Загрузка...',
+        rangeSelectorZoom: "Период",
+        rangeSelectorFrom: "с",
+        rangeSelectorTo: "по"
+    };
+    let options: any = {lang: langObject};
+    Highcharts.setOptions(options);
+}
+function showChart(accountInfo: AccountInfoResponse) {
+    if (!localized) {
+        localize();
+    }
     // find modal window, create if not found
     let $modalDiv = $("#" + HIGHCHARTS_MODAL_DIV_ID);
     if ($modalDiv.length === 0) {
@@ -272,10 +308,32 @@ function showChart(accountInfo:AccountInfoResponse) {
 
     // reset old window contents
     $modalDiv.empty();
-    $modalDiv.append(HIGHCHARTS_MODAL_DIV_HTML);
+    var broker = Broker.getBrokerById(accountInfo.broker);
+    const percentBasedPrice = broker.isPercentBasedPrice();
+    var titleAttr = percentBasedPrice ? "Доходность за выбранный период." : "Изменение стоимости за выбранный период.";
+    $modalDiv.append(`<div class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">
+                        <span class="modal-title-text"></span> <span class="txt-muted itl pl15 modal-title-profit" title="${titleAttr}"></span>
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <div class="iflow-modal-chart"></div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-success account-url" target="_blank" >Страница счета</a>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                 </div>
+            </div>
+        </div>
+    </div>`);
     let fullAccountName = accountInfo.name + "/" + accountInfo.account;
     let profitLabelId = "profit_label_" + Date.now();
-    $modalDiv.find(".modal-title-text").text("Доходность счета " + fullAccountName);
+    const headerText = (percentBasedPrice ? "Доходность счета «" + fullAccountName + "»" : "Изменение стоимости «" + fullAccountName + "»") + " за выбранный период: ";
+    $modalDiv.find(".modal-title-text").text(headerText);
     $modalDiv.find(".modal-title-profit").attr("id", profitLabelId);
     $modalDiv.find(".account-url").attr("href", accountInfo.url);
 
@@ -305,8 +363,8 @@ function showChart(accountInfo:AccountInfoResponse) {
     $modalDiv.find(".modal").first().modal();
 }
 
-function enableZoom($container:JQuery):void {
-    let chart:any = $container.highcharts();
+function enableZoom($container: JQuery): void {
+    let chart: any = $container.highcharts();
     //noinspection TypeScriptUnresolvedVariable
     chart.pointer.cmd = chart.pointer.onContainerMouseDown;
     //noinspection TypeScriptUnresolvedVariable
@@ -318,16 +376,16 @@ function enableZoom($container:JQuery):void {
 }
 
 export default {
-    attachModalAccountChart: function (elementSelector:string, broker:number, account:string):void {
-        $(elementSelector).click(function (e:Event) {
+    attachModalAccountChart: function (elementSelector: string, broker: number, account: string): void {
+        $(elementSelector).click(function (e: Event) {
             e.preventDefault();
-            getAccountInfo(broker, account).then((accountInfo:AccountInfoResponse)=> {
+            getAccountInfo(broker, account).then((accountInfo: AccountInfoResponse)=> {
                 showChart(accountInfo);
             });
         });
     },
 
-    addAccountChart: function (options:AccountChartOptions) {
+    addAccountChart: function (options: AccountChartOptions) {
         let highchartOptions = prepareAccountProfitChartOptions(options);
         var $chartEl = $(options.chartElementSelector);
         $chartEl.highcharts("StockChart", highchartOptions);
