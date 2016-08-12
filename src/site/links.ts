@@ -8,9 +8,10 @@ KnownImageExtensions["gif"] = true;
 // TODO: youtube embeds
 
 let PAMM_URL_PREFIX = "investflow.ru/pamm/";
+let SECURITY_URL_PREFIX = "investflow.ru/security/";
 let ALPARI_FUND_PAMM_URL_PREFIX = "investflow.ru/invest/fund/alpari/";
 
-function playYoutube(el:HTMLElement) {
+function playYoutube(el: HTMLElement) {
     // Create an iFrame with autoplay set to true
     var iframeUrl = "https://www.youtube.com/embed/" + el.id + "?autoplay=1&autohide=1";
     if ($(el).data('params')) {
@@ -25,12 +26,12 @@ function playYoutube(el:HTMLElement) {
     $(el).replaceWith(iframe);
 }
 
-function getYoutubeVideoId(url:string):string {
+function getYoutubeVideoId(url: string): string {
     var p = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
     return (url.match(p)) ? RegExp.$1 : null;
 }
 
-function replaceWithYoutubeEmbed(url:string, fallback:string) {
+function replaceWithYoutubeEmbed(url: string, fallback: string) {
     var videoId = getYoutubeVideoId(url);
     if (!videoId) {
         return fallback;
@@ -39,11 +40,12 @@ function replaceWithYoutubeEmbed(url:string, fallback:string) {
     return "<div id='" + videoId + "' class='youtube' style='" + style + "' onclick='$site.Utils.playYoutube(this);'>" + "<div class='play'></div></div>";
 }
 
-function replaceWithPammLink(url:string, fallbackLink:string):string {
-    if (url.indexOf(PAMM_URL_PREFIX) != 0) {
+function replaceWithPammLink(url: string, fallbackLink: string): string {
+    let effectivePrefix = url.indexOf(PAMM_URL_PREFIX) == 0 ? PAMM_URL_PREFIX : url.indexOf(SECURITY_URL_PREFIX) == 0 ? SECURITY_URL_PREFIX : null;
+    if (effectivePrefix == null) {
         return fallbackLink;
     }
-    var brokerStartIdx = PAMM_URL_PREFIX.length;
+    var brokerStartIdx = effectivePrefix.length;
     var brokerEndIdx = url.indexOf("/", brokerStartIdx);
     if (brokerEndIdx < 0) {
         return fallbackLink;
@@ -71,7 +73,7 @@ function replaceWithPammLink(url:string, fallbackLink:string):string {
     return "<a href='http://" + url + "' style='color:rgb(" + broker.rgb + ")' target='_blank' title='" + title + "'>" + name + "</a>"
 }
 
-function replaceWithAlpariFundLink(url:string, fallbackLink:string):string {
+function replaceWithAlpariFundLink(url: string, fallbackLink: string): string {
     if (url.indexOf(ALPARI_FUND_PAMM_URL_PREFIX) != 0) {
         return fallbackLink;
     }
@@ -90,7 +92,7 @@ function replaceWithAlpariFundLink(url:string, fallbackLink:string):string {
     return "<a href='http://" + url + "' style='color:rgb(" + Broker.ALPARI.rgb + ")' target='_blank' title='" + title + "'>" + name + "</a>"
 }
 
-function getLinkReplacement(link:string):string {
+function getLinkReplacement(link: string): string {
     var lcLink = link.toLocaleLowerCase();
     var url = link;
     if (lcLink.indexOf("http://") == 0) {
@@ -103,7 +105,7 @@ function getLinkReplacement(link:string):string {
     if (ext in KnownImageExtensions) {
         return "<a href='" + link + "' target='_blank'><img src='" + link + "' style='max-width: 400px; max-height: 300px;'></a>"
     }
-    if (lcUrl.indexOf(PAMM_URL_PREFIX) == 0) {
+    if (lcUrl.indexOf(PAMM_URL_PREFIX) == 0 || lcUrl.indexOf(SECURITY_URL_PREFIX) == 0) {
         return replaceWithPammLink(url, null);
     } else if (lcUrl.indexOf(ALPARI_FUND_PAMM_URL_PREFIX) == 0) {
         return replaceWithAlpariFundLink(url, null)
@@ -113,7 +115,7 @@ function getLinkReplacement(link:string):string {
     return null;
 }
 
-function processMediaLinks(text:string):string {
+function processMediaLinks(text: string): string {
     var res = text;
     var startIdx = res.indexOf("<a href=");
     while (startIdx >= 0) {
