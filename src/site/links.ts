@@ -5,7 +5,6 @@ KnownImageExtensions["jpg"] = true;
 KnownImageExtensions["gif"] = true;
 
 // TODO: portfolios
-// TODO: youtube embeds
 
 let PAMM_URL_PREFIX = "investflow.ru/pamm/";
 let SECURITY_URL_PREFIX = "investflow.ru/security/";
@@ -40,6 +39,9 @@ function replaceWithYoutubeEmbed(url: string, fallback: string) {
     return "<div id='" + videoId + "' class='youtube' style='" + style + "' onclick='$site.Utils.playYoutube(this);'>" + "<div class='play'></div></div>";
 }
 
+function getExternalLinkIconHtml() {
+    return " <i class='fa fa-external-link' style='font-size:80%; color:#555;'></i>";
+}
 function replaceWithPammLink(url: string, fallbackLink: string): string {
     let effectivePrefix = url.indexOf(PAMM_URL_PREFIX) == 0 ? PAMM_URL_PREFIX : url.indexOf(SECURITY_URL_PREFIX) == 0 ? SECURITY_URL_PREFIX : null;
     if (effectivePrefix == null) {
@@ -70,7 +72,7 @@ function replaceWithPammLink(url: string, fallbackLink: string): string {
     }
     var title = "Счет брокера: " + broker.name;
     //noinspection CssInvalidFunction
-    return "<a href='http://" + url + "' style='color:rgb(" + broker.rgb + ")' target='_blank' title='" + title + "'>" + name + "</a>"
+    return "<a href='http://" + url + "' style='color:rgb(" + broker.rgb + ")' target='_blank' title='" + title + "'>" + name + getExternalLinkIconHtml() + "</a>";
 }
 
 function replaceWithAlpariFundLink(url: string, fallbackLink: string): string {
@@ -89,7 +91,7 @@ function replaceWithAlpariFundLink(url: string, fallbackLink: string): string {
     }
     var title = "Фонд. Брокер Альпари";
     //noinspection CssInvalidFunction
-    return "<a href='http://" + url + "' style='color:rgb(" + Broker.ALPARI.rgb + ")' target='_blank' title='" + title + "'>" + name + "</a>"
+    return "<a href='http://" + url + "' style='color:rgb(" + Broker.ALPARI.rgb + ")' target='_blank' title='" + title + "'>" + name + getExternalLinkIconHtml() + "</a>"
 }
 
 function getLinkReplacement(link: string): string {
