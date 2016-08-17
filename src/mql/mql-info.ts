@@ -1,6 +1,7 @@
 const mql4KeywordsArray = <Array<Array<string>>>require("./mql4-keywords.json");
 const mql4FunctionsArray = <Array<Array<string>>>require("./mql4-functions.json");
 const mql4ConstantsArray = <Array<Array<string>>>require("./mql4-constants.json");
+const mql4PreprocessorArray = <Array<Array<string>>>require("./mql4-preprocessor.json");
 
 var mql4FunctionNames: string = "";
 function getMql4FunctionNames(): string {
@@ -35,6 +36,17 @@ function getMql4KeywordsNames(): string {
     return mql4KeywordsNames;
 }
 
+var mql4PreprocessorNames: string = "";
+function getMql4PreprocessorNames(): string {
+    if (mql4PreprocessorNames.length == 0) {
+        for (let i = 0; i < mql4PreprocessorArray.length; i++) {
+            const keywordInfo = mql4PreprocessorArray[i];
+            mql4PreprocessorNames += (i > 0 ? " " : "") + keywordInfo[0];
+        }
+    }
+    return mql4PreprocessorNames;
+}
+
 export interface MqlEntry {
     name: string,
     description: string,
@@ -51,6 +63,10 @@ function getMql4ConstantInfo(name: string): MqlEntry {
 
 function getMql4KeywordInfo(name: string): MqlEntry {
     return getMql4Info(name, mql4KeywordsArray);
+}
+
+function getMql4PreprocessorInfo(name: string): MqlEntry {
+    return getMql4Info(name, mql4PreprocessorArray);
 }
 
 function getMql4Info(name: string, arr: Array<Array<string>>): MqlEntry {
@@ -75,8 +91,10 @@ export default {
     getMql4KeywordsNames: getMql4KeywordsNames,
     getMql4FunctionNames: getMql4FunctionNames,
     getMql4ConstantsNames: getMql4ConstantNames,
+    getMql4PreprocessorNames: getMql4PreprocessorNames,
 
     getMql4KeywordInfo: getMql4KeywordInfo,
     getMql4FunctionInfo: getMql4FunctionInfo,
-    getMql4ConstantInfo: getMql4ConstantInfo
+    getMql4ConstantInfo: getMql4ConstantInfo,
+    getMql4PreprocessorInfo: getMql4PreprocessorInfo,
 }

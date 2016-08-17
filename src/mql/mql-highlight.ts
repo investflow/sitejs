@@ -55,7 +55,7 @@ function annotateText(options: TextInputOption) {
 
     $target.popover({
         html: true,
-        selector: ".hljs-keyword,.hljs-built_in,.hljs-literal",
+        selector: ".hljs-keyword,.hljs-built_in,.hljs-literal,.hljs-meta-keyword",
         placement: "auto right",
         trigger: "hover",
         template: '<div class="popover" style="max-width: 500px" role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div></div>',
@@ -65,7 +65,8 @@ function annotateText(options: TextInputOption) {
             const title = $el.hasClass("hljs-keyword") ? "Ключевое слово: " + text :
                 $el.hasClass("hljs-built_in") ? "Функция: " + text :
                     $el.hasClass("hljs-literal") ? "Константа: " + text :
-                        text;
+                        $el.hasClass("hljs-meta-keyword") ? "Препроцессор: " + text :
+                            text;
 
             return "<span class='text-info'><strong>" + title + "</strong></span>";
         },
@@ -75,7 +76,8 @@ function annotateText(options: TextInputOption) {
             const info = $el.hasClass("hljs-keyword") ? mqlInfo.getMql4KeywordInfo(text) :
                 $el.hasClass("hljs-built_in") ? mqlInfo.getMql4FunctionInfo(text) :
                     $el.hasClass("hljs-literal") ? mqlInfo.getMql4ConstantInfo(text) :
-                    {description: text};
+                        $el.hasClass("hljs-meta-keyword") ? mqlInfo.getMql4PreprocessorInfo(text) :
+                        {description: text};
             return "<div class='mql-popover-content'>" + info.description + "</div>"
         }
     });

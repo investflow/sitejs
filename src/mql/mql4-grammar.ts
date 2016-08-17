@@ -43,7 +43,7 @@ function mql4_grammar() {
         className: 'meta',
         begin: /#\s*[a-z]+\b/, end: /$/,
         keywords: {
-            "meta-keyword": "if else elif endif define undef warning error line pragma ifdef ifndef include property import"
+            "meta-keyword": mqlInfo.getMql4PreprocessorNames()
         },
         contains: [
             {
