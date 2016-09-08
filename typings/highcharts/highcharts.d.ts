@@ -5826,6 +5826,11 @@ interface HighchartsChartObject {
     yAxis: HighchartsAxisObject[];
 
     renderer: HighchartsRendererObject;
+
+    chartWidth: number;
+    marginRight: number;
+    plotWidth: number;
+    plotLeft: number;
 }
 
 interface HighchartsChart {
