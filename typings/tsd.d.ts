@@ -11,4 +11,5 @@
 /// <reference path="autolinker/autolinker.d.ts" />
 /// <reference path="highlightjs/highlightjs.d.ts" />
 /// <reference path="require/require.d.ts" />
+/// <reference path="mustache/mustache.d.ts" />
 

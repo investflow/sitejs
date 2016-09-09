@@ -437,6 +437,8 @@ interface HighchartsAxisBreak {
 }
 
 interface HighchartsAxisOptions {
+    ordinal?:boolean;
+
     /**
      * Whether to allow decimals in this axis' ticks. When counting integers,
      * like persons or hits on a web page, decimals must be avoided in the axis

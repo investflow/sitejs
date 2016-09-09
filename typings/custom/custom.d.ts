@@ -2,6 +2,16 @@
 
 interface JQuery {
     bootstrapSwitch(): void;
-    datetimepicker(options:any) : void;
-    devbridgeAutocomplete(options:any) : void;
+    datetimepicker(options: any): void;
+    devbridgeAutocomplete(options: any): void;
 }
+
+//typescript compiler can't find some standard properties
+interface HTMLTextAreaElement {
+    createTextRange(): any;
+}
+
+// declare module "*.html" {
+//     const content: string;
+//     export default content;
+// }

@@ -14,6 +14,7 @@
     <script src="./../node_modules/highcharts/highcharts-more.js"></script>
     <script src="http://code.highcharts.com/modules/exporting.js"></script>
     <script src="http://code.highcharts.com/modules/offline-exporting.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.2.1/mustache.js"></script>
 
     <script src="./../node_modules/es6-promise/dist/es6-promise.js"></script>
     <script src="./../node_modules/vue/dist/vue.js"></script>
@@ -31,7 +32,7 @@
 <a href="#" id="zoom-out">zoom-out</a>
 <br>
 <a href="#" id="zoom-reset">reset</a>
-
+<div id="summary" style="margin-top: 20px;"></div>
 
 <script>
     window.$site.QuoteCharts.addQuoteChart("#chart",
@@ -39,6 +40,7 @@
                 zoomResetControlSelector: "#zoom-reset",
                 zoomInControlSelector: "#zoom-in",
                 zoomOutControlSelector: "#zoom-out",
+                summaryBlockSelector: "#summary",
                 series: [
                     {account: window.$site.QuoteCharts.AccountType.ALPARI_ECN1, dataUrl: "http://dio1.investflow.ru/alpari/EURGBP_2016_6_24_15"},
                     {account: window.$site.QuoteCharts.AccountType.ALFAFOREX_MT4, dataUrl: "http://dio1.investflow.ru/alfaforex/EURGBP_2016_6_24_15"},

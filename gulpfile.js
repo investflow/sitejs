@@ -4,10 +4,12 @@ var browserify = require("browserify");
 var tsify = require("tsify");
 var shim = require("browserify-shim");
 var karmaServer = require("karma").Server;
+var stringify = require("stringify");
 
 gulp.task("build", function () {
     browserify(["./src/site.ts", "./typings/tsd.d.ts"])
         .plugin(tsify)
+        .transform(stringify([".html"]))
         .transform(shim)
         .bundle()
         .pipe(source("site.js"))

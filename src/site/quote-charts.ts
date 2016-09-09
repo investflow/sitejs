@@ -10,6 +10,7 @@ export interface  QuoteChartOptions {
     zoomInControlSelector?: string;
     zoomOutControlSelector?: string;
     zoomResetControlSelector?: string;
+    summaryBlockSelector?: string;
 }
 
 function parseDate(str: string, hourDate: Date): Date {
@@ -193,6 +194,20 @@ function addQuoteChart(chartSelector, options: QuoteChartOptions) {
 
     }
 
+    var reportTemplate = <string>require("./quote-report.html");
+
+    function createSummary() {
+        if (!options.summaryBlockSelector) {
+            return;
+        }
+        var $reportBlock = $(options.summaryBlockSelector);
+        if ($reportBlock.length == 0) {
+            return;
+        }
+        var html = Mustache.render(reportTemplate, {});
+        $reportBlock.append(html);
+    }
+
     $.each(options.series, function (i: number, quoteItem: QuoteChartItem) {
         let processResponse = function (data, hourDate: Date) {
             var seriesData = quotes2Series(data, hourDate);
@@ -207,6 +222,7 @@ function addQuoteChart(chartSelector, options: QuoteChartOptions) {
             seriesCounter += 1;
             if (seriesCounter === options.series.length) {
                 createChart();
+                createSummary();
             }
         };
 
