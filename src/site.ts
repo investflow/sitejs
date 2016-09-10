@@ -4,7 +4,7 @@ import AccountAutoComplete from "./component/account-auto-complete";
 import * as log from "loglevel";
 import * as lzString from "lz-string";
 import Highcharts from "./site/highcharts-support";
-import QuoteCharts from "./site/quote-charts";
+import QuoteCharts from "./site/bta/quote-charts";
 import Flot from "./site/flot-support";
 import site from "./site/site-def";
 import {Broker} from "./site/broker";

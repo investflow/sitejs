@@ -17,7 +17,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.2.1/mustache.js"></script>
 
     <script src="./../node_modules/es6-promise/dist/es6-promise.js"></script>
-    <script src="./../node_modules/vue/dist/vue.js"></script>
     <script src="./../node_modules/parsleyjs/dist/parsley.js"></script>
     <script src="./../package/js/site.js"></script>
 
@@ -41,13 +40,15 @@
                 zoomInControlSelector: "#zoom-in",
                 zoomOutControlSelector: "#zoom-out",
                 summaryBlockSelector: "#summary",
+                instrument: "USDJPY",
+                lotPriceUsd: 100000,
                 series: [
-                    {account: window.$site.QuoteCharts.AccountType.ALPARI_ECN1, dataUrl: "http://dio1.investflow.ru/alpari/EURGBP_2016_6_24_15"},
-                    {account: window.$site.QuoteCharts.AccountType.ALFAFOREX_MT4, dataUrl: "http://dio1.investflow.ru/alfaforex/EURGBP_2016_6_24_15"},
-                    {account: window.$site.QuoteCharts.AccountType.AMARKETS_ECN, dataUrl: "http://dio1.investflow.ru/amarkets/EURGBPb_2016_6_24_15"},
-                    {account: window.$site.QuoteCharts.AccountType.FOREX4YOU_CLASSIC_NDD, dataUrl: "http://dio2.investflow.ru/forex4you/EURGBP_2016_6_24_15"},
-                    {account: window.$site.QuoteCharts.AccountType.ROBOFOREX_ECN_PRO_NDD, dataUrl: "http://dio2.investflow.ru/roboforex/EURGBP_2016_6_24_15"},
-                    {account: window.$site.QuoteCharts.AccountType.WELTRADE_PRO, dataUrl: "http://dio2.investflow.ru/weltrade/EURGBP_2016_6_24_15"}
+                    {account: window.$site.QuoteCharts.AccountType.ALPARI_ECN1, dataUrl: "http://dio1.investflow.ru/alpari/USDJPY_2016_6_24_15"},
+                    {account: window.$site.QuoteCharts.AccountType.ALFAFOREX_MT4, dataUrl: "http://dio1.investflow.ru/alfaforex/USDJPY_2016_6_24_15"},
+                    {account: window.$site.QuoteCharts.AccountType.AMARKETS_ECN, dataUrl: "http://dio1.investflow.ru/amarkets/USDJPY_2016_6_24_15"},
+                    {account: window.$site.QuoteCharts.AccountType.FOREX4YOU_CLASSIC_NDD, dataUrl: "http://dio2.investflow.ru/forex4you/USDJPY_2016_6_24_15"},
+                    {account: window.$site.QuoteCharts.AccountType.ROBOFOREX_ECN_PRO_NDD, dataUrl: "http://dio2.investflow.ru/roboforex/USDJPY_2016_6_24_15"},
+                    {account: window.$site.QuoteCharts.AccountType.WELTRADE_PRO, dataUrl: "http://dio2.investflow.ru/weltrade/USDJPY_2016_6_24_15"}
                 ]
             });
 </script>

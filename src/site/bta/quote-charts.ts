@@ -1,4 +1,4 @@
-import {Broker} from "./broker";
+import {Broker} from "../broker";
 
 export interface QuoteChartItem {
     account: AccountType;
@@ -11,6 +11,9 @@ export interface  QuoteChartOptions {
     zoomOutControlSelector?: string;
     zoomResetControlSelector?: string;
     summaryBlockSelector?: string;
+
+    instrument: string;
+    lotPriceUsd: number;
 }
 
 function parseDate(str: string, hourDate: Date): Date {
@@ -42,7 +45,7 @@ function quotes2Series(data: string, hourDate: Date): Array<any> {
     return series;
 }
 
-function zoomOut(chart, rangeK) {
+function zoomOut(chart: HighchartsChartObject, rangeK: number) {
     var axis = chart.xAxis[0];
     var extremes = axis.getExtremes();
     var visibleRange = axis.max - axis.min;
@@ -51,7 +54,7 @@ function zoomOut(chart, rangeK) {
     axis.setExtremes(dataMin, dataMax);
 }
 
-function zoomIn(chart, rangeK, zoomingPos) {
+function zoomIn(chart: HighchartsChartObject, rangeK: number, zoomingPos: number) {
     var axis = chart.xAxis[0];
     var visibleRange = axis.max - axis.min;
     if (visibleRange <= 1000) {
@@ -65,7 +68,7 @@ function zoomIn(chart, rangeK, zoomingPos) {
     axis.setExtremes(dataMin, dataMax);
 }
 
-function resetZoom(chart) {
+function resetZoom(chart: HighchartsChartObject) {
     var axis = chart.xAxis[0];
     var extremes = axis.getExtremes();
     axis.setExtremes(extremes.dataMin, extremes.dataMax);
@@ -194,9 +197,31 @@ function addQuoteChart(chartSelector, options: QuoteChartOptions) {
 
     }
 
-    var reportTemplate = <string>require("./quote-report.html");
+    interface AccountReport {
+        account: AccountType,
+        data: Array<any>
+    }
 
-    function createSummary() {
+    var reportTemplate = <string>require("./quote-report.html");
+    var rowTemplate = <string>require("./quote-report-account-row.html");
+    var accountReports: Array<AccountReport> = [];
+
+    function getDigits(instrument: string): number {
+        return instrument === "USDJPY" ? 2 : 4;
+    }
+
+    /**
+     Стоимость одного пункта рассчитывается по формуле: OnePointValue = (contract × (price + onePoint)) - (contract × price), где:
+     contract — величина контракта в базовой валюте -> у нас всегда 1 лот
+     price — цена валютной пары;
+     onePoint — шаг цены (один пункт).
+     */
+    function getPointPrice(lotPriceInUsd: number, onePoint: number): number {
+        return lotPriceInUsd * onePoint;
+    }
+
+
+    function createSummaryReport() {
         if (!options.summaryBlockSelector) {
             return;
         }
@@ -204,8 +229,44 @@ function addQuoteChart(chartSelector, options: QuoteChartOptions) {
         if ($reportBlock.length == 0) {
             return;
         }
-        var html = Mustache.render(reportTemplate, {});
-        $reportBlock.append(html);
+        var reportHtml = Mustache.render(reportTemplate, {});
+        $reportBlock.append(reportHtml);
+
+        var digits = getDigits(options.instrument);
+        var priceToPointsK = Math.pow(10, digits);
+        var pointPrice = getPointPrice(options.lotPriceUsd, 1 / priceToPointsK);
+
+        for (var i = 0; i < accountReports.length; i++) {
+            var r = accountReports[i];
+            var sumSpread = 0;
+            var openPositionFeeInPoints = r.account.lotPriceUsd / pointPrice;
+            for (var j = 0; j < r.data.length; j++) {
+                var data = r.data[j];
+                var ask = data[1];
+                var bid = data[2];
+                sumSpread += priceToPointsK * (bid - ask);
+            }
+            if (sumSpread <= 0) {
+                continue;
+            }
+            var averageSpread = sumSpread / r.data.length;
+            var averageSpreadWithCommission = averageSpread + openPositionFeeInPoints;
+
+            const cPrefix = "комиссия: ";
+            var commissionText = r.account.commissionInfo == "без комиссии" ? "нет" :
+                r.account.commissionInfo.indexOf(cPrefix) == 0 ? r.account.commissionInfo.substr(cPrefix.length) :
+                    r.account.commissionInfo;
+
+            var rowHtml = Mustache.render(rowTemplate, {
+                name: r.account.broker.name + " [" + r.account.name + "]",
+                nameStyle: "font-weight:bold; color: rgba(" + r.account.broker.rgb + ", 0.65);",
+                url: r.account.tradingInfoUrl,
+                spread: averageSpreadWithCommission.toFixed(averageSpreadWithCommission > 10 ? 0 : 1),
+                eventsCount: r.data.length,
+                commission: commissionText
+            });
+            $reportBlock.find("tbody").append(rowHtml);
+        }
     }
 
     $.each(options.series, function (i: number, quoteItem: QuoteChartItem) {
@@ -218,11 +279,15 @@ function addQuoteChart(chartSelector, options: QuoteChartOptions) {
                     data: seriesData,
                     color: "rgba(" + quoteItem.account.broker.rgb + ", 0.65)"
                 };
+                accountReports[i] = {
+                    account: quoteItem.account,
+                    data: seriesData
+                }
             }
             seriesCounter += 1;
             if (seriesCounter === options.series.length) {
                 createChart();
-                createSummary();
+                createSummaryReport();
             }
         };
 
@@ -241,14 +306,14 @@ function addQuoteChart(chartSelector, options: QuoteChartOptions) {
 }
 
 class AccountType {
-    public static ALFAFOREX_MT4: AccountType = new AccountType(1, "MT4", Broker.ALFAFOREX, "без комиссии", "https://www.alfa-forex.ru/ru/terms/traders/specs.html");
-    public static ALPARI_ECN1: AccountType = new AccountType(2, "ecn.mt4", Broker.ALPARI, "без комиссии", "http://www.alpari.ru/ru/trading/trading_terms/");
-    public static AMARKETS_ECN: AccountType = new AccountType(3, "ECN", Broker.AMARKETS, "комиссия: $5 за лот", "http://www.amarkets.org/trading/usloviya_torgovli/");
-    public static FOREX4YOU_CLASSIC_NDD: AccountType = new AccountType(4, "ecn.mt4", Broker.FOREX4YOU, "комиссия: $8 за лот", "http://www.forex4you.org/account/conditions/");
-    public static ROBOFOREX_ECN_PRO_NDD: AccountType = new AccountType(5, "ECN-Pro NDD", Broker.ROBOFOREX, "комиссия: $20 за $1млн оборота", "http://www.roboforex.ru/trade-conditions/account-types/");
-    public static WELTRADE_PRO: AccountType = new AccountType(6, "Pro", Broker.WELTRADE, "без комиссии", "https://www.instaforex.com/ru/account_types");
+    public static ALFAFOREX_MT4: AccountType = new AccountType(1, "MT4", Broker.ALFAFOREX, "без комиссии", "https://www.alfa-forex.ru/ru/terms/traders/specs.html", 0);
+    public static ALPARI_ECN1: AccountType = new AccountType(2, "ecn.mt4", Broker.ALPARI, "без комиссии", "http://www.alpari.ru/ru/trading/trading_terms/", 0);
+    public static AMARKETS_ECN: AccountType = new AccountType(3, "ECN", Broker.AMARKETS, "комиссия: $5 за лот", "http://www.amarkets.org/trading/usloviya_torgovli/", 5);
+    public static FOREX4YOU_CLASSIC_NDD: AccountType = new AccountType(4, "ecn.mt4", Broker.FOREX4YOU, "комиссия: $8 за лот", "http://www.forex4you.org/account/conditions/", 8);
+    public static ROBOFOREX_ECN_PRO_NDD: AccountType = new AccountType(5, "ECN-Pro NDD", Broker.ROBOFOREX, "комиссия: $20 за $1млн оборота", "http://www.roboforex.ru/trade-conditions/account-types/", 2);
+    public static WELTRADE_PRO: AccountType = new AccountType(6, "Pro", Broker.WELTRADE, "без комиссии", "https://www.instaforex.com/ru/account_types", 0);
 
-    constructor(public id: number, public name: string, public broker: Broker, public commissionInfo: string, public tradingInfoUrl: string) {
+    constructor(public id: number, public name: string, public broker: Broker, public commissionInfo: string, public tradingInfoUrl: string, public lotPriceUsd: number) {
     }
 
 }

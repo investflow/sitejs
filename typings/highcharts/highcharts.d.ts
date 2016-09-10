@@ -437,7 +437,7 @@ interface HighchartsAxisBreak {
 }
 
 interface HighchartsAxisOptions {
-    ordinal?:boolean;
+    ordinal?: boolean;
 
     /**
      * Whether to allow decimals in this axis' ticks. When counting integers,
@@ -5648,6 +5648,9 @@ interface HighchartsAxisObject {
      * @since 3.0
      */
     update(options: HighchartsAxisOptions, redraw?: boolean): void;
+
+    max: number,
+    min: number
 }
 
 /**
