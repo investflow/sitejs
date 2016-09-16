@@ -90,6 +90,20 @@ function applyDateTimePicker(e:JQuery):void {
     });
 }
 
+function applyDatePicker(e:JQuery):void {
+    let now = new Date();
+    //noinspection JSUnusedGlobalSymbols
+    e.datetimepicker({
+        format: "dd.MM.yyyy",
+        language: "ru",
+        weekStart: 1,
+        pickTime: false,
+        onRender: function (date:Date) {
+            return date.valueOf() > now.valueOf() ? "disabled" : "";
+        }
+    });
+}
+
 function sortClick(event:Event):boolean {
     event = event || window.event;
     let elem:HTMLElement = <HTMLElement>(event.target || event.srcElement);
@@ -312,6 +326,7 @@ export default {
     clickOnCtrlEnter: clickOnCtrlEnter,
     renderSwitches: renderSwitches,
     applyDateTimePicker: applyDateTimePicker,
+    applyDatePicker: applyDatePicker,
     sortClick: sortClick,
     showMenuByClick: showMenuByClick,
     getURLParameter: getURLParameter,

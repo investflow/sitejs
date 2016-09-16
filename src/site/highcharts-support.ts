@@ -154,6 +154,15 @@ function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
                 color: profitChartColor,
             }
         },
+        exporting: {
+            buttons: {
+                contextButton: {
+                    align: "right",
+                    // y: 20
+                }
+            },
+            scale: 2,
+        },
         tooltip: {
             xDateFormat: "%Y-%m-%d",
             shared: true,
