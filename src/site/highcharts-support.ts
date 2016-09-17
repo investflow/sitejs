@@ -1,6 +1,7 @@
 import * as $ from "jquery";
 import {percentBetweenPercents, percentBetweenEquity} from "./calc";
 import {getAccountInfo, AccountInfoResponse} from "./investflow-api";
+import t from "./transliterate";
 import {Broker} from "./broker";
 
 const HIGHCHARTS_MODAL_DIV_ID = "iflow_highcharts_modal";
@@ -40,7 +41,8 @@ export interface AccountChartOptions {
     fullAccountName: string;
     broker?: number,
     currencySuffix?: string,
-    currencyPrefix?: string
+    currencyPrefix?: string,
+    exportFileName?: string
 }
 
 function emptyIfNull(val: string): string {
@@ -49,6 +51,18 @@ function emptyIfNull(val: string): string {
 
 function getDefaultLabelDecimalsForPercent(val: number) {
     return val > 1000 ? 0 : val > 100 ? 1 : 2;
+}
+
+var illegalRe = /[\/\?<>\\:\*\|"]/g;
+var controlRe = /[\x00-\x1f\x80-\x9f]/g;
+var reservedRe = /^\.+$/;
+function toSafeFileName(s: string): string {
+    console.log("s: " + s);
+    var r = s.replace(illegalRe, '_').replace(controlRe, '_').replace(reservedRe, '_');
+    r = t.transliterate(r);
+    r = r.replace(/[^\w]/gi, '_');
+    console.log("r: " + r);
+    return r;
 }
 
 function deriveDecimalPrecision(profitData: Array<Array<number>>, minIdx?: number, maxIdx?: number): number {
@@ -155,6 +169,7 @@ function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
             }
         },
         exporting: {
+            filename: options.exportFileName ? options.exportFileName : toSafeFileName(options.fullAccountName),
             buttons: {
                 contextButton: {
                     align: "right",
