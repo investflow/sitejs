@@ -2298,6 +2298,10 @@ interface HighchartsLangObject {
      * @since 3.0.8
      */
     drillUpText?: string;
+
+    downloadCSV?: string;
+    downloadXLS?: string;
+
     /**
      * What to show in a date field for invalid dates.
      * @default ''
