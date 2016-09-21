@@ -57,11 +57,9 @@ var illegalRe = /[\/\?<>\\:\*\|"]/g;
 var controlRe = /[\x00-\x1f\x80-\x9f]/g;
 var reservedRe = /^\.+$/;
 function toSafeFileName(s: string): string {
-    console.log("s: " + s);
     var r = s.replace(illegalRe, '_').replace(controlRe, '_').replace(reservedRe, '_');
     r = t.transliterate(r);
     r = r.replace(/[^\w]/gi, '_');
-    console.log("r: " + r);
     return r;
 }
 
