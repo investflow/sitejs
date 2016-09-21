@@ -53,7 +53,7 @@ function getDefaultLabelDecimalsForPercent(val: number) {
     return val > 1000 ? 0 : val > 100 ? 1 : 2;
 }
 
-var illegalRe = /[\/\?<>\\:\*\|"]/g;
+var illegalRe = /[\/?<>\\:*|"]/g;
 var controlRe = /[\x00-\x1f\x80-\x9f]/g;
 var reservedRe = /^\.+$/;
 function toSafeFileName(s: string): string {
@@ -143,6 +143,7 @@ function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
     const hasEquityOrBalance = hasEquity || hasBalance;
 
     let profitChartColor = "#00854E";
+    //noinspection JSUnusedGlobalSymbols
     var res = {
         credits: {
             enabled: false
@@ -311,10 +312,15 @@ function ensureLocalizationIsInstalled() {
         shortMonths: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
         weekdays: ['Воскресение', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'],
         printChart: "Отправить на печать",
+
         downloadPNG: 'Сохранить в формате PNG',
         downloadJPEG: 'Сохранить в формате JPEG',
         downloadPDF: 'Сохранить в формате PDF',
         downloadSVG: 'Сохранить в формате SVG',
+
+        downloadCSV: 'Сохранить в формате CSV',
+        downloadXLS: 'Сохранить в формате XLS',
+
         loading: 'Загрузка...',
         rangeSelectorZoom: "Период",
         rangeSelectorFrom: "с",
