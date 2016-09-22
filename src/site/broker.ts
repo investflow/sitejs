@@ -18,12 +18,14 @@ export class Broker {
     public static GERCHIK: Broker = new Broker(33, "Gerchik&Co", "169,63,0", "gerchik");
     public static TELETRADE: Broker = new Broker(34, "TeleTrade", "0,136,204", "teletrade");
     public static ICEFX: Broker = new Broker(35, "ICE-FX", "0,136,204", "icefx");
+    public static ETORO: Broker = new Broker(36, "eToro", "4,79,123", "etoro");
 
     public static ACTIVE_BROKERS: Array<Broker> = [
         Broker.ALFAFOREX,
         Broker.AMARKETS,
         Broker.ALPARI,
         Broker.COMON,
+        Broker.ETORO,
         Broker.FOREX4YOU,
         Broker.FXOPEN,
         Broker.FRESHFOREX,
