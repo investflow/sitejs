@@ -2,7 +2,7 @@ import * as $ from "jquery";
 import * as Autolinker from "autolinker";
 import links from "./links";
 
-function setTitle(selector:string, title:string, root?:HTMLElement):void {
+function setTitle(selector: string, title: string, root?: HTMLElement): void {
     root = root ? root : window.document.body;
     $(root).find(selector).each(function () {
         if (!$(this).attr("title")) {
@@ -12,10 +12,10 @@ function setTitle(selector:string, title:string, root?:HTMLElement):void {
 }
 
 interface LinkifyOptions {
-    skipMediaLinks:boolean;
+    skipMediaLinks: boolean;
 }
 
-function linkify(text:string, options:LinkifyOptions):string {
+function linkify(text: string, options: LinkifyOptions): string {
     var autolinker = new Autolinker({
         urls: {
             schemeMatches: true,
@@ -50,13 +50,13 @@ function linkify(text:string, options:LinkifyOptions):string {
     }
 }
 
-function focusOnEnter(event:KeyboardEvent, id:string):void {
+function focusOnEnter(event: KeyboardEvent, id: string): void {
     if (event.which === 13) {
         $(id).focus();
         event.preventDefault();
     }
 }
-function clickOnEnter(event:KeyboardEvent, id:number):void {
+function clickOnEnter(event: KeyboardEvent, id: number): void {
     let keyCode = (event.which ? event.which : event.keyCode);
     if ((keyCode === 10 || keyCode === 13) && !event.ctrlKey) {
         $(id).click();
@@ -64,7 +64,7 @@ function clickOnEnter(event:KeyboardEvent, id:number):void {
     }
 }
 
-function clickOnCtrlEnter(event:KeyboardEvent, id:number):void {
+function clickOnCtrlEnter(event: KeyboardEvent, id: number): void {
     let keyCode = (event.which ? event.which : event.keyCode);
     if ((keyCode === 10 || keyCode === 13) && event.ctrlKey) {
         $(id).click();
@@ -72,11 +72,11 @@ function clickOnCtrlEnter(event:KeyboardEvent, id:number):void {
     }
 }
 
-function renderSwitches():void {
+function renderSwitches(): void {
     $(".make-switch").bootstrapSwitch();
 }
 
-function applyDateTimePicker(e:JQuery):void {
+function applyDateTimePicker(e: JQuery): void {
     let now = new Date();
     //noinspection JSUnusedGlobalSymbols
     e.datetimepicker({
@@ -84,13 +84,13 @@ function applyDateTimePicker(e:JQuery):void {
         language: "ru",
         weekStart: 1,
         pickSeconds: false,
-        onRender: function (date:Date) {
+        onRender: function (date: Date) {
             return date.valueOf() > now.valueOf() ? "disabled" : "";
         }
     });
 }
 
-function applyDatePicker(e:JQuery):void {
+function applyDatePicker(e: JQuery): void {
     let now = new Date();
     //noinspection JSUnusedGlobalSymbols
     e.datetimepicker({
@@ -98,15 +98,15 @@ function applyDatePicker(e:JQuery):void {
         language: "ru",
         weekStart: 1,
         pickTime: false,
-        onRender: function (date:Date) {
+        onRender: function (date: Date) {
             return date.valueOf() > now.valueOf() ? "disabled" : "";
         }
     });
 }
 
-function sortClick(event:Event):boolean {
+function sortClick(event: Event): boolean {
     event = event || window.event;
-    let elem:HTMLElement = <HTMLElement>(event.target || event.srcElement);
+    let elem: HTMLElement = <HTMLElement>(event.target || event.srcElement);
     if (elem.nodeName && elem.nodeName === "TH") {
         let children = elem.getElementsByTagName("A");
         if (children.length > 0) {
@@ -119,7 +119,7 @@ function sortClick(event:Event):boolean {
 }
 
 
-function showMenuByClick(e:Event, id:string):boolean {
+function showMenuByClick(e: Event, id: string): boolean {
     let evt = e ? e : window.event;
     if (evt && evt.stopPropagation) {
         evt.stopPropagation();
@@ -132,12 +132,12 @@ function showMenuByClick(e:Event, id:string):boolean {
 }
 
 
-function getURLParameter(name:string):string {
+function getURLParameter(name: string): string {
     let regExp = new RegExp("[?|&]" + name + "=" + "([^&;]+?)(&|#|;|$)");
     return decodeURIComponent((regExp.exec(location.search) || [undefined, ""])[1].replace(/\+/g, "%20")) || undefined;
 }
 
-function limitTextArea($textArea:JQuery, $feedback:JQuery, $button:JQuery, maxTextLen:number, minRemainingToShow:number):void {
+function limitTextArea($textArea: JQuery, $feedback: JQuery, $button: JQuery, maxTextLen: number, minRemainingToShow: number): void {
     let f = function () {
         let remaining = maxTextLen - $textArea.val().length;
         if (remaining <= minRemainingToShow) {
@@ -161,8 +161,18 @@ function limitTextArea($textArea:JQuery, $feedback:JQuery, $button:JQuery, maxTe
     f();
 }
 
+interface ScrollToOptions {
+    delay?: number;
+    offset?: number;
+}
 
-function enableScrollTop():void {
+function scrollTo(selector: string, o?: ScrollToOptions) {
+    var offset = o && o.offset ? o.offset : 0;
+    var delay = o && o.delay ? o.delay : 0;
+    $("html, body").animate({scrollTop: $(selector).offset().top + offset}, delay);
+}
+
+function enableScrollTop(): void {
     $(document).ready(() => {
         let $backTop = $("#back-top");
         if (!$backTop) {
@@ -187,7 +197,7 @@ function enableScrollTop():void {
     });
 }
 
-function moveCaretToEnd(el:HTMLTextAreaElement):void {
+function moveCaretToEnd(el: HTMLTextAreaElement): void {
     if (typeof el.selectionStart === "number") {
         el.selectionStart = el.selectionEnd = el.value.length;
     } else if (typeof el.createTextRange !== "undefined") {
@@ -198,7 +208,7 @@ function moveCaretToEnd(el:HTMLTextAreaElement):void {
     }
 }
 
-function countdown(refreshSeconds:number, formatter:Function, timeBlockId:string, timeLeftBlockId:string, completionCallback:Function):void {
+function countdown(refreshSeconds: number, formatter: Function, timeBlockId: string, timeLeftBlockId: string, completionCallback: Function): void {
     let timeBlock = document.getElementById(timeBlockId);
     if (!timeBlock) {
         return;
@@ -301,7 +311,7 @@ function applyAvatars() {
     });
 }
 
-function applyAvatar(selector:string) {
+function applyAvatar(selector: string) {
     var $img = $(selector);
     $img.each(function () {
         var name = this.getAttribute("avatar");
@@ -313,7 +323,7 @@ function applyAvatar(selector:string) {
     });
 }
 
-function removeServerSideParsleyError(el:HTMLElement) {
+function removeServerSideParsleyError(el: HTMLElement) {
     var p: Parsley = $(el).parsley();
     p.removeError("server-side-parsley-error");
 }
@@ -332,6 +342,7 @@ export default {
     getURLParameter: getURLParameter,
     limitTextArea: limitTextArea,
     enableScrollTop: enableScrollTop,
+    scrollTo: scrollTo,
     moveCaretToEnd: moveCaretToEnd,
     countdown: countdown,
     toValueWithSuffix: toValueWithSuffix,
