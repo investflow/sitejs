@@ -5,24 +5,32 @@ import * as log from "loglevel";
 
 //TODO: defer subsequent requests.
 
-const MAX_SUGGESTIONS:number = 40;
+const MAX_SUGGESTIONS: number = 40;
+
 export default {
-    attach: (selector:string):void => {
-        let $el:JQuery = $(selector);
+    attach: (selector: string): void => {
+        let $el: JQuery = $(selector);
         //noinspection JSUnusedGlobalSymbols
         $el.devbridgeAutocomplete({
-            lookup: (query:string, done:Function) => {
+            lookup: (query: string, done: Function) => {
                 log.trace("AAC: lookup: " + query);
-                getCachedAccountsListing().then((accounts:Array<Account>) => {
-                    let lcQuery:string = query.toLowerCase();
-                    let accountsToShow:Array<Account> = [];
+                getCachedAccountsListing().then((accounts: Array<Account>) => {
+                    let lcQuery: string = query.toLowerCase();
+                    let accountsToShow: Array<Account> = [];
 
-                    let checkAccount = (account:Account, q:string):boolean => {
-                        return (account.account.toLocaleLowerCase().indexOf(q) >= 0 || account.name.toLocaleLowerCase().indexOf(q) >= 0);
+                    let checkAccount = (account: Account, q: string): boolean => {
+                        const aLc = account.account.toLocaleLowerCase();
+                        if (aLc.indexOf(q) >= 0) {
+                            return true;
+                        }
+                        const aNameLc = account.name.toLocaleLowerCase();
+                        return aNameLc.indexOf(q) >= 0
+                            || (aNameLc + " (" + aLc + ")").indexOf(q) >= 0
+                            || (account.broker.keyPrefix + aLc).indexOf(q) >= 0;
                     };
-                    let disabledBrokers:{ [key:number]:boolean; } = {};
+                    let disabledBrokers: { [key: number]: boolean; } = {};
                     if ($site.ServiceState.AutocompleteExcludeBrokerIds) {
-                        $site.ServiceState.AutocompleteExcludeBrokerIds.forEach((v:number)=> disabledBrokers[v] = true);
+                        $site.ServiceState.AutocompleteExcludeBrokerIds.forEach((v: number)=> disabledBrokers[v] = true);
                     }
                     // select open accounts first
                     for (let i = 0; i < accounts.length && accountsToShow.length < MAX_SUGGESTIONS; i++) {
@@ -68,14 +76,14 @@ export default {
             groupBy: "category",
             preserveInput: true,
             maxHeight: 720,
-            onSelect: (suggestion:any) => {
+            onSelect: (suggestion: any) => {
                 log.trace("Selected option: " + suggestion.value);
                 $el.val(suggestion.value);
             }
         });
 
         //Kind of dirty hack to prevent click event propagation
-        $(".autocomplete-suggestions").click((e:Event) => {
+        $(".autocomplete-suggestions").click((e: Event) => {
             e.preventDefault();
             e.stopPropagation();
             return false;
