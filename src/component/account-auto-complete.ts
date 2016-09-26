@@ -15,18 +15,19 @@ export default {
             lookup: (query: string, done: Function) => {
                 log.trace("AAC: lookup: " + query);
                 getCachedAccountsListing().then((accounts: Array<Account>) => {
-                    let lcQuery: string = query.toLowerCase();
+                    let lcQuery: string = query.toLocaleLowerCase();
                     let accountsToShow: Array<Account> = [];
 
                     let checkAccount = (account: Account, q: string): boolean => {
-                        const aLc = account.account.toLocaleLowerCase();
-                        if (aLc.indexOf(q) >= 0) {
+                        const accountLc = account.account.toLocaleLowerCase();
+                        if (accountLc.indexOf(q) >= 0) {
                             return true;
                         }
                         const aNameLc = account.name.toLocaleLowerCase();
                         return aNameLc.indexOf(q) >= 0
-                            || (aNameLc + " (" + aLc + ")").indexOf(q) >= 0
-                            || (account.broker.keyPrefix + aLc).indexOf(q) >= 0;
+                            || (aNameLc + " (" + accountLc + ")").indexOf(q) >= 0
+                            || (aNameLc + "/" + accountLc + " (" + account.broker.name + ")").indexOf(q) >= 0
+                            || (account.broker.keyPrefix + accountLc).indexOf(q) >= 0;
                     };
                     let disabledBrokers: { [key: number]: boolean; } = {};
                     if ($site.ServiceState.AutocompleteExcludeBrokerIds) {

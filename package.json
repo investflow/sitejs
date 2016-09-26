@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "bootstrap": "^3.3.7",
-    "devbridge-autocomplete": "^1.2.24",
+    "devbridge-autocomplete": "^1.2.26",
     "es6-promise": "^3.2.1",
     "highcharts": "^4.2.6",
     "jquery": "v=1.12.3",
