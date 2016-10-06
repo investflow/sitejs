@@ -57,9 +57,12 @@ function replaceWithPammLink(url: string, fallbackLink: string): string {
     if (typeof broker === 'undefined') {
         return fallbackLink;
     }
-    var nameEndIdx = url.indexOf("#", brokerEndIdx);
+    var nameEndIdx = url.indexOf("?", brokerEndIdx);
     if (nameEndIdx < 0) {
-        nameEndIdx = url.length;
+        nameEndIdx = url.indexOf("#", brokerEndIdx);
+        if (nameEndIdx < 0) {
+            nameEndIdx = url.length;
+        }
     }
     var nameStartIdx = brokerEndIdx + 1;
     var name = decodeURIComponent(url.substr(nameStartIdx, nameEndIdx - nameStartIdx));
@@ -80,9 +83,12 @@ function replaceWithAlpariFundLink(url: string, fallbackLink: string): string {
         return fallbackLink;
     }
     var nameStartIdx = ALPARI_FUND_PAMM_URL_PREFIX.length;
-    var nameEndIdx = url.indexOf("#", nameStartIdx);
+    var nameEndIdx = url.indexOf("?", nameStartIdx);
     if (nameEndIdx < 0) {
-        nameEndIdx = url.length;
+        nameEndIdx = url.indexOf("#", nameStartIdx);
+        if (nameEndIdx < 0) {
+            nameEndIdx = url.length;
+        }
     }
     var name = decodeURIComponent(url.substr(nameStartIdx, nameEndIdx - nameStartIdx));
     var sepIdx = name.indexOf("/"); // now name is in <account-number>/<account-name> form. Swap it parts.
