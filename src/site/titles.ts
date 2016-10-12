@@ -1,7 +1,7 @@
 import DOMUtils from "./site-utils";
 
 export default {
-    infoPanel: function (rootId:string):void {
+    infoPanel: function (rootId: string): void {
         let rootEl = document.getElementById(rootId);
         if (!rootEl) {
             return;
@@ -21,5 +21,7 @@ export default {
         DOMUtils.setTitle(".pi-age", "Возраст счета", rootEl);
         DOMUtils.setTitle(".pi-prt", "Счет входит в один из портфелей пользователя", rootEl);
         DOMUtils.setTitle(".pi-lst", "Счет входит в один списков пользователя", rootEl);
+        DOMUtils.setTitle(".pi-dec-ok", "Управляющий соблюдает собственную декларацию о торговле.", rootEl);
+        DOMUtils.setTitle(".pi-dec-bad", "Управляющий не соблюдает собственную декларацию о торговле.", rootEl);
     }
 };
