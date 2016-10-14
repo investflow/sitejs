@@ -76,8 +76,8 @@ function renderSwitches(): void {
     $(".make-switch").bootstrapSwitch();
 }
 
-function renderToggles(): void {
-    $("input[data-toggle='toggle']").bootstrapToggle();
+function renderToggle(selector: string): void {
+    $(selector).bootstrapToggle();
 }
 
 function applyDateTimePicker(e: JQuery): void {
@@ -339,7 +339,7 @@ export default {
     clickOnEnter: clickOnEnter,
     clickOnCtrlEnter: clickOnCtrlEnter,
     renderSwitches: renderSwitches,
-    renderToggles: renderToggles,
+    renderToggle: renderToggle,
     applyDateTimePicker: applyDateTimePicker,
     applyDatePicker: applyDatePicker,
     sortClick: sortClick,
