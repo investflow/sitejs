@@ -9,6 +9,7 @@ import Flot from "./site/flot-support";
 import site from "./site/site-def";
 import {Broker} from "./site/broker";
 import "./site/parsley-support";
+import "./site/bootstrap-toggle-support";
 
 /** Set of utility functions */
 site.Utils = SiteUtils;

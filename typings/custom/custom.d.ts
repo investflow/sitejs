@@ -2,6 +2,7 @@
 
 interface JQuery {
     bootstrapSwitch(): void;
+    bootstrapToggle(): void;
     datetimepicker(options: any): void;
     devbridgeAutocomplete(options: any): void;
 }

@@ -1,21 +1,22 @@
 // Only methods used by us
 
 interface ParsleyStatic {
-    addMessages(lang:string, options:any):void;
-    addValidator(lang:string, options:any):void;
-    setLocale(lang:string):void;
+    addMessages(lang: string, options: any): void;
+    addValidator(lang: string, options: any): void;
+    setLocale(lang: string): void;
 }
 
 interface Window {
-    Parsley:ParsleyStatic;
+    Parsley: ParsleyStatic;
+    Toggle: any;
 }
 
 interface Parsley {
-    removeError(error:string):void;
+    removeError(error: string): void;
 }
 
 interface JQuery {
-    parsley():Parsley;
+    parsley(): Parsley;
 }
 
 declare module "parsleyjs" {

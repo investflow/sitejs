@@ -76,6 +76,10 @@ function renderSwitches(): void {
     $(".make-switch").bootstrapSwitch();
 }
 
+function renderToggles(): void {
+    $("input[data-toggle='toggle']").bootstrapToggle();
+}
+
 function applyDateTimePicker(e: JQuery): void {
     let now = new Date();
     //noinspection JSUnusedGlobalSymbols
@@ -335,6 +339,7 @@ export default {
     clickOnEnter: clickOnEnter,
     clickOnCtrlEnter: clickOnCtrlEnter,
     renderSwitches: renderSwitches,
+    renderToggles: renderToggles,
     applyDateTimePicker: applyDateTimePicker,
     applyDatePicker: applyDatePicker,
     sortClick: sortClick,
