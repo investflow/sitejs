@@ -3,6 +3,7 @@ import {percentBetweenPercents, percentBetweenEquity} from "./calc";
 import {getAccountInfo, AccountInfoResponse} from "./investflow-api";
 import t from "./transliterate";
 import {Broker} from "./broker";
+import Utils from "./site-utils";
 
 const HIGHCHARTS_MODAL_DIV_ID = "iflow_highcharts_modal";
 
@@ -50,7 +51,7 @@ function emptyIfNull(val: string): string {
 }
 
 function getDefaultLabelDecimalsForPercent(val: number) {
-    return val > 1000 ? 0 : val > 100 ? 1 : 2;
+    return val > 10000 ? 0 : val > 1000 ? 1 : 2;
 }
 
 var illegalRe = /[\/?<>\\:*|"]/g;
@@ -105,13 +106,13 @@ function updateProfitLabel($profitLabel: JQuery, profitData: Array<Array<number>
     if (broker.isPercentBasedPrice()) {
         let change = percentBetweenPercents(startValue, endValue);
         const decimals = getDefaultLabelDecimalsForPercent(change);
-        text = (change > 0 ? "+" : "") + change.toFixed(decimals) + "%";
+        text = (change > 0 ? "+" : "") + Utils.formatLargeNumber(change, decimals) + "%";
     } else {
         let percentChange = percentBetweenEquity(startValue, endValue);
         let valueChange = endValue - startValue;
         const percentDecimals = getDefaultLabelDecimalsForPercent(percentChange);
-        text = (valueChange > 0 ? "+" : "") + emptyIfNull(options.currencyPrefix) + valueChange.toFixed(valueDecimals) + emptyIfNull(options.currencySuffix)
-            + " или " + (percentChange > 0 ? "+" : "") + percentChange.toFixed(percentDecimals) + "%";
+        text = (valueChange > 0 ? "+" : "") + emptyIfNull(options.currencyPrefix) + Utils.formatLargeNumber(valueChange, valueDecimals) + emptyIfNull(options.currencySuffix)
+            + " или " + (percentChange > 0 ? "+" : "") + Utils.formatLargeNumber(percentChange, percentDecimals) + "%";
     }
     $profitLabel.text(text);
 }
@@ -186,7 +187,7 @@ function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
                 $.each(this.points, function () {
                     //noinspection TypeScriptUnresolvedVariable
                     var to = this.series.tooltipOptions;
-                    var val = to.valuePrefix + this.point.y.toFixed(to.valueDecimals !== "undefined" ? to.valueDecimals : 2) + to.valueSuffix;
+                    var val = to.valuePrefix + Utils.formatLargeNumber(this.point.y, to.valueDecimals !== "undefined" ? to.valueDecimals : 2) + to.valueSuffix;
                     s += `<span style="color:${this.color}">\u25CF</span> ${this.series.name}: <b>${val}</b><br/>`
                 });
 
@@ -401,6 +402,7 @@ function enableZoom($container: JQuery): void {
     chart.pointer.onContainerMouseDown = function (a) {
         //noinspection JSUnusedGlobalSymbols
         this.zoomX = this.zoomHor = this.hasZoom = a.shiftKey;
+        //noinspection TypeScriptUnresolvedFunction
         this.cmd(a);
     };
 }
@@ -409,7 +411,7 @@ export default {
     attachModalAccountChart: function (elementSelector: string, broker: number, account: string): void {
         $(elementSelector).click(function (e: Event) {
             e.preventDefault();
-            getAccountInfo(broker, account).then((accountInfo: AccountInfoResponse)=> {
+            getAccountInfo(broker, account).then((accountInfo: AccountInfoResponse) => {
                 showChart(accountInfo);
             });
         });

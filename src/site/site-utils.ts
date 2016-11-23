@@ -332,6 +332,11 @@ function removeServerSideParsleyError(el: HTMLElement) {
     p.removeError("server-side-parsley-error");
 }
 
+function formatLargeNumber(n: number, decimals: number) {
+    let truncated = Number(n.toFixed(decimals)).toString();  // Number is used to truncate trailing zeros after .toFixed
+    return truncated.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 export default {
     setTitle: setTitle,
     linkify: linkify,
@@ -354,5 +359,6 @@ export default {
     applyAvatars: applyAvatars,
     applyAvatar: applyAvatar,
     playYoutube: links.playYoutube,
-    removeServerSideParsleyError: removeServerSideParsleyError
+    removeServerSideParsleyError: removeServerSideParsleyError,
+    formatLargeNumber: formatLargeNumber
 }
