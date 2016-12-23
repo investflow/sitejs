@@ -16,7 +16,7 @@ interface LinkifyOptions {
 }
 
 function linkify(text: string, options: LinkifyOptions): string {
-    var autolinker = new Autolinker({
+    const autolinker = new Autolinker({
         urls: {
             schemeMatches: true,
             wwwMatches: true,
@@ -38,7 +38,7 @@ function linkify(text: string, options: LinkifyOptions): string {
         className: ""
     });
 
-    var res = autolinker.link(text);
+    const res = autolinker.link(text);
     if (options && options.skipMediaLinks) {
         return res;
     }
@@ -171,8 +171,8 @@ interface ScrollToOptions {
 }
 
 function scrollTo(selector: string, o?: ScrollToOptions) {
-    var offset = o && o.offset ? o.offset : 0;
-    var delay = o && o.delay ? o.delay : 0;
+    const offset = o && o.offset ? o.offset : 0;
+    const delay = o && o.delay ? o.delay : 0;
     $("html, body").animate({scrollTop: $(selector).offset().top + offset}, delay);
 }
 
@@ -250,9 +250,9 @@ function toValueWithSuffix(value) {
     if (value < 0) {
         return "-" + toValueWithSuffix(-value);
     }
-    var k = 1000;
-    var sizes = ['', 'k', 'm', 'b'];
-    var i = Math.floor(Math.log(value) / Math.log(k));
+    const k = 1000;
+    const sizes = ['', 'k', 'm', 'b'];
+    const i = Math.floor(Math.log(value) / Math.log(k));
     return parseFloat((value / Math.pow(k, i)).toFixed(0)) + sizes[i];
 }
 
@@ -261,7 +261,7 @@ function createAvatar(name, size) {
     name = name || '';
     size = size || 60;
 
-    var colors = [
+    let colors = [
             "#1abc9c", "#2ecc71", "#3498db", "#9b59b6", "#34495e", "#16a085", "#27ae60", "#2980b9", "#8e44ad", "#2c3e50",
             "#f1c40f", "#e67e22", "#e74c3c", "#ecf0f1", "#95a5a6", "#f39c12", "#d35400", "#c0392b", "#bdc3c7", "#7f8c8d"
         ],
@@ -270,10 +270,10 @@ function createAvatar(name, size) {
         initials, charIndex, colourIndex, canvas, context, dataURI;
 
     if (nameSplit.length == 1) {
-        var firstName = nameSplit[0];
+        const firstName = nameSplit[0];
         if (firstName) {
-            var firstChar = firstName.charAt(0).toUpperCase();
-            var secondChar = firstName.length > 1 ? firstName.charAt(1) : "";
+            const firstChar = firstName.charAt(0).toUpperCase();
+            const secondChar = firstName.length > 1 ? firstName.charAt(1) : "";
             initials = firstChar + secondChar;
         } else {
             initials = '?';
@@ -316,9 +316,9 @@ function applyAvatars() {
 }
 
 function applyAvatar(selector: string) {
-    var $img = $(selector);
+    const $img = $(selector);
     $img.each(function () {
-        var name = this.getAttribute("avatar");
+        const name = this.getAttribute("avatar");
         if (name) {
             this.src = createAvatar(name, this.getAttribute("width"));
             this.removeAttribute("avatar");
@@ -328,7 +328,7 @@ function applyAvatar(selector: string) {
 }
 
 function removeServerSideParsleyError(el: HTMLElement) {
-    var p: Parsley = $(el).parsley();
+    const p: Parsley = $(el).parsley();
     p.removeError("server-side-parsley-error");
 }
 

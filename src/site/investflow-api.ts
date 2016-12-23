@@ -10,12 +10,12 @@ const OP_LIST_ACCOUNTS = "/api/list-accounts?v=1";
 const OP_ACCOUNT_INFO = "/api/account-info?v=1";
 const REQUEST_TIMEOUT_MILLIS = 30 * 1000;
 
-function query(path:string):Promise<Object> {
+function query(path: string): Promise<Object> {
     return new Promise((resolve, reject) => {
             let request = new XMLHttpRequest(); // ActiveX blah blah
             request.open("GET", SERVER_URL + path, true);
-            request.onload = function () {
-                if (this.status >= 200 && this.status < 300) {
+            request.onload = () => {
+                if (request.status >= 200 && request.status < 300) {
                     log.trace("IR:query: starting to parse response");
                     resolve(JSON.parse(request.responseText));
                     log.trace("IR:query: response parsed");
@@ -30,34 +30,34 @@ function query(path:string):Promise<Object> {
 }
 
 export interface ListAccountsResponse {
-    result:string;
+    result: string;
 }
 
-export function listAccounts():Promise<ListAccountsResponse> {
+export function listAccounts(): Promise<ListAccountsResponse> {
     return query(OP_LIST_ACCOUNTS);
 }
 
 export interface AccountInfoResponse {
     /** Account number */
-    account:string,
+    account: string,
     /** Broker id */
-    broker:number,
+    broker: number,
     /** Account name */
-    name:string,
+    name: string,
     /** Profit history. Array of pairs: [time, percent] */
-    profitData:Array<Array<number>>,
+    profitData: Array<Array<number>>,
     /** Balance history. Array of pairs: [time, amount] */
-    balanceData?:Array<Array<number>>,
+    balanceData?: Array<Array<number>>,
     /** Equity history. Array of pairs: [time, amount] */
-    equityData?:Array<Array<number>>,
-    currencyPrefix?:string,
-    currencySuffix?:string,
+    equityData?: Array<Array<number>>,
+    currencyPrefix?: string,
+    currencySuffix?: string,
     /** Full url to account page*/
-    url:string,
+    url: string,
     /** if any -> there was an error processing data on server */
-    error:string
+    error: string
 }
 
-export function getAccountInfo(brokerId:number, account:string):Promise<AccountInfoResponse> {
+export function getAccountInfo(brokerId: number, account: string): Promise<AccountInfoResponse> {
     return query(OP_ACCOUNT_INFO + "&broker=" + brokerId + "&account=" + account);
 }
