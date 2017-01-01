@@ -116,7 +116,11 @@ function getLinkReplacement(link: string): string {
     var lcUrl = url.toLocaleLowerCase();
     var ext = lcUrl.split('.').pop();
     if (ext in KnownImageExtensions) {
-        return "<a href='" + link + "' class='swipebox' target='_blank'><img src='" + link + "' style='max-width: 400px; max-height: 300px;'></a>"
+        return "<div class='mt5 mb5'>" +
+            "<a href='" + link + "' class='swipebox' target='_blank'>" +
+            "<img src='" + link + "' style='max-width: 400px; max-height: 300px;'>" +
+            "</a>" +
+            "</div>"
     }
     if (lcUrl.indexOf(PAMM_URL_PREFIX) == 0 || lcUrl.indexOf(SECURITY_URL_PREFIX) == 0) {
         return replaceWithPammLink(url, null);
