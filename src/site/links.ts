@@ -105,7 +105,6 @@ function replaceWithAlpariFundLink(url: string, fallbackLink: string): string {
     return "<a href='http://" + url + "' style='color:rgb(" + Broker.ALPARI.rgb + ")' target='_blank' title='" + title + "'>" + name + getExternalLinkIconHtml() + "</a>"
 }
 
-var linkImgId = 0;
 function getLinkReplacement(link: string): string {
     var lcLink = link.toLocaleLowerCase();
     var url = link;
@@ -117,8 +116,7 @@ function getLinkReplacement(link: string): string {
     var lcUrl = url.toLocaleLowerCase();
     var ext = lcUrl.split('.').pop();
     if (ext in KnownImageExtensions) {
-        var id = "li-" + linkImgId++;
-        return "<a href='" + link + "' id='" + id + "'><img src='" + link + "' style='max-width: 400px; max-height: 300px;'></a><script>$('#" + id + "').swipebox({useSVG:false});</script>"
+        return "<a href='" + link + "' class='swipebox' target='_blank'><img src='" + link + "' style='max-width: 400px; max-height: 300px;'></a>"
     }
     if (lcUrl.indexOf(PAMM_URL_PREFIX) == 0 || lcUrl.indexOf(SECURITY_URL_PREFIX) == 0) {
         return replaceWithPammLink(url, null);
