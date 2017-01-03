@@ -13,7 +13,7 @@ declare namespace __Autolinker {
     replaceFn?: (autolinker: Autolinker, match: any) => string;
     stripPrefix?: boolean;
     truncate?: number | { length?: number; location?: string; };
-    twitter?: boolean;
+    mention?: string | boolean;
     urls?: boolean | { schemeMatches: boolean; wwwMatches: boolean; tldMatches: boolean; }
   }
   

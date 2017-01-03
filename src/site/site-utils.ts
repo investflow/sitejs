@@ -24,7 +24,7 @@ function linkify(text: string, options: LinkifyOptions): string {
         },
         email: true,
         phone: true,
-        twitter: false,
+        mention: false,
         hashtag: false,
 
         stripPrefix: true,

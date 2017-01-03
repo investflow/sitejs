@@ -132,8 +132,21 @@ function getLinkReplacement(link: string): string {
     return null;
 }
 
+function processUserLinks(text: string): string {
+    return text.replace(/\{\{(.*?)\}\}/g, function (match, token) {
+        var login = token;
+        var name = token;
+        var idx = token.indexOf('|');
+        if (idx > 0 && idx < token.length) {
+            login = token.substring(0, idx);
+            name = token.substring(idx + 1, token.length);
+        }
+        return "<a href='/user/" + login + "' target='_blank' title='Перейти на страницу пользователя " + name + "'>" + name + "</a>";
+    });
+}
+
 function processMediaLinks(text: string): string {
-    var res = text;
+    var res = processUserLinks(text);
     var startIdx = res.indexOf("<a href=");
     while (startIdx >= 0) {
         var endIdx = res.indexOf("</a>", startIdx);
