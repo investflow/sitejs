@@ -141,7 +141,7 @@ function processUserLinks(text: string): string {
             login = token.substring(0, idx);
             name = token.substring(idx + 1, token.length);
         }
-        return "<a href='/user/" + login + "' target='_blank' title='Перейти на страницу пользователя " + name + "'>" + name + "</a>";
+        return "<a href='/user/" + login + "' class='user-link' target='_blank' title='Перейти на страницу пользователя'>" + name + "</a>";
     });
 }
 
