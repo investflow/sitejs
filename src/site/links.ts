@@ -18,7 +18,7 @@ function playYoutube(el: HTMLElement) {
     }
 
     // The height and width of the iFrame should be the same as parent
-    var iframe = $('<iframe/>', {
+    var iframe = $('<iframe class="youtube-iframe"/>', {
         'frameborder': '0',
         'src': iframeUrl,
         'width': $(el).width(),
@@ -133,7 +133,7 @@ function getLinkReplacement(link: string): string {
 }
 
 function processUserLinks(text: string): string {
-    return text.replace(/\{\{(.*?)\}\}/g, function (match, token) {
+    return text.replace(/\{\{(.*?)}}/g, function (match, token) {
         var login = token;
         var name = token;
         var idx = token.indexOf('|');
