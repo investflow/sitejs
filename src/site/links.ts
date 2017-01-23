@@ -18,11 +18,12 @@ function playYoutube(el: HTMLElement) {
     }
 
     // The height and width of the iFrame should be the same as parent
-    var iframe = $('<iframe class="youtube-iframe"/>', {
-        'frameborder': '0',
-        'src': iframeUrl,
-        'width': $(el).width(),
-        'height': $(el).height()
+    var iframe = $("<iframe/>", {
+        "frameborder": 0,
+        "src": iframeUrl,
+        "width": $(el).width(),
+        "height": $(el).height(),
+        "class": "youtube-iframe"
     });
     iframe.attr("allowfullscreen", "allowfullscreen");
 
