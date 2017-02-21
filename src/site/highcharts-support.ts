@@ -228,7 +228,7 @@ function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
     };
 
     //profit chart
-    var profitPrefix = cp;
+    var profitPrefix = broker.isPercentBasedPrice() ? "" : cp;
     var profitSuffix = broker.isPercentBasedPrice() ? "%" : cs;
     res.series.push({
         name: broker.isPercentBasedPrice() ? "Доходность" : "Стоимость",
