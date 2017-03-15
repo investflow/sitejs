@@ -422,5 +422,9 @@ export default {
         var $chartEl = $(options.chartElementSelector);
         $chartEl.highcharts("StockChart", highchartOptions);
         enableZoom($chartEl);
-    }
+    },
+
+    installTranslations: ensureLocalizationIsInstalled
+
+
 }
