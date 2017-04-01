@@ -1,9 +1,10 @@
 import * as store from "store";
 import {listAccounts, ListAccountsResponse} from "./investflow-api";
-import $site from "./site-def"
-import {Broker} from "./broker"
-import * as lzString from "lz-string"
-import * as log from "loglevel"
+import $site from "./site-def";
+import {Broker} from "./broker";
+import * as lzString from "lz-string";
+import * as log from "loglevel";
+import {Promise} from "es6-promise";
 
 const STORE_LISTING_HASH = "account-listing-hash";
 const STORE_LISTING_KEY = "account-listing";
@@ -12,37 +13,37 @@ const FLAGS_INDEX = "i";
 const FLAGS_FUND = "f";
 
 export class Account {
-    broker:Broker;
-    account:string;
-    name:string;
-    typeName:string;
-    open:boolean;
-    index:boolean;
-    fund:boolean;
+    broker: Broker;
+    account: string;
+    name: string;
+    typeName: string;
+    open: boolean;
+    index: boolean;
+    fund: boolean;
 
 
-    constructor(broker:Broker, account:string, name:string, open:boolean = true) {
+    constructor(broker: Broker, account: string, name: string, open: boolean = true) {
         this.broker = broker;
         this.account = account;
         this.name = name;
         this.open = open;
     }
 
-    isAlpariFund():boolean {
+    isAlpariFund(): boolean {
         return this.fund && this.broker == Broker.ALPARI;
     }
 
-    isAlpariIndex():boolean {
+    isAlpariIndex(): boolean {
         return this.index && this.broker == Broker.ALPARI;
     }
 }
 
 class Cached {
-    static listingHash:string = "";
-    static parsedListing:Array<Account> = [];
+    static listingHash: string = "";
+    static parsedListing: Array<Account> = [];
 }
 
-function loadListingFromStore():void {
+function loadListingFromStore(): void {
     log.trace("AL:lfs: started");
     Cached.parsedListing = [];
     Cached.listingHash = store.get(STORE_LISTING_HASH);
@@ -100,7 +101,7 @@ function loadListingFromStore():void {
     log.trace("AL:lfs: finished, found: " + Cached.parsedListing.length + " items");
 }
 
-export function getCachedAccountsListing(forceUpdate:boolean = false):Promise<Array<Account>> {
+export function getCachedAccountsListing(forceUpdate: boolean = false): Promise<Array<Account>> {
     log.trace("AL:gca, cached len:" + Cached.parsedListing.length + " hash: '" + Cached.listingHash +
         "', siteHash: '" + $site.ServiceState.accountListingHash + "', force: " + forceUpdate);
     if (forceUpdate) {
@@ -117,7 +118,7 @@ export function getCachedAccountsListing(forceUpdate:boolean = false):Promise<Ar
         return Promise.resolve(Cached.parsedListing);
     }
     log.trace("AL:gca: fetching listing from web");
-    return listAccounts().then((response:ListAccountsResponse) => {
+    return listAccounts().then((response: ListAccountsResponse) => {
         let compressedData = lzString.compress(response.result);
         log.trace("AL:gca: fetch complete: raw len: " + response.result.length + ", compressed len: " + compressedData.length);
         store.set(STORE_LISTING_KEY, {data: compressedData});

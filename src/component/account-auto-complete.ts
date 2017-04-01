@@ -10,7 +10,6 @@ const MAX_SUGGESTIONS: number = 40;
 export default {
     attach: (selector: string): void => {
         let $el: JQuery = $(selector);
-        //noinspection JSUnusedGlobalSymbols
         $el.devbridgeAutocomplete({
             lookup: (query: string, done: Function) => {
                 log.trace("AAC: lookup: " + query);
@@ -31,7 +30,7 @@ export default {
                     };
                     let disabledBrokers: { [key: number]: boolean; } = {};
                     if ($site.ServiceState.AutocompleteExcludeBrokerIds) {
-                        $site.ServiceState.AutocompleteExcludeBrokerIds.forEach((v: number)=> disabledBrokers[v] = true);
+                        $site.ServiceState.AutocompleteExcludeBrokerIds.forEach((v: number) => disabledBrokers[v] = true);
                     }
                     // select open accounts first
                     for (let i = 0; i < accounts.length && accountsToShow.length < MAX_SUGGESTIONS; i++) {

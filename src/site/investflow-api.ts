@@ -1,4 +1,5 @@
 import * as log from "loglevel";
+import {Promise} from "es6-promise";
 
 let SERVER_URL = ((window.location.protocol == "https:") ? "https" : "http") + "://investflow.ru";
 const docUrl = document && typeof document.URL === "string" ? document.URL : "";

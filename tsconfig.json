@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "module": "commonjs"
+  },
+  "files": [
+    "src/site.ts",
+    "src/mql.ts",
+    "typings/tsd.d.ts"
+  ]
+}
