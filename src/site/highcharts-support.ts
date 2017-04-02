@@ -240,7 +240,7 @@ function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
         },
         plotLines: [{color: "#555", width: 1, value: 0, zIndex: 10}],
         maxPadding: 0.05,
-        lineWidth: 2
+        lineWidth: hasEquityOrBalance ? 2 : 0
     });
 
     if (hasEquityOrBalance) {
