@@ -145,17 +145,12 @@ function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
     const hasEquityOrBalance = hasEquity || hasBalance;
 
     let profitChartColor = "#00854E";
-    //noinspection JSUnusedGlobalSymbols
     var res = {
-        credits: {
-            enabled: false
-        },
+        credits: {enabled: false},
         chart: {
             marginBottom: hasEquityOrBalance ? 40 : 0
         },
-        legend: {
-            enabled: false
-        },
+        legend: {enabled: false},
         rangeSelector: {
             allButtonsEnabled: true,
             buttons: buttons,
@@ -318,6 +313,7 @@ function ensureLocalizationIsInstalled() {
     let options: any = {lang: langObject};
     Highcharts.setOptions(options);
 }
+
 function showChart(accountInfo: AccountInfoResponse) {
     // find modal window, create if not found
     let $modalDiv = $("#" + HIGHCHARTS_MODAL_DIV_ID);
@@ -395,6 +391,57 @@ function enableZoom($container: JQuery): void {
     };
 }
 
+interface VsLine {
+    name: string,
+    // array of points: [timestamp, price]
+    data: Array<Array<number>>,
+}
+
+interface VsChartOptions {
+    chartElementSelector: string;
+    accounts: VsLine[];
+}
+
+function prepareVsChartOptions(options: VsChartOptions): any {
+    ensureLocalizationIsInstalled();
+
+    var seriesOptions = [];
+    for (let i = 0; i < options.accounts.length; i++) {
+        let a = options.accounts[i];
+        seriesOptions.push({
+            name: a.name,
+            data: a.data
+        });
+    }
+
+    //TODO: let buttons: Array<any> = getRangeButtons(firstEventMillis, lastEventMillis);
+    return {
+        rangeSelector: {selected: 4},
+        credits: {enabled: false},
+        legend: {enabled: true},
+        yAxis: {
+            labels: {
+                formatter: function () {
+                    return (this.value > 0 ? ' + ' : '') + this.value + '%';
+                }
+            },
+            plotLines: [{value: 0, width: 2, color: 'silver'}]
+        },
+
+        plotOptions: {
+            series: {showInNavigator: true}
+        },
+
+        tooltip: {
+            pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.change}%)<br/>',
+            valueDecimals: 2,
+            split: true
+        },
+
+        series: seriesOptions
+    };
+}
+
 export default {
     attachModalAccountChart: function (elementSelector: string, broker: number, account: string): void {
         $(elementSelector).click(function (e: Event) {
@@ -406,13 +453,17 @@ export default {
     },
 
     addAccountChart: function (options: AccountChartOptions) {
-        let highchartOptions = prepareAccountProfitChartOptions(options);
+        let hsOptions = prepareAccountProfitChartOptions(options);
         var $chartEl = $(options.chartElementSelector);
-        $chartEl.highcharts("StockChart", highchartOptions);
+        $chartEl.highcharts("StockChart", hsOptions);
         enableZoom($chartEl);
     },
 
+    addVsChart: function (options: VsChartOptions) {
+        let hsOptions = prepareVsChartOptions(options);
+        var $chartEl = $(options.chartElementSelector);
+        $chartEl.highcharts("StockChart", hsOptions);
+    },
+
     installTranslations: ensureLocalizationIsInstalled
-
-
 }
