@@ -225,37 +225,34 @@ function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
     };
 
     //profit chart
-    var profitPrefix = broker.isPercentBasedPrice() ? "" : cp;
-    var profitSuffix = broker.isPercentBasedPrice() ? "%" : cs;
+    var pp = broker.isPercentBasedPrice() ? "" : cp;
+    var ps = broker.isPercentBasedPrice() ? "%" : cs;
     res.series.push({
         name: broker.isPercentBasedPrice() ? "Доходность" : "Стоимость",
         data: profitData,
         color: profitChartColor,
-        tooltip: {
-            valueDecimals: vState.valueDecimals,
-            valuePrefix: profitPrefix,
-            valueSuffix: profitSuffix
-        },
+        tooltip: {valueDecimals: vState.valueDecimals, valuePrefix: pp, valueSuffix: ps},
         marker: {enabled: false,},
         yAxis: 0,
         zIndex: 10
     });
     res.yAxis.push({
         title: {text: "Доходность"},
-        height: hasEquityOrBalance ? "50%" : "100%",
+        height: hasEquityOrBalance ? "47%" : "100%",
         labels: {
-            format: profitPrefix + "{value}" + profitSuffix,
+            format: pp + "{value}" + ps,
             style: {color: profitChartColor}
         },
-        plotLines: [{color: "#ccc", width: 2, value: 0, zIndex: 10}],
-        maxPadding: 0.05
+        plotLines: [{color: "#555", width: 1, value: 0, zIndex: 10}],
+        maxPadding: 0.05,
+        lineWidth: 2
     });
 
     if (hasEquityOrBalance) {
         res.yAxis.push({
             title: {text: hasEquity && hasBalance ? "Баланс и Средства" : hasEquity ? "Средства" : "Баланс"},
-            top: '50%',
-            height: '50%',
+            top: "53%",
+            height: "47%",
             offset: 0,
             min: 0,
             maxPadding: 0.05,
@@ -264,14 +261,15 @@ function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
                     return cp + Highcharts.numberFormat(this.value, 0, "", ",") + cs
                 },
                 style: {color: "#446587"}
-            }
+            },
+            lineWidth: 2
         });
     }
     if (hasBalance) {
         //balanceData chart
         res.series.push({
             name: "Баланс",
-            color: "#9cb3c9",
+            color: "#c7c7c7",
             data: options.balanceData,
             marker: {enabled: false},
             tooltip: {valuePrefix: cp, valueSuffix: cs},
