@@ -1,6 +1,6 @@
 import * as $ from "jquery";
-import {percentBetweenPercents, percentBetweenEquity} from "./calc";
-import {getAccountInfo, AccountInfoResponse} from "./investflow-api";
+import {percentBetweenEquity, percentBetweenPercents} from "./calc";
+import {AccountInfoResponse, getAccountInfo} from "./investflow-api";
 import t from "./transliterate";
 import {Broker} from "./broker";
 import Utils from "./site-utils";
@@ -119,6 +119,7 @@ function updateProfitLabel($profitLabel: JQuery, profitData: Array<Array<number>
 
 function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
     ensureLocalizationIsInstalled();
+
     let firstEventMillis = -1;
     let lastEventMillis = -1;
     let profitData = options.profitData;
@@ -153,9 +154,7 @@ function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
             marginBottom: hasEquityOrBalance ? 40 : 0
         },
         legend: {
-            enabled: hasEquityOrBalance,
-            align: "center",
-            layout: "horizontal",
+            enabled: false
         },
         rangeSelector: {
             allButtonsEnabled: true,
@@ -164,9 +163,7 @@ function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
         },
         navigator: {
             maskFill: "rgba(0, 0, 0, 0.1)",
-            series: {
-                color: profitChartColor,
-            }
+            series: {color: profitChartColor}
         },
         exporting: {
             filename: options.exportFileName ? options.exportFileName : toSafeFileName(options.fullAccountName),
@@ -234,36 +231,39 @@ function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
         name: broker.isPercentBasedPrice() ? "Доходность" : "Стоимость",
         data: profitData,
         color: profitChartColor,
-        lineWidth: 3,
         tooltip: {
             valueDecimals: vState.valueDecimals,
             valuePrefix: profitPrefix,
             valueSuffix: profitSuffix
         },
-        marker: {
-            enabled: false,
-        },
+        marker: {enabled: false,},
         yAxis: 0,
         zIndex: 10
     });
     res.yAxis.push({
+        title: {text: "Доходность"},
+        height: hasEquityOrBalance ? "50%" : "100%",
         labels: {
             format: profitPrefix + "{value}" + profitSuffix,
-            style: {
-                color: hasEquityOrBalance ? profitChartColor : "#333333"
-            }
+            style: {color: profitChartColor}
         },
+        plotLines: [{color: "#ccc", width: 2, value: 0, zIndex: 10}],
         maxPadding: 0.05
     });
 
     if (hasEquityOrBalance) {
         res.yAxis.push({
+            title: {text: hasEquity && hasBalance ? "Баланс и Средства" : hasEquity ? "Средства" : "Баланс"},
+            top: '50%',
+            height: '50%',
+            offset: 0,
             min: 0,
             maxPadding: 0.05,
             labels: {
-                style: {
-                    color: "#5b81a4"
-                }
+                formatter: function () {
+                    return cp + Highcharts.numberFormat(this.value, 0, "", ",") + cs
+                },
+                style: {color: "#446587"}
             }
         });
     }
@@ -273,13 +273,8 @@ function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
             name: "Баланс",
             color: "#9cb3c9",
             data: options.balanceData,
-            marker: {
-                enabled: false,
-            },
-            tooltip: {
-                valuePrefix: cp,
-                valueSuffix: cs,
-            },
+            marker: {enabled: false},
+            tooltip: {valuePrefix: cp, valueSuffix: cs},
             yAxis: res.yAxis.length - 1,
             zIndex: 1
         });
@@ -287,15 +282,10 @@ function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
     if (hasEquity) {
         res.series.push({
             name: "Средства",
-            color: "#5b81a4",
+            color: "#446587",
             data: options.equityData,
-            marker: {
-                enabled: false,
-            },
-            tooltip: {
-                valuePrefix: cp,
-                valueSuffix: cs,
-            },
+            marker: {enabled: false},
+            tooltip: {valuePrefix: cp, valueSuffix: cs,},
             yAxis: res.yAxis.length - 1,
             zIndex: 2
         });
