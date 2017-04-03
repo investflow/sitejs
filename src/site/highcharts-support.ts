@@ -416,7 +416,7 @@ function prepareVsChartOptions(options: VsChartOptions): any {
 
     //TODO: let buttons: Array<any> = getRangeButtons(firstEventMillis, lastEventMillis);
     return {
-        rangeSelector: {selected: 4},
+        rangeSelector: {selected: 5},
         credits: {enabled: false},
         legend: {enabled: true},
         yAxis: {
