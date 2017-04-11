@@ -415,9 +415,18 @@ function prepareVsChartOptions(options: VsChartOptions): any {
         });
     }
 
-    //TODO: let buttons: Array<any> = getRangeButtons(firstEventMillis, lastEventMillis);
     return {
-        rangeSelector: {selected: 5},
+        rangeSelector: {
+            selected: 5,
+            buttons: [
+                {type: 'month', count: 1, text: '1м'},
+                {type: 'month', count: 3, text: '3м'},
+                {type: 'month', count: 6, text: '6м'},
+                {type: 'ytd', text: 'YTD'},
+                {type: 'year', count: 1, text: 'Год'},
+                {type: 'all', text: 'Все'}
+            ]
+        },
         credits: {enabled: false},
         legend: {enabled: true},
         yAxis: {
@@ -444,9 +453,11 @@ function prepareVsChartOptions(options: VsChartOptions): any {
 }
 
 function addVsChart(options: VsChartOptions) {
-   function scaleChartHeight() {
+    ensureLocalizationIsInstalled();
+
+    function scaleChartHeight() {
         let $chartEl = $(options.chartElementSelector);
-        if ($chartEl.length == 1) {
+        if ($chartEl.length === 1) {
             let newHeight = Math.max(400, $(window).height() - $chartEl.offset().top);
             $chartEl.height(newHeight);
         }
