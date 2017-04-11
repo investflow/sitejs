@@ -400,6 +400,7 @@ interface VsLine {
 interface VsChartOptions {
     chartElementSelector: string;
     accounts: VsLine[];
+    scaleHeight: boolean;
 }
 
 function prepareVsChartOptions(options: VsChartOptions): any {
@@ -442,6 +443,25 @@ function prepareVsChartOptions(options: VsChartOptions): any {
     };
 }
 
+function addVsChart(options: VsChartOptions) {
+   function scaleChartHeight() {
+        let $chartEl = $(options.chartElementSelector);
+        if ($chartEl.length == 1) {
+            let newHeight = Math.max(400, $(window).height() - $chartEl.offset().top);
+            $chartEl.height(newHeight);
+        }
+    }
+
+    if (options.scaleHeight) {
+        scaleChartHeight();
+        $(window).resize(() => scaleChartHeight());
+    }
+
+    let hsOptions = prepareVsChartOptions(options);
+    let $chartEl = $(options.chartElementSelector);
+    $chartEl.highcharts("StockChart", hsOptions);
+}
+
 export default {
     attachModalAccountChart: function (elementSelector: string, broker: number, account: string): void {
         $(elementSelector).click(function (e: Event) {
@@ -459,11 +479,7 @@ export default {
         enableZoom($chartEl);
     },
 
-    addVsChart: function (options: VsChartOptions) {
-        let hsOptions = prepareVsChartOptions(options);
-        var $chartEl = $(options.chartElementSelector);
-        $chartEl.highcharts("StockChart", hsOptions);
-    },
+    addVsChart: addVsChart,
 
     installTranslations: ensureLocalizationIsInstalled
 }
