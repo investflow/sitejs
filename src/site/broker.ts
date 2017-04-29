@@ -18,6 +18,7 @@ export class Broker {
     public static GERCHIK: Broker = new Broker(33, "Gerchik&Co", "169,63,0", "gerchik", "gerchik_");
     public static ICEFX: Broker = new Broker(35, "ICE-FX", "0,136,204", "icefx", "ice_");
     public static ETORO: Broker = new Broker(36, "eToro", "4,79,123", "etoro", "etoro_");
+    public static BTCE: Broker = new Broker(37, "BTC-e", "91, 192, 222", "btce", "btce_");
 
     public static ACTIVE_BROKERS: Array<Broker> = [
         Broker.ALFAFOREX,
@@ -39,6 +40,7 @@ export class Broker {
         Broker.MQL5_COM,
         Broker.GERCHIK,
         Broker.ICEFX,
+        Broker.BTCE,
     ];
 
     constructor(public id: number, public name: string, public rgb: string, public mount, public keyPrefix) {
