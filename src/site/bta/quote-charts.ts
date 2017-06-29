@@ -307,7 +307,7 @@ function addQuoteChart(chartSelector, options: QuoteChartOptions) {
 
 class AccountType {
     public static ALFAFOREX_MT4: AccountType = new AccountType(1, "MT4", Broker.ALFAFOREX, "без комиссии", "https://www.alfa-forex.ru/ru/terms/traders/specs.html", 0);
-    public static ALPARI_ECN1: AccountType = new AccountType(2, "ecn.mt4", Broker.ALPARI, "без комиссии", "http://www.alpari.ru/ru/trading/trading_terms/", 0);
+    public static ALPARI_ECN1: AccountType = new AccountType(2, "ecn.mt4", Broker.ALPARI, "без комиссии", "http://www.alpari.com/ru/trading/trading_terms/", 0);
     public static AMARKETS_ECN: AccountType = new AccountType(3, "ECN", Broker.AMARKETS, "комиссия: $5 за лот", "http://www.amarkets.org/trading/usloviya_torgovli/", 5);
     public static FOREX4YOU_CLASSIC_NDD: AccountType = new AccountType(4, "ecn.mt4", Broker.FOREX4YOU, "комиссия: $8 за лот", "http://www.forex4you.org/account/conditions/", 8);
     public static ROBOFOREX_ECN_PRO_NDD: AccountType = new AccountType(5, "ECN-Pro NDD", Broker.ROBOFOREX, "комиссия: $20 за $1млн оборота", "http://www.roboforex.ru/trade-conditions/account-types/", 2);

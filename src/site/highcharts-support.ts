@@ -476,7 +476,7 @@ function addVsChart(options: VsChartOptions) {
 interface TsDrawdownChartOptions {
   elementId: string
   dates: Array<number>
-  ordersCounts: Array<number>
+  ordersCount: Array<number>
   minOrderPoints: Array<number>
   maxOrderPoints: Array<number>
   minAccountPoints: Array<number>
@@ -485,28 +485,33 @@ interface TsDrawdownChartOptions {
 function addTsDrawdownChart(tsOptions: TsDrawdownChartOptions) {
   const perOrder = []
   const perAccount = []
-  const ordersCount = []
-  const {dates, minOrderPoints, maxOrderPoints, minAccountPoints, maxAccountPoints} = tsOptions;
+  const orders = []
+  const {dates, minOrderPoints, maxOrderPoints, minAccountPoints, maxAccountPoints, ordersCount} = tsOptions;
   for (let i = 0; i < dates.length; i++) {
     perOrder.push([dates[i], minOrderPoints[i], maxOrderPoints[i]]);
     perAccount.push([dates[i], minAccountPoints[i], maxAccountPoints[i]]);
-    ordersCount.push([dates[i], ordersCount[i]]);
+    orders.push([dates[i], ordersCount[i]]);
   }
 
   const hsOptions = {
-    chart: {type: 'arearange'},
     title: {text: ''},
     xAxis: {type: 'datetime'},
-    yAxis: {title: {text: null}},
-
+    yAxis: [
+      {title: {text: 'Пункты'}, opposite: true},
+      {title: {text: 'Число открытых позиций'}}
+    ],
     tooltip: {
       shared: true,
-      xDateFormat: '%Y-%m-%d %H:00',
+      xDateFormat: '%Y-%m-%d %H:00'
     },
     credits: {enabled: false},
     series: [
-      {name: 'Просадка на сделку', data: perOrder},
-      {name: 'Просадка на счёт', data: perAccount}
+      {name: 'Просадка на сделку', type: 'arearange', data: perOrder, zIndex: 2},
+      {name: 'Просадка на счёт', type: 'arearange', data: perAccount, zIndex: 1},
+      {
+        name: 'Число открытых позиций', type: 'column', data: orders, zIndex: 0, yAxis: 1, color: '#eee',
+        states: {hover: {color: '#ccc'}}
+      }
     ]
   } as HighchartsOptions;
 
