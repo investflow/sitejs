@@ -35,7 +35,7 @@ export interface ListAccountsResponse {
 }
 
 export function listAccounts(): Promise<ListAccountsResponse> {
-    return query(OP_LIST_ACCOUNTS);
+    return query(OP_LIST_ACCOUNTS) as Promise<ListAccountsResponse>;
 }
 
 export interface AccountInfoResponse {
@@ -60,5 +60,5 @@ export interface AccountInfoResponse {
 }
 
 export function getAccountInfo(brokerId: number, account: string): Promise<AccountInfoResponse> {
-    return query(OP_ACCOUNT_INFO + "&broker=" + brokerId + "&account=" + account);
+    return query(OP_ACCOUNT_INFO + "&broker=" + brokerId + "&account=" + account) as Promise<AccountInfoResponse>;
 }

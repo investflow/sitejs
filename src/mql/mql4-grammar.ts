@@ -80,7 +80,7 @@ function mql4_grammar() {
         aliases: ['mq4', 'mqh'],
         keywords: KEYWORDS,
         illegal: '</',
-        contains: EXPRESSION_CONTAINS.concat([
+        contains: (<any>EXPRESSION_CONTAINS).concat([
             PREPROCESSOR,
             {
                 begin: '\\b(list|queue|stack|vector|map|set|array)\\s*<', end: '>',
@@ -105,7 +105,7 @@ function mql4_grammar() {
                     {
                         begin: /\(/, end: /\)/,
                         keywords: KEYWORDS,
-                        contains: EXPRESSION_CONTAINS.concat(['self']),
+                        contains: (<any>EXPRESSION_CONTAINS).concat(['self']),
                         relevance: 0
                     }
                 ]),

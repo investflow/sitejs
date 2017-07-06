@@ -509,7 +509,7 @@ function addTsDrawdownChart(tsOptions: TsDrawdownChartOptions) {
       {name: 'Просадка на сделку', type: 'arearange', data: perOrder, zIndex: 2},
       {name: 'Просадка на счёт', type: 'arearange', data: perAccount, zIndex: 1},
       {
-        name: 'Число открытых позиций', type: 'column', data: orders, zIndex: 0, yAxis: 1, color: '#eee',
+        name: 'Число открытых позиций', type: 'column', data: orders, zIndex: 0, yAxis: 1, color: '#ddd',
         states: {hover: {color: '#ccc'}}
       }
     ]
