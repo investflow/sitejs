@@ -815,6 +815,9 @@ interface HighchartsAxisOptions {
      * @since 4.1.9
      */
     visible?: boolean;
+
+    height?:string | number;
+    top?:string | number;
 }
 
 interface HighchartsColorAxisDataClass {

@@ -499,8 +499,8 @@ function addTsDrawdownChart(tsOptions: TsDrawdownChartOptions) {
         title: {text: ''},
         xAxis: {type: 'datetime'},
         yAxis: [
-            {title: {text: 'Пункты'}, opposite: true},
-            {title: {text: 'Число открытых позиций'}, tickInterval: 1, min: 0, max: maxOrdersCount, endOnTick: false}
+            {title: {text: 'Пункты'}, opposite: true, height: '65%', lineWidth: 2},
+            {title: {text: 'Ордера'}, opposite: true, tickInterval: 1, min: 0, height: '30%', top: '70%', offset: 0, lineWidth: 2}
         ],
         tooltip: {
             shared: true,
@@ -508,10 +508,22 @@ function addTsDrawdownChart(tsOptions: TsDrawdownChartOptions) {
         },
         credits: {enabled: false},
         series: [
-            {name: 'Просадка на сделку', type: 'arearange', data: perOrder, zIndex: 2, step: true} as HighchartsIndividualSeriesOptions,
-            {name: 'Просадка на счёт', type: 'arearange', data: perAccount, zIndex: 1, step: true} as HighchartsIndividualSeriesOptions,
             {
-                name: 'Число открытых позиций', type: 'column', data: orders, zIndex: 0, yAxis: 1, color: '#ddd',
+                name: 'Просадка на сделку',
+                type: 'arearange',
+                data: perOrder,
+                zIndex: 2,
+                step: true
+            } as HighchartsIndividualSeriesOptions,
+            {
+                name: 'Просадка на счёт',
+                type: 'arearange',
+                data: perAccount,
+                zIndex: 1,
+                step: true
+            } as HighchartsIndividualSeriesOptions,
+            {
+                name: 'Открытые ордера', type: 'column', data: orders, zIndex: 0, yAxis: 1, color: '#ddd',
                 states: {hover: {color: '#ccc'}}
             }
         ]
