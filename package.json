@@ -32,9 +32,9 @@
   },
   "devDependencies": {
     "html-loader": "0.4.5",
-    "ts-loader": "2.2.2",
+    "ts-loader": "2.3.0",
     "typescript": "2.4.1",
-    "webpack": "3.2.0",
+    "webpack": "3.3.0",
     "webpack-bundle-size-analyzer": "2.7.0"
   }
 }

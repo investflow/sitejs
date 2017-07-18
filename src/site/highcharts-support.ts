@@ -57,6 +57,7 @@ function getDefaultLabelDecimalsForPercent(val: number) {
 var illegalRe = /[\/?<>\\:*|"]/g;
 var controlRe = /[\x00-\x1f\x80-\x9f]/g;
 var reservedRe = /^\.+$/;
+
 function toSafeFileName(s: string): string {
     var r = s.replace(illegalRe, '_').replace(controlRe, '_').replace(reservedRe, '_');
     r = t.transliterate(r);
@@ -118,7 +119,7 @@ function updateProfitLabel($profitLabel: JQuery, profitData: Array<Array<number>
 }
 
 function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
-    ensureLocalizationIsInstalled();
+    installTranslations();
 
     let firstEventMillis = -1;
     let lastEventMillis = -1;
@@ -286,7 +287,7 @@ function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
     return res;
 }
 
-function ensureLocalizationIsInstalled() {
+function installTranslations() {
     if (localizationInstalled) {
         return;
     }
@@ -330,7 +331,7 @@ function showChart(accountInfo: AccountInfoResponse) {
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
                     <h4 class="modal-title">
                         <span class="modal-title-text"></span><span class="txt-muted itl pl15 modal-title-profit" title="${titleAttr}"></span>
                     </h4>
@@ -404,7 +405,7 @@ interface VsChartOptions {
 }
 
 function prepareVsChartOptions(options: VsChartOptions): any {
-    ensureLocalizationIsInstalled();
+    installTranslations();
 
     var seriesOptions = [];
     for (let i = 0; i < options.accounts.length; i++) {
@@ -453,7 +454,7 @@ function prepareVsChartOptions(options: VsChartOptions): any {
 }
 
 function addVsChart(options: VsChartOptions) {
-    ensureLocalizationIsInstalled();
+    installTranslations();
 
     function scaleChartHeight() {
         let $chartEl = $(options.chartElementSelector);
@@ -473,20 +474,31 @@ function addVsChart(options: VsChartOptions) {
     $chartEl.highcharts('StockChart', hsOptions);
 }
 
-interface TsDrawdownChartOptions {
+interface TsEquityChartOptions {
     elementId: string
-    dates: Array<number>
-    ordersCount: Array<number>
-    minOrderPoints: Array<number>
-    maxOrderPoints: Array<number>
-    minAccountPoints: Array<number>
-    maxAccountPoints: Array<number>
+    dates: number[]
+    ordersCount: number[]
+    minOrderPoints: number[]
+    maxOrderPoints: number[]
+    minAccountPoints: number[]
+    maxAccountPoints: number[]
+    closedOrdersPoints: HighchartsDataPoint[]
 }
-function addTsDrawdownChart(tsOptions: TsDrawdownChartOptions) {
+
+function addTsDrawdownChart(tsOptions: TsEquityChartOptions) {
     const perOrder = []
     const perAccount = []
     const orders = []
-    const {dates, minOrderPoints, maxOrderPoints, minAccountPoints, maxAccountPoints, ordersCount} = tsOptions;
+    const {
+        dates,
+        minOrderPoints,
+        maxOrderPoints,
+        minAccountPoints,
+        maxAccountPoints,
+        ordersCount,
+        closedOrdersPoints
+    } = tsOptions;
+
     let maxOrdersCount = 0;
     for (let i = 0; i < dates.length; i++) {
         perOrder.push([dates[i], minOrderPoints[i], maxOrderPoints[i]]);
@@ -499,31 +511,66 @@ function addTsDrawdownChart(tsOptions: TsDrawdownChartOptions) {
         title: {text: ''},
         xAxis: {type: 'datetime'},
         yAxis: [
-            {title: {text: 'Пункты'}, opposite: true, height: '65%', lineWidth: 2},
-            {title: {text: 'Ордера'}, opposite: true, tickInterval: 1, min: 0, height: '30%', top: '70%', offset: 0, lineWidth: 2}
+            {
+                title: {text: 'Пункты'},
+                opposite: true,
+                endOnTick: false,
+                height: '68%',
+                lineWidth: 2
+            },
+            {
+                title: {text: 'Ордера'},
+                opposite: true,
+                tickInterval: 1,
+                endOnTick: false,
+                min: 0,
+                height: '27%',
+                top: '73%',
+                offset: 0,
+                lineWidth: 2
+            }
         ],
         tooltip: {
             shared: true,
             xDateFormat: '%Y-%m-%d %H:00'
         },
         credits: {enabled: false},
+        exporting: {enabled: false},
         series: [
             {
-                name: 'Просадка на сделку',
+                name: 'Закрытые ордера',
+                type: 'line',
+                color: '#737373',
+                data: closedOrdersPoints,
+                zIndex: 3,
+                step: true,
+                marker: {
+                    enabled: false
+                }
+            },
+            {
+                name: 'Один ордер',
                 type: 'arearange',
+                color: '#999',
                 data: perOrder,
                 zIndex: 2,
                 step: true
             } as HighchartsIndividualSeriesOptions,
             {
-                name: 'Просадка на счёт',
+                name: 'Все ордера',
                 type: 'arearange',
+                color: '#ccc',
                 data: perAccount,
                 zIndex: 1,
                 step: true
-            } as HighchartsIndividualSeriesOptions,
+            },
             {
-                name: 'Открытые ордера', type: 'column', data: orders, zIndex: 0, yAxis: 1, color: '#ddd',
+                name: 'Число открытых ордеров',
+                type: 'column',
+                color: '#ddd',
+                data: orders,
+                zIndex: 0,
+                yAxis: 1,
                 states: {hover: {color: '#ccc'}}
             }
         ]
@@ -532,26 +579,26 @@ function addTsDrawdownChart(tsOptions: TsDrawdownChartOptions) {
     Highcharts.chart(tsOptions.elementId, hsOptions);
 }
 
-export default {
-    attachModalAccountChart: function (elementSelector: string, broker: number, account: string): void {
-        $(elementSelector).click(function (e: Event) {
-            e.preventDefault();
-            getAccountInfo(broker, account).then((accountInfo: AccountInfoResponse) => {
-                showChart(accountInfo);
-            });
+function attachModalAccountChart(elementSelector: string, broker: number, account: string): void {
+    $(elementSelector).click(function (e: Event) {
+        e.preventDefault();
+        getAccountInfo(broker, account).then((accountInfo: AccountInfoResponse) => {
+            showChart(accountInfo);
         });
-    },
+    });
+}
 
-    addAccountChart: function (options: AccountChartOptions) {
-        let hsOptions = prepareAccountProfitChartOptions(options);
-        var $chartEl = $(options.chartElementSelector);
-        $chartEl.highcharts('StockChart', hsOptions);
-        enableZoom($chartEl);
-    },
+function addAccountChart(options: AccountChartOptions) {
+    let hsOptions = prepareAccountProfitChartOptions(options);
+    var $chartEl = $(options.chartElementSelector);
+    $chartEl.highcharts('StockChart', hsOptions);
+    enableZoom($chartEl);
+}
 
+export default {
+    attachModalAccountChart,
+    addAccountChart,
     addVsChart,
-
-    installTranslations: ensureLocalizationIsInstalled,
-
+    installTranslations,
     addTsDrawdownChart
 }
