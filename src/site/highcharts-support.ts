@@ -549,7 +549,7 @@ function addTsDrawdownChart(tsOptions: TsEquityChartOptions) {
                 }
             },
             {
-                name: 'Один ордер',
+                name: 'Один открытый ордер',
                 type: 'arearange',
                 color: '#999',
                 data: perOrder,
@@ -557,7 +557,7 @@ function addTsDrawdownChart(tsOptions: TsEquityChartOptions) {
                 step: true
             } as HighchartsIndividualSeriesOptions,
             {
-                name: 'Все ордера',
+                name: 'Все открытые ордера',
                 type: 'arearange',
                 color: '#ccc',
                 data: perAccount,
