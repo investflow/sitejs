@@ -7,7 +7,7 @@ import Utils from './site-utils'
 
 const HIGHCHARTS_MODAL_DIV_ID = 'iflow_highcharts_modal';
 
-var localizationInstalled = false;
+let localizationInstalled = false;
 
 function getRangeButtons(firstEventMillis: number, lastEventMillis: number): Array<any> {
     let buttons: Array<any> = [];
@@ -54,12 +54,12 @@ function getDefaultLabelDecimalsForPercent(val: number) {
     return val > 10000 ? 0 : val > 1000 ? 1 : 2;
 }
 
-var illegalRe = /[\/?<>\\:*|"]/g;
-var controlRe = /[\x00-\x1f\x80-\x9f]/g;
-var reservedRe = /^\.+$/;
+let illegalRe = /[\/?<>\\:*|"]/g;
+const controlRe = /[\x00-\x1f\x80-\x9f]/g;
+const reservedRe = /^\.+$/;
 
 function toSafeFileName(s: string): string {
-    var r = s.replace(illegalRe, '_').replace(controlRe, '_').replace(reservedRe, '_');
+    let r = s.replace(illegalRe, '_').replace(controlRe, '_').replace(reservedRe, '_');
     r = t.transliterate(r);
     r = r.replace(/[^\w]/gi, '_');
     return r;
@@ -129,7 +129,7 @@ function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
         lastEventMillis = profitData[profitData.length - 1][0];
     }
     let buttons: Array<any> = getRangeButtons(firstEventMillis, lastEventMillis);
-    var broker = Broker.getBrokerById(options.broker);
+    const broker = Broker.getBrokerById(options.broker);
     let vState = {
         valueDecimals: broker.isPercentBasedPrice() ? deriveDecimalPrecision(profitData) : 2,
         minShownIdx: 0,
@@ -139,14 +139,14 @@ function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
     };
     updateProfitLabel($(options.profitLabelSelector), profitData, 0, profitData.length - 1, vState.valueDecimals, options);
 
-    var cp = emptyIfNull(options.currencyPrefix);
-    var cs = emptyIfNull(options.currencySuffix);
-    var hasEquity = options.equityData && options.equityData.length > 0;
-    var hasBalance = options.balanceData && options.balanceData.length > 0;
+    const cp = emptyIfNull(options.currencyPrefix);
+    const cs = emptyIfNull(options.currencySuffix);
+    const hasEquity = options.equityData && options.equityData.length > 0;
+    const hasBalance = options.balanceData && options.balanceData.length > 0;
     const hasEquityOrBalance = hasEquity || hasBalance;
 
     let profitChartColor = '#00854E';
-    var res = {
+    const res = {
         credits: {enabled: false},
         chart: {
             marginBottom: hasEquityOrBalance ? 40 : 0
@@ -176,11 +176,11 @@ function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
             shared: true,
             useHtml: true,
             formatter: function () {
-                var s = '<span style=\'font-size: 10px\'>' + Highcharts.dateFormat('%Y-%m-%d', this.x) + '</span><br/>';
+                let s = '<span style=\'font-size: 10px\'>' + Highcharts.dateFormat('%Y-%m-%d', this.x) + '</span><br/>';
                 $.each(this.points, function () {
                     //noinspection TypeScriptUnresolvedVariable
-                    var to = this.series.tooltipOptions;
-                    var val = to.valuePrefix + Utils.formatLargeNumber(this.point.y, to.valueDecimals !== 'undefined' ? to.valueDecimals : 2) + to.valueSuffix;
+                    const to = this.series.tooltipOptions;
+                    const val = to.valuePrefix + Utils.formatLargeNumber(this.point.y, to.valueDecimals !== 'undefined' ? to.valueDecimals : 2) + to.valueSuffix;
                     s += `<span style="color:${this.color}">\u25CF</span> ${this.series.name}: <b>${val}</b><br/>`
                 });
 
@@ -221,8 +221,8 @@ function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
     };
 
     //profit chart
-    var pp = broker.isPercentBasedPrice() ? '' : cp;
-    var ps = broker.isPercentBasedPrice() ? '%' : cs;
+    const pp = broker.isPercentBasedPrice() ? '' : cp;
+    const ps = broker.isPercentBasedPrice() ? '%' : cs;
     res.series.push({
         name: broker.isPercentBasedPrice() ? 'Доходность' : 'Стоимость',
         data: profitData,
@@ -324,9 +324,9 @@ function showChart(accountInfo: AccountInfoResponse) {
 
     // reset old window contents
     $modalDiv.empty();
-    var broker = Broker.getBrokerById(accountInfo.broker);
+    const broker = Broker.getBrokerById(accountInfo.broker);
     const percentBasedPrice = broker.isPercentBasedPrice();
-    var titleAttr = percentBasedPrice ? 'Доходность за выбранный период.' : 'Изменение стоимости за выбранный период.';
+    const titleAttr = percentBasedPrice ? 'Доходность за выбранный период.' : 'Изменение стоимости за выбранный период.';
     $modalDiv.append(`<div class="modal" tabindex="-1" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -372,7 +372,7 @@ function showChart(accountInfo: AccountInfoResponse) {
     options.chart.width = $dialog.width() - 30;
     options.chart.height = $dialog.height() - 30;
     let $chartEl = $modalDiv.find('.iflow-modal-chart');
-    let chart = $chartEl.highcharts('StockChart', options);
+    $chartEl.highcharts('StockChart', options);
     enableZoom($chartEl);
 
     // show modal window
@@ -407,7 +407,7 @@ interface VsChartOptions {
 function prepareVsChartOptions(options: VsChartOptions): any {
     installTranslations();
 
-    var seriesOptions = [];
+    const seriesOptions = [];
     for (let i = 0; i < options.accounts.length; i++) {
         let a = options.accounts[i];
         seriesOptions.push({
@@ -486,9 +486,9 @@ interface TsEquityChartOptions {
 }
 
 function addTsDrawdownChart(tsOptions: TsEquityChartOptions) {
-    const perOrder = []
-    const perAccount = []
-    const orders = []
+    const perOrder = [];
+    const perAccount = [];
+    const orders = [];
     const {
         dates,
         minOrderPoints,
@@ -590,7 +590,7 @@ function attachModalAccountChart(elementSelector: string, broker: number, accoun
 
 function addAccountChart(options: AccountChartOptions) {
     let hsOptions = prepareAccountProfitChartOptions(options);
-    var $chartEl = $(options.chartElementSelector);
+    const $chartEl = $(options.chartElementSelector);
     $chartEl.highcharts('StockChart', hsOptions);
     enableZoom($chartEl);
 }

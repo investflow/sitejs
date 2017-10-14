@@ -56,6 +56,7 @@ function focusOnEnter(event: KeyboardEvent, id: string): void {
         event.preventDefault();
     }
 }
+
 function clickOnEnter(event: KeyboardEvent, id: number): void {
     let keyCode = (event.which ? event.which : event.keyCode);
     if ((keyCode === 10 || keyCode === 13) && !event.ctrlKey) {
@@ -334,31 +335,34 @@ function removeServerSideParsleyError(el: HTMLElement) {
 
 function formatLargeNumber(n: number, decimals: number) {
     let truncated = Number(n.toFixed(decimals)).toString();  // Number is used to truncate trailing zeros after .toFixed
+    if (decimals >= 3) {
+        return truncated;
+    }
     return truncated.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
 export default {
-    setTitle: setTitle,
-    linkify: linkify,
-    focusOnEnter: focusOnEnter,
-    clickOnEnter: clickOnEnter,
-    clickOnCtrlEnter: clickOnCtrlEnter,
-    renderSwitches: renderSwitches,
-    renderToggle: renderToggle,
-    applyDateTimePicker: applyDateTimePicker,
-    applyDatePicker: applyDatePicker,
-    sortClick: sortClick,
-    showMenuByClick: showMenuByClick,
-    getURLParameter: getURLParameter,
-    limitTextArea: limitTextArea,
-    enableScrollTop: enableScrollTop,
-    scrollTo: scrollTo,
-    moveCaretToEnd: moveCaretToEnd,
-    countdown: countdown,
-    toValueWithSuffix: toValueWithSuffix,
-    applyAvatars: applyAvatars,
-    applyAvatar: applyAvatar,
+    setTitle,
+    linkify,
+    focusOnEnter,
+    clickOnEnter,
+    clickOnCtrlEnter,
+    renderSwitches,
+    renderToggle,
+    applyDateTimePicker,
+    applyDatePicker,
+    sortClick,
+    showMenuByClick,
+    getURLParameter,
+    limitTextArea,
+    enableScrollTop,
+    scrollTo,
+    moveCaretToEnd,
+    countdown,
+    toValueWithSuffix,
+    applyAvatars,
+    applyAvatar,
     playYoutube: links.playYoutube,
-    removeServerSideParsleyError: removeServerSideParsleyError,
-    formatLargeNumber: formatLargeNumber
+    removeServerSideParsleyError,
+    formatLargeNumber
 }
