@@ -15,26 +15,26 @@
     "size": "webpack --json | webpack-bundle-size-analyzer"
   },
   "dependencies": {
-    "autolinker": "1.4.3",
+    "autolinker": "1.4.4",
     "bootstrap": "3.3.7",
     "bootstrap-toggle": "2.2.2",
     "devbridge-autocomplete": "v=1.3.0",
     "es6-promise": "4.1.1",
-    "highcharts": "5.0.14",
+    "highcharts": "6.0.1",
     "highlight.js": "9.12.0",
-    "jquery": "v=1.12.4",
+    "jquery": "v=2.2.4",
     "jquery-flot": "0.8.3",
-    "loglevel": "1.4.1",
+    "loglevel": "1.5.1",
     "lz-string": "1.4.4",
     "mustache": "2.3.0",
-    "parsleyjs": "2.7.2",
+    "parsleyjs": "2.8.0",
     "store": "2.0.12"
   },
   "devDependencies": {
     "html-loader": "0.5.1",
-    "ts-loader": "2.3.4",
-    "typescript": "2.5.2",
-    "webpack": "3.5.5",
+    "ts-loader": "2.3.7",
+    "typescript": "2.5.3",
+    "webpack": "3.7.1",
     "webpack-bundle-size-analyzer": "2.7.0"
   }
 }
