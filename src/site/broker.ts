@@ -77,7 +77,7 @@ export class Broker {
     }
 
     public isPercentBasedPrice() {
-        return this != Broker.MOEX
+        return this != Broker.MOEX && this != Broker.NASDAQ && this != Broker.NYSE
     }
 }
 
