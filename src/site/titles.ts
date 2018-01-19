@@ -23,7 +23,7 @@ export default {
         DOMUtils.setTitle('.pi-lst', 'Счёт входит в один списков пользователя', rootEl);
         DOMUtils.setTitle('.pi-dec-ok', 'Управляющий соблюдает собственную декларацию о торговле.', rootEl);
         DOMUtils.setTitle('.pi-dec-bad', 'Управляющий не соблюдает собственную декларацию о торговле.', rootEl);
-        DOMUtils.setTitle('.pi-shares', 'Число акций.', rootEl);
+        DOMUtils.setTitle('.pi-shares', 'Число акций', rootEl);
     },
     page: function () {
         let rootEl = document.body;
