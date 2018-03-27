@@ -19,8 +19,8 @@ export default {
         DOMUtils.setTitle('.pi-i-share', 'Доля инвестора в лучшей оферте', rootEl);
         DOMUtils.setTitle('.pi-i-min', 'Минимальная инвестиция в валюте счёта', rootEl);
         DOMUtils.setTitle('.pi-age', 'Возраст счета', rootEl);
-        DOMUtils.setTitle('.pi-prt', 'Счёт входит в один из портфелей пользователя', rootEl);
-        DOMUtils.setTitle('.pi-lst', 'Счёт входит в один списков пользователя', rootEl);
+        DOMUtils.setTitle('.pi-prt', 'Счёт входит в один из портфелей', rootEl);
+        DOMUtils.setTitle('.pi-lst', 'Счёт входит в одну из коллекций', rootEl);
         DOMUtils.setTitle('.pi-dec-ok', 'Управляющий соблюдает собственную декларацию о торговле.', rootEl);
         DOMUtils.setTitle('.pi-dec-bad', 'Управляющий не соблюдает собственную декларацию о торговле.', rootEl);
         DOMUtils.setTitle('.pi-shares', 'Число акций', rootEl);

@@ -172,11 +172,11 @@ function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
             scale: 2
         },
         tooltip: {
-            xDateFormat: '%Y-%m-%d',
+            xDateFormat: '%d %b %Y',
             shared: true,
             useHtml: true,
             formatter: function () {
-                let s = '<span style=\'font-size: 10px\'>' + Highcharts.dateFormat('%Y-%m-%d', this.x) + '</span><br/>';
+                let s = '<span style=\'font-size: 10px\'>' + Highcharts.dateFormat('%d %b %Y', this.x) + '</span><br/>';
                 $.each(this.points, function () {
                     //noinspection TypeScriptUnresolvedVariable
                     const to = this.series.tooltipOptions;
@@ -532,7 +532,7 @@ function addTsDrawdownChart(tsOptions: TsEquityChartOptions) {
         ],
         tooltip: {
             shared: true,
-            xDateFormat: '%Y-%m-%d %H:00'
+            xDateFormat: '%d %b %Y %H:00'
         },
         credits: {enabled: false},
         exporting: {enabled: false},
