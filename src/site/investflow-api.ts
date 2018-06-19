@@ -2,7 +2,7 @@ import * as log from "loglevel";
 import {Promise} from "es6-promise";
 
 let SERVER_URL = ((window.location.protocol == "https:") ? "https" : "http") + "://investflow.ru";
-const docUrl = document && typeof document.URL === "string" ? document.URL : "";
+const docUrl = document.URL;
 if (docUrl.indexOf("localhost:8080") >= 0) {
     // log.info("IR: using local instance for queries!");
     SERVER_URL = "http://127.0.0.1:8080";
@@ -60,5 +60,9 @@ export interface AccountInfoResponse {
 }
 
 export function getAccountInfo(brokerId: number, account: string): Promise<AccountInfoResponse> {
-    return query(OP_ACCOUNT_INFO + "&broker=" + brokerId + "&account=" + account) as Promise<AccountInfoResponse>;
+    return query(OP_ACCOUNT_INFO + "&broker=" + enc("" + brokerId) + "&account=" + enc(account)) as Promise<AccountInfoResponse>;
+}
+
+export function enc(token: string) {
+    return encodeURIComponent(token);
 }
