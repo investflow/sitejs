@@ -6,6 +6,7 @@ import {Broker} from "./broker"
 import Utils from "./site-utils"
 
 const HIGHCHARTS_MODAL_DIV_ID = "iflow_highcharts_modal"
+const PROFIT_CHART_COLOR = "#00854E"
 
 function getRangeButtons(firstEventMillis: number, lastEventMillis: number): Array<any> {
     let buttons: Array<any> = []
@@ -45,12 +46,12 @@ export interface AccountChartOptions {
     equityData?: number[][],
     chartElementSelector: string,
     profitLabelSelector: string;
+    maxDDLabelSelector: string;
     fullAccountName: string;
     broker?: number,
     currencySuffix?: string,
     currencyPrefix?: string,
-    exportFileName?: string,
-    maxDrawdownInfo?: MaxDrawdownInfo
+    exportFileName?: string
 }
 
 function emptyIfNull(val: string): string {
@@ -93,46 +94,83 @@ function getIdxBeforeOrEquals(timestamp: number, profitData: Array<Array<number>
     return profitData.length - 1
 }
 
-/*function selectValue(profitData:Array<Array<number>>, fromIdx:number, toIdx:number, fn:(n1:number, n2:number)=>number):number {
- let res = profitData[fromIdx][1];
- for (let i = fromIdx + 1; i < toIdx; i++) {
- res = fn(profitData[i][1], res);
- }
- return res;
- }*/
+function updateContextInfo(profitSeries: HighchartsSeriesOptions, profitData: number[][],
+                           startEventIdx: number, endEventIdx: number, valueDecimals: number, options: AccountChartOptions) {
+    updateProfitLabel(profitData, startEventIdx, endEventIdx, valueDecimals, options)
+    updateMaxDDInfo(profitSeries, profitData, startEventIdx, endEventIdx, valueDecimals, options)
+}
 
-function updateProfitLabel($profitLabel: JQuery, profitData: Array<Array<number>>, startEventIdx: number, endEventIdx: number, valueDecimals: number, options: AccountChartOptions) {
+function updateMaxDDInfo(profitSeries: HighchartsSeriesOptions, profitData: number[][],
+                         startEventIdx: number, endEventIdx: number, valueDecimals: number, options: AccountChartOptions) {
+    const $maxDDLabel = $(options.maxDDLabelSelector)
+    if ($maxDDLabel.length == 0) {
+        return
+    }
+
+    let currentMaxEvent = profitData[startEventIdx]
+    let currentMinEvent = currentMaxEvent
+    let ddStartEvent = currentMaxEvent
+    let ddEndEvent = currentMinEvent
+
+    const broker = Broker.getBrokerById(options.broker)
+    const ddFunc = broker.isPercentBasedPrice()
+        ? (p1, p2) => -percentBetweenPercents(p1, p2)
+        : (e1, e2) => -percentBetweenEquity(e1, e2)
+
+    for (let idx = startEventIdx + 1; idx <= endEventIdx; idx++) {
+        const event = profitData[idx]
+        if (event[1] <= currentMinEvent[1]) {
+            currentMinEvent = event
+        }
+        const currentDD = ddFunc(currentMaxEvent[1], currentMinEvent[1])
+        const maxDD = ddFunc(ddStartEvent[1], ddEndEvent[1])
+        if (currentDD >= maxDD) {
+            ddStartEvent = currentMaxEvent
+            ddEndEvent = currentMinEvent
+        }
+        if (event[1] >= currentMaxEvent[1]) {
+            currentMaxEvent = event
+            currentMinEvent = event
+        }
+    }
+    const drawdown = ddFunc(ddStartEvent[1], ddEndEvent[1])
+    const text = drawdown.toFixed(valueDecimals) + "%"
+    $maxDDLabel.text(text)
+
+    if (drawdown > 0.1) {
+        profitSeries.zoneAxis = "x"
+        profitSeries.zones = [
+            {value: ddStartEvent[0], color: PROFIT_CHART_COLOR},
+            {value: ddEndEvent[0], color: "red", fillColor: PROFIT_CHART_COLOR + "0f"},
+            {color: PROFIT_CHART_COLOR}
+        ]
+    }
+}
+
+
+function updateProfitLabel(profitData: number[][], startEventIdx: number, endEventIdx: number, valueDecimals: number, options: AccountChartOptions) {
+    const $profitLabel = $(options.profitLabelSelector)
     if ($profitLabel.length == 0) {
         return
     }
 
-    let startValue = profitData[startEventIdx][1]
-    let endValue = profitData[endEventIdx][1]
+    const startValue = profitData[startEventIdx][1]
+    const endValue = profitData[endEventIdx][1]
 
-    let broker = Broker.getBrokerById(options.broker)
+    const broker = Broker.getBrokerById(options.broker)
     let text
     if (broker.isPercentBasedPrice()) {
-        let change = percentBetweenPercents(startValue, endValue)
+        const change = percentBetweenPercents(startValue, endValue)
         const decimals = getDefaultLabelDecimalsForPercent(change)
         text = (change > 0 ? "+" : "") + Utils.formatLargeNumber(change, decimals) + "%"
     } else {
-        let percentChange = percentBetweenEquity(startValue, endValue)
-        let valueChange = endValue - startValue
+        const percentChange = percentBetweenEquity(startValue, endValue)
+        const valueChange = endValue - startValue
         const percentDecimals = getDefaultLabelDecimalsForPercent(percentChange)
         text = (valueChange > 0 ? "+" : "") + emptyIfNull(options.currencyPrefix) + Utils.formatLargeNumber(valueChange, valueDecimals) + emptyIfNull(options.currencySuffix)
             + " или " + (percentChange > 0 ? "+" : "") + Utils.formatLargeNumber(percentChange, percentDecimals) + "%"
     }
     $profitLabel.text(text)
-}
-
-function findIndex(arr: number[][], f: (p: number[]) => boolean) {
-    for (let idx = 0; idx < arr.length; idx++) {
-        const e: number[] = arr[idx]
-        if (f(e)) {
-            return idx
-        }
-    }
-    return -1
 }
 
 function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
@@ -154,7 +192,6 @@ function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
         maxValue: undefined,
         minValue: undefined
     }
-    updateProfitLabel($(options.profitLabelSelector), profitData, 0, profitData.length - 1, vState.valueDecimals, options)
 
     const cp = emptyIfNull(options.currencyPrefix)
     const cs = emptyIfNull(options.currencySuffix)
@@ -162,7 +199,6 @@ function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
     const hasBalance = options.balanceData && options.balanceData.length > 0
     const hasEquityOrBalance = hasEquity || hasBalance
 
-    let profitChartColor = "#00854E"
     const res = {
         credits: {enabled: false},
         chart: {
@@ -179,7 +215,7 @@ function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
         },
         navigator: {
             maskFill: "rgba(0, 0, 0, 0.1)",
-            series: {color: profitChartColor}
+            series: {color: PROFIT_CHART_COLOR}
         },
         exporting: {
             filename: options.exportFileName ? options.exportFileName : toSafeFileName(options.fullAccountName),
@@ -209,7 +245,7 @@ function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
         },
         plotOptions: {
             line: {
-                color: profitChartColor,
+                color: PROFIT_CHART_COLOR,
                 dataLabels: {
                     enabled: false,
                     formatter: function () {
@@ -223,16 +259,15 @@ function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
             ordinal: false,
             events: {
                 setExtremes: function (e) {
-                    if (options.profitLabelSelector) {
-                        let $profitLabel = $(options.profitLabelSelector)
-                        if ($profitLabel.length > 0 && typeof e.min !== "undefined" && typeof e.max !== "undefined") {
-                            let startEventIdx = Math.max(0, getIdxBeforeOrEquals(e.min, profitData))
-                            let endEventIdx = Math.max(startEventIdx, getIdxBeforeOrEquals(e.max, profitData))
-
-                            updateProfitLabel($profitLabel, profitData, startEventIdx, endEventIdx, vState.valueDecimals, options)
-                        } else {
-                            $profitLabel.text("")
-                        }
+                    const $profitLabel = $(options.profitLabelSelector)
+                    const $maxDDLabel = $(options.maxDDLabelSelector)
+                    if ($profitLabel.length > 0 && typeof e.min !== "undefined" && typeof e.max !== "undefined") {
+                        const startEventIdx = Math.max(0, getIdxBeforeOrEquals(e.min, profitData))
+                        const endEventIdx = Math.max(startEventIdx, getIdxBeforeOrEquals(e.max, profitData))
+                        updateContextInfo(this.chart.series[0], profitData, startEventIdx, endEventIdx, vState.valueDecimals, options)
+                    } else {
+                        $profitLabel.text("")
+                        $maxDDLabel.text("")
                     }
                 }
             }
@@ -246,52 +281,11 @@ function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
     const profitSeries: HighchartsSeriesOptions = {
         name: broker.isPercentBasedPrice() ? "Доходность" : "Стоимость",
         data: profitData as [number, number][],
-        color: profitChartColor,
+        color: PROFIT_CHART_COLOR,
         tooltip: {valueDecimals: vState.valueDecimals, valuePrefix: pp, valueSuffix: ps},
         marker: {enabled: false},
         yAxis: 0,
         zIndex: 10
-    }
-    const mdd = options.maxDrawdownInfo
-    if (mdd) {
-        profitSeries.zoneAxis = "x"
-        profitSeries.zones = [
-            {value: mdd.fromDate, color: profitChartColor},
-            {value: mdd.toDate, color: "red", fillColor: profitChartColor + "0f"},
-            {color: profitChartColor}
-        ]
-        let idx = findIndex(profitData, (p: number[]) => p[0] == mdd.toDate)
-        idx == profitData.length - 1 && idx--
-        while (idx > 0 && profitData[idx - 1][1].toFixed(1) == profitData[idx][1].toFixed(1)) idx--
-        if (idx > 0) {
-            const v = profitData[idx]
-            const x = v[0]
-            const y = v[1]
-            profitData[idx] = {
-                x, y, id: "minDD", marker: {enabled: true, radius: 5, fillColor: "green"}, enabledThreshold: 0,
-                dataLabels: {
-                    enabled: true,
-                    allowOverlap: "true",
-                    align: "right",
-                    format: "просадка: " + mdd.drawdown.toFixed(0) + "%",
-                    style: {fontWeight: "normal"},
-                    y: 17
-                }
-            } as any
-            profitSeries.turboThreshold = 5000
-            // res["annotations"] = [{
-            //     labelOptions: {
-            //         backgroundColor: "white",
-            //         borderColor: "#bbb",
-            //         y: 30,
-            //         verticalAlign: "bottom"
-            //     },
-            //     labels: [{
-            //         point: "minDD",
-            //         text: "просадка: " + mdd.drawdown.toFixed(0) + "%"
-            //     }]
-            // }]
-        }
     }
     res.series.push(profitSeries)
     res.yAxis.push({
@@ -299,7 +293,7 @@ function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
         height: hasEquityOrBalance ? "47%" : "100%",
         labels: {
             format: pp + "{value}" + ps,
-            style: {color: profitChartColor}
+            style: {color: PROFIT_CHART_COLOR}
         },
         plotLines: [{color: "#555", width: 1, value: 0, zIndex: 10}],
         maxPadding: 0.05,
@@ -332,8 +326,7 @@ function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
             marker: {enabled: false},
             tooltip: {valuePrefix: cp, valueSuffix: cs},
             yAxis: res.yAxis.length - 1,
-            zIndex: 1,
-            turboThreshold: 5000
+            zIndex: 1
         })
     }
     if (hasEquity) {
@@ -344,10 +337,12 @@ function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
             marker: {enabled: false},
             tooltip: {valuePrefix: cp, valueSuffix: cs},
             yAxis: res.yAxis.length - 1,
-            zIndex: 2,
-            turboThreshold: 5000
+            zIndex: 2
         })
     }
+
+    updateContextInfo(profitSeries, profitData, 0, profitData.length - 1, vState.valueDecimals, options)
+
     return res
 }
 
@@ -395,7 +390,9 @@ function showChart(accountInfo: AccountInfoResponse) {
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
                     <h4 class="modal-title">
-                        <span class="modal-title-text"></span><span class="txt-muted itl pl15 modal-title-profit" title="${titleAttr}"></span>
+                        <span class="modal-title-text"></span>
+                        <span class="txt-muted itl modal-title-profit" title="${titleAttr}"></span>,
+                        макс. просадка: <span class="txt-muted itl modal-title-max-dd" title="Максимальная просадка за выбранный период."></span>
                     </h4>
                 </div>
                 <div class="modal-body">
@@ -408,11 +405,13 @@ function showChart(accountInfo: AccountInfoResponse) {
             </div>
         </div>
     </div>`)
-    let fullAccountName = accountInfo.name + "/" + accountInfo.account
-    let profitLabelId = "profit_label_" + Date.now()
-    const headerText = (percentBasedPrice ? "Доходность счета «" + fullAccountName + "»" : "Изменение стоимости «" + fullAccountName + "»") + " за выбранный период: "
+    const fullAccountName = accountInfo.name + "/" + accountInfo.account
+    const profitLabelId = "profit_label_" + Date.now()
+    const maxDDLabelId = "max_dd_label_" + Date.now()
+    const headerText = (percentBasedPrice ? "Доходность счета «" + fullAccountName + "»" : "Изменение стоимости «" + fullAccountName + "»") + " за выбранный период:"
     $modalDiv.find(".modal-title-text").text(headerText)
     $modalDiv.find(".modal-title-profit").attr("id", profitLabelId)
+    $modalDiv.find(".modal-title-max-dd").attr("id", maxDDLabelId)
     $modalDiv.find(".account-url").attr("href", accountInfo.url)
 
     let $dialog = $modalDiv.find(".modal-dialog")
@@ -429,8 +428,8 @@ function showChart(accountInfo: AccountInfoResponse) {
         chartElementSelector: undefined,
         fullAccountName: fullAccountName,
         profitLabelSelector: "#" + profitLabelId,
-        broker: accountInfo.broker,
-        maxDrawdownInfo: accountInfo.maxDrawdownInfo
+        maxDDLabelSelector: "#" + maxDDLabelId,
+        broker: accountInfo.broker
     }
     const options = prepareAccountProfitChartOptions(chartOptions)
     options.chart.width = $dialog.width() - 30
