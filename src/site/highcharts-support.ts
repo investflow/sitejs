@@ -1,13 +1,11 @@
-import * as $ from 'jquery'
-import {percentBetweenEquity, percentBetweenPercents} from './calc'
-import {AccountInfoResponse, getAccountInfo} from './investflow-api'
-import t from './transliterate'
-import {Broker} from './broker'
-import Utils from './site-utils'
+import * as $ from "jquery"
+import {percentBetweenEquity, percentBetweenPercents} from "./calc"
+import {AccountInfoResponse, getAccountInfo} from "./investflow-api"
+import t from "./transliterate"
+import {Broker} from "./broker"
+import Utils from "./site-utils"
 
-const HIGHCHARTS_MODAL_DIV_ID = 'iflow_highcharts_modal'
-
-let localizationInstalled = false
+const HIGHCHARTS_MODAL_DIV_ID = "iflow_highcharts_modal"
 
 function getRangeButtons(firstEventMillis: number, lastEventMillis: number): Array<any> {
     let buttons: Array<any> = []
@@ -15,21 +13,21 @@ function getRangeButtons(firstEventMillis: number, lastEventMillis: number): Arr
     let rangeMillis = lastEventMillis - firstEventMillis
 
     if (rangeMillis >= millisPerMonth) {
-        buttons.push({type: 'month', count: 1, text: '1м'})
+        buttons.push({type: "month", count: 1, text: "1м"})
     }
     if (rangeMillis >= 3 * millisPerMonth) {
-        buttons.push({type: 'month', count: 3, text: '3м'})
+        buttons.push({type: "month", count: 3, text: "3м"})
     }
     if (rangeMillis >= 6 * millisPerMonth) {
-        buttons.push({type: 'month', count: 6, text: '6м'})
+        buttons.push({type: "month", count: 6, text: "6м"})
     }
     if (rangeMillis >= millisPerMonth) {
-        buttons.push({type: 'ytd', text: 'YTD'})
+        buttons.push({type: "ytd", text: "YTD"})
     }
     if (rangeMillis >= 12 * millisPerMonth) {
-        buttons.push({type: 'year', count: 1, text: 'Год'})
+        buttons.push({type: "year", count: 1, text: "Год"})
     }
-    buttons.push({type: 'all', count: 1, text: 'Все'})
+    buttons.push({type: "all", count: 1, text: "Все"})
     return buttons
 }
 
@@ -56,7 +54,7 @@ export interface AccountChartOptions {
 }
 
 function emptyIfNull(val: string): string {
-    return val ? val : ''
+    return val ? val : ""
 }
 
 function getDefaultLabelDecimalsForPercent(val: number) {
@@ -68,16 +66,16 @@ const controlRe = /[\x00-\x1f\x80-\x9f]/g
 const reservedRe = /^\.+$/
 
 function toSafeFileName(s: string): string {
-    let r = s.replace(illegalRe, '_').replace(controlRe, '_').replace(reservedRe, '_')
+    let r = s.replace(illegalRe, "_").replace(controlRe, "_").replace(reservedRe, "_")
     r = t.transliterate(r)
-    r = r.replace(/[^\w]/gi, '_')
+    r = r.replace(/[^\w]/gi, "_")
     return r
 }
 
 function deriveDecimalPrecision(profitData: number[][], minIdx?: number, maxIdx?: number): number {
     let maxValue: number = 0
-    let fromIdx = typeof minIdx === 'undefined' ? 0 : minIdx
-    let toIdx = typeof  maxIdx === 'undefined' ? profitData.length : maxIdx
+    let fromIdx = typeof minIdx === "undefined" ? 0 : minIdx
+    let toIdx = typeof  maxIdx === "undefined" ? profitData.length : maxIdx
     for (let i = fromIdx; i < toIdx; i++) {
         let val = profitData[i][1]
         maxValue = Math.max(maxValue, val)
@@ -116,13 +114,13 @@ function updateProfitLabel($profitLabel: JQuery, profitData: Array<Array<number>
     if (broker.isPercentBasedPrice()) {
         let change = percentBetweenPercents(startValue, endValue)
         const decimals = getDefaultLabelDecimalsForPercent(change)
-        text = (change > 0 ? '+' : '') + Utils.formatLargeNumber(change, decimals) + '%'
+        text = (change > 0 ? "+" : "") + Utils.formatLargeNumber(change, decimals) + "%"
     } else {
         let percentChange = percentBetweenEquity(startValue, endValue)
         let valueChange = endValue - startValue
         const percentDecimals = getDefaultLabelDecimalsForPercent(percentChange)
-        text = (valueChange > 0 ? '+' : '') + emptyIfNull(options.currencyPrefix) + Utils.formatLargeNumber(valueChange, valueDecimals) + emptyIfNull(options.currencySuffix)
-            + ' или ' + (percentChange > 0 ? '+' : '') + Utils.formatLargeNumber(percentChange, percentDecimals) + '%'
+        text = (valueChange > 0 ? "+" : "") + emptyIfNull(options.currencyPrefix) + Utils.formatLargeNumber(valueChange, valueDecimals) + emptyIfNull(options.currencySuffix)
+            + " или " + (percentChange > 0 ? "+" : "") + Utils.formatLargeNumber(percentChange, percentDecimals) + "%"
     }
     $profitLabel.text(text)
 }
@@ -164,14 +162,14 @@ function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
     const hasBalance = options.balanceData && options.balanceData.length > 0
     const hasEquityOrBalance = hasEquity || hasBalance
 
-    let profitChartColor = '#00854E'
+    let profitChartColor = "#00854E"
     const res = {
         credits: {enabled: false},
         chart: {
             marginBottom: hasEquityOrBalance ? 40 : 0,
-            zoomType: 'x',
+            zoomType: "x",
             panning: true,
-            panKey: 'shift'
+            panKey: "shift"
         },
         legend: {enabled: false},
         rangeSelector: {
@@ -180,29 +178,29 @@ function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
             selected: buttons.length - 1 // All button is active by default
         },
         navigator: {
-            maskFill: 'rgba(0, 0, 0, 0.1)',
+            maskFill: "rgba(0, 0, 0, 0.1)",
             series: {color: profitChartColor}
         },
         exporting: {
             filename: options.exportFileName ? options.exportFileName : toSafeFileName(options.fullAccountName),
             buttons: {
                 contextButton: {
-                    align: 'right'
+                    align: "right"
                     // y: 20
                 }
             },
             scale: 2
         },
         tooltip: {
-            xDateFormat: '%d %b %Y',
+            xDateFormat: "%d %b %Y",
             shared: true,
             useHtml: true,
             formatter: function () {
-                let s = '<span style=\'font-size: 10px\'>' + Highcharts.dateFormat('%d %b %Y', this.x) + '</span><br/>'
+                let s = "<span style='font-size: 10px'>" + Highcharts.dateFormat("%d %b %Y", this.x) + "</span><br/>"
                 $.each(this.points, function () {
                     //noinspection TypeScriptUnresolvedVariable
                     const to = this.series.tooltipOptions
-                    const val = to.valuePrefix + Utils.formatLargeNumber(this.point.y, to.valueDecimals !== 'undefined' ? to.valueDecimals : 2) + to.valueSuffix
+                    const val = to.valuePrefix + Utils.formatLargeNumber(this.point.y, to.valueDecimals !== "undefined" ? to.valueDecimals : 2) + to.valueSuffix
                     s += `<span style="color:${this.color}">\u25CF</span> ${this.series.name}: <b>${val}</b><br/>`
                 })
 
@@ -215,7 +213,7 @@ function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
                 dataLabels: {
                     enabled: false,
                     formatter: function () {
-                        return ''
+                        return ""
                     }
                 }
             }
@@ -227,13 +225,13 @@ function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
                 setExtremes: function (e) {
                     if (options.profitLabelSelector) {
                         let $profitLabel = $(options.profitLabelSelector)
-                        if ($profitLabel.length > 0 && typeof e.min !== 'undefined' && typeof e.max !== 'undefined') {
+                        if ($profitLabel.length > 0 && typeof e.min !== "undefined" && typeof e.max !== "undefined") {
                             let startEventIdx = Math.max(0, getIdxBeforeOrEquals(e.min, profitData))
                             let endEventIdx = Math.max(startEventIdx, getIdxBeforeOrEquals(e.max, profitData))
 
                             updateProfitLabel($profitLabel, profitData, startEventIdx, endEventIdx, vState.valueDecimals, options)
                         } else {
-                            $profitLabel.text('')
+                            $profitLabel.text("")
                         }
                     }
                 }
@@ -243,10 +241,10 @@ function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
     }
 
     //profit chart
-    const pp = broker.isPercentBasedPrice() ? '' : cp
-    const ps = broker.isPercentBasedPrice() ? '%' : cs
+    const pp = broker.isPercentBasedPrice() ? "" : cp
+    const ps = broker.isPercentBasedPrice() ? "%" : cs
     const profitSeries: HighchartsSeriesOptions = {
-        name: broker.isPercentBasedPrice() ? 'Доходность' : 'Стоимость',
+        name: broker.isPercentBasedPrice() ? "Доходность" : "Стоимость",
         data: profitData as [number, number][],
         color: profitChartColor,
         tooltip: {valueDecimals: vState.valueDecimals, valuePrefix: pp, valueSuffix: ps},
@@ -256,56 +254,71 @@ function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
     }
     const mdd = options.maxDrawdownInfo
     if (mdd) {
-        profitSeries.zoneAxis = 'x'
+        profitSeries.zoneAxis = "x"
         profitSeries.zones = [
             {value: mdd.fromDate, color: profitChartColor},
-            {value: mdd.toDate, color: 'red', fillColor: profitChartColor + '0f'},
+            {value: mdd.toDate, color: "red", fillColor: profitChartColor + "0f"},
             {color: profitChartColor}
         ]
         let idx = findIndex(profitData, (p: number[]) => p[0] == mdd.toDate)
         idx == profitData.length - 1 && idx--
+        while (idx > 0 && profitData[idx - 1][1].toFixed(1) == profitData[idx][1].toFixed(1)) idx--
         if (idx > 0) {
             const v = profitData[idx]
             const x = v[0]
             const y = v[1]
             profitData[idx] = {
-                x, y, id: "min",
+                x, y, id: "minDD", marker: {enabled: true, radius: 5, fillColor: "green"}, enabledThreshold: 0,
                 dataLabels: {
                     enabled: true,
-                    align: 'right',
+                    allowOverlap: "true",
+                    align: "right",
                     format: "просадка: " + mdd.drawdown.toFixed(0) + "%",
-                    style: {fontWeight: 'normal'},
+                    style: {fontWeight: "normal"},
                     y: 17
                 }
             } as any
+            profitSeries.turboThreshold = 5000
+            // res["annotations"] = [{
+            //     labelOptions: {
+            //         backgroundColor: "white",
+            //         borderColor: "#bbb",
+            //         y: 30,
+            //         verticalAlign: "bottom"
+            //     },
+            //     labels: [{
+            //         point: "minDD",
+            //         text: "просадка: " + mdd.drawdown.toFixed(0) + "%"
+            //     }]
+            // }]
         }
     }
     res.series.push(profitSeries)
     res.yAxis.push({
-        title: {text: 'Доходность'},
-        height: hasEquityOrBalance ? '47%' : '100%',
+        title: {text: "Доходность"},
+        height: hasEquityOrBalance ? "47%" : "100%",
         labels: {
-            format: pp + '{value}' + ps,
+            format: pp + "{value}" + ps,
             style: {color: profitChartColor}
         },
-        plotLines: [{color: '#555', width: 1, value: 0, zIndex: 10}],
+        plotLines: [{color: "#555", width: 1, value: 0, zIndex: 10}],
         maxPadding: 0.05,
         lineWidth: hasEquityOrBalance ? 2 : 0
     })
 
     if (hasEquityOrBalance) {
         res.yAxis.push({
-            title: {text: hasEquity && hasBalance ? 'Баланс и Средства' : hasEquity ? 'Средства' : 'Баланс'},
-            top: '53%',
-            height: '47%',
+            title: {text: hasEquity && hasBalance ? "Баланс и Средства" : hasEquity ? "Средства" : "Баланс"},
+            top: "53%",
+            height: "47%",
             offset: 0,
             min: 0,
             maxPadding: 0.05,
             labels: {
                 formatter: function () {
-                    return cp + Highcharts.numberFormat(this.value, 0, '', ',') + cs
+                    return cp + Highcharts.numberFormat(this.value, 0, "", ",") + cs
                 },
-                style: {color: '#446587'}
+                style: {color: "#446587"}
             },
             lineWidth: 2
         })
@@ -313,69 +326,69 @@ function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
     if (hasBalance) {
         //balanceData chart
         res.series.push({
-            name: 'Баланс',
-            color: '#c7c7c7',
+            name: "Баланс",
+            color: "#c7c7c7",
             data: options.balanceData,
             marker: {enabled: false},
             tooltip: {valuePrefix: cp, valueSuffix: cs},
             yAxis: res.yAxis.length - 1,
-            zIndex: 1
+            zIndex: 1,
+            turboThreshold: 5000
         })
     }
     if (hasEquity) {
         res.series.push({
-            name: 'Средства',
-            color: '#446587',
+            name: "Средства",
+            color: "#446587",
             data: options.equityData,
             marker: {enabled: false},
             tooltip: {valuePrefix: cp, valueSuffix: cs},
             yAxis: res.yAxis.length - 1,
-            zIndex: 2
+            zIndex: 2,
+            turboThreshold: 5000
         })
     }
     return res
 }
 
 function installTranslations() {
-    if (localizationInstalled) {
-        return
+    const langObject: HighchartsLangObject = {
+        contextButtonTitle: "Экспорт",
+        months: ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"],
+        shortMonths: ["Янв", "Фев", "Мар", "Апр", "Май", "Июн", "Июл", "Авг", "Сен", "Окт", "Ноя", "Дек"],
+        weekdays: ["Воскресение", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"],
+        printChart: "Отправить на печать",
+
+        downloadPNG: "Сохранить в формате PNG",
+        downloadJPEG: "Сохранить в формате JPEG",
+        downloadPDF: "Сохранить в формате PDF",
+        downloadSVG: "Сохранить в формате SVG",
+
+        downloadCSV: "Сохранить в формате CSV",
+        downloadXLS: "Сохранить в формате XLS",
+
+        loading: "Загрузка...",
+        rangeSelectorZoom: "Период",
+        rangeSelectorFrom: "с",
+        rangeSelectorTo: "по",
+        noData: "Нет данных"
     }
-    localizationInstalled = true
-    let langObject: HighchartsLangObject = {
-        months: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
-        shortMonths: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
-        weekdays: ['Воскресение', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'],
-        printChart: 'Отправить на печать',
-
-        downloadPNG: 'Сохранить в формате PNG',
-        downloadJPEG: 'Сохранить в формате JPEG',
-        downloadPDF: 'Сохранить в формате PDF',
-        downloadSVG: 'Сохранить в формате SVG',
-
-        downloadCSV: 'Сохранить в формате CSV',
-        downloadXLS: 'Сохранить в формате XLS',
-
-        loading: 'Загрузка...',
-        rangeSelectorZoom: 'Период',
-        rangeSelectorFrom: 'с',
-        rangeSelectorTo: 'по'
-    }
-    let options: any = {lang: langObject}
+    const options: any = {lang: langObject}
     Highcharts.setOptions(options)
 }
 
 function showChart(accountInfo: AccountInfoResponse) {
     // find modal window, create if not found
-    let $modalDiv = $('#' + HIGHCHARTS_MODAL_DIV_ID)
+    let $modalDiv = $("#" + HIGHCHARTS_MODAL_DIV_ID)
     if ($modalDiv.length === 0) {
-        $modalDiv = $('<div/>', {id: HIGHCHARTS_MODAL_DIV_ID}).appendTo(document.body)
+        $modalDiv = $("<div/>", {id: HIGHCHARTS_MODAL_DIV_ID}).appendTo(document.body)
     }
 
     // reset old window contents
     $modalDiv.empty()
     const broker = Broker.getBrokerById(accountInfo.broker)
     const percentBasedPrice = broker.isPercentBasedPrice()
-    const titleAttr = percentBasedPrice ? 'Доходность за выбранный период.' : 'Изменение стоимости за выбранный период.'
+    const titleAttr = percentBasedPrice ? "Доходность за выбранный период." : "Изменение стоимости за выбранный период."
     $modalDiv.append(`<div class="modal" tabindex="-1" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -395,14 +408,14 @@ function showChart(accountInfo: AccountInfoResponse) {
             </div>
         </div>
     </div>`)
-    let fullAccountName = accountInfo.name + '/' + accountInfo.account
-    let profitLabelId = 'profit_label_' + Date.now()
-    const headerText = (percentBasedPrice ? 'Доходность счета «' + fullAccountName + '»' : 'Изменение стоимости «' + fullAccountName + '»') + ' за выбранный период: '
-    $modalDiv.find('.modal-title-text').text(headerText)
-    $modalDiv.find('.modal-title-profit').attr('id', profitLabelId)
-    $modalDiv.find('.account-url').attr('href', accountInfo.url)
+    let fullAccountName = accountInfo.name + "/" + accountInfo.account
+    let profitLabelId = "profit_label_" + Date.now()
+    const headerText = (percentBasedPrice ? "Доходность счета «" + fullAccountName + "»" : "Изменение стоимости «" + fullAccountName + "»") + " за выбранный период: "
+    $modalDiv.find(".modal-title-text").text(headerText)
+    $modalDiv.find(".modal-title-profit").attr("id", profitLabelId)
+    $modalDiv.find(".account-url").attr("href", accountInfo.url)
 
-    let $dialog = $modalDiv.find('.modal-dialog')
+    let $dialog = $modalDiv.find(".modal-dialog")
     $dialog.width(window.innerWidth * 0.8)
     $dialog.height(window.innerHeight * 0.8)
 
@@ -415,19 +428,19 @@ function showChart(accountInfo: AccountInfoResponse) {
         currencySuffix: accountInfo.currencySuffix,
         chartElementSelector: undefined,
         fullAccountName: fullAccountName,
-        profitLabelSelector: '#' + profitLabelId,
+        profitLabelSelector: "#" + profitLabelId,
         broker: accountInfo.broker,
         maxDrawdownInfo: accountInfo.maxDrawdownInfo
     }
     const options = prepareAccountProfitChartOptions(chartOptions)
     options.chart.width = $dialog.width() - 30
     options.chart.height = $dialog.height() - 30
-    const $chartEl = $modalDiv.find('.iflow-modal-chart')
-    $chartEl.highcharts('StockChart', options)
+    const $chartEl = $modalDiv.find(".iflow-modal-chart")
+    $chartEl.highcharts("StockChart", options)
     enableZoom($chartEl)
 
     // show modal window
-    $modalDiv.find('.modal').first().modal()
+    $modalDiv.find(".modal").first().modal()
 }
 
 function enableZoom($container: JQuery): void {
@@ -471,12 +484,12 @@ function prepareVsChartOptions(options: VsChartOptions): any {
         rangeSelector: {
             selected: 5,
             buttons: [
-                {type: 'month', count: 1, text: '1м'},
-                {type: 'month', count: 3, text: '3м'},
-                {type: 'month', count: 6, text: '6м'},
-                {type: 'ytd', text: 'YTD'},
-                {type: 'year', count: 1, text: 'Год'},
-                {type: 'all', text: 'Все'}
+                {type: "month", count: 1, text: "1м"},
+                {type: "month", count: 3, text: "3м"},
+                {type: "month", count: 6, text: "6м"},
+                {type: "ytd", text: "YTD"},
+                {type: "year", count: 1, text: "Год"},
+                {type: "all", text: "Все"}
             ]
         },
         credits: {enabled: false},
@@ -484,10 +497,10 @@ function prepareVsChartOptions(options: VsChartOptions): any {
         yAxis: {
             labels: {
                 formatter: function () {
-                    return (this.value > 0 ? ' + ' : '') + this.value + '%'
+                    return (this.value > 0 ? " + " : "") + this.value + "%"
                 }
             },
-            plotLines: [{value: 0, width: 2, color: 'silver'}]
+            plotLines: [{value: 0, width: 2, color: "silver"}]
         },
 
         plotOptions: {
@@ -495,7 +508,7 @@ function prepareVsChartOptions(options: VsChartOptions): any {
         },
 
         tooltip: {
-            pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.change}%)<br/>',
+            pointFormat: "<span style=\"color:{series.color}\">{series.name}</span>: <b>{point.y}</b> ({point.change}%)<br/>",
             valueDecimals: 2,
             split: true
         },
@@ -522,7 +535,7 @@ function addVsChart(options: VsChartOptions) {
 
     let hsOptions = prepareVsChartOptions(options)
     let $chartEl = $(options.chartElementSelector)
-    $chartEl.highcharts('StockChart', hsOptions)
+    $chartEl.highcharts("StockChart", hsOptions)
 }
 
 interface TsEquityChartOptions {
@@ -537,6 +550,7 @@ interface TsEquityChartOptions {
 }
 
 function addTsDrawdownChart(tsOptions: TsEquityChartOptions) {
+    installTranslations()
     const perOrder = []
     const perAccount = []
     const orders = []
@@ -559,39 +573,39 @@ function addTsDrawdownChart(tsOptions: TsEquityChartOptions) {
     }
 
     const hsOptions = {
-        title: {text: ''},
-        xAxis: {type: 'datetime'},
+        title: {text: ""},
+        xAxis: {type: "datetime"},
         yAxis: [
             {
-                title: {text: 'Пункты'},
+                title: {text: "Пункты"},
                 opposite: true,
                 endOnTick: false,
-                height: '68%',
+                height: "68%",
                 lineWidth: 2
             },
             {
-                title: {text: 'Ордера'},
+                title: {text: "Ордера"},
                 opposite: true,
                 tickInterval: 1,
                 endOnTick: false,
                 min: 0,
-                height: '27%',
-                top: '73%',
+                height: "27%",
+                top: "73%",
                 offset: 0,
                 lineWidth: 2
             }
         ],
         tooltip: {
             shared: true,
-            xDateFormat: '%d %b %Y %H:00'
+            xDateFormat: "%d %b %Y %H:00"
         },
         credits: {enabled: false},
         exporting: {enabled: false},
         series: [
             {
-                name: 'Закрытые ордера',
-                type: 'line',
-                color: '#737373',
+                name: "Закрытые ордера",
+                type: "line",
+                color: "#737373",
                 data: closedOrdersPoints,
                 zIndex: 3,
                 step: true,
@@ -600,29 +614,29 @@ function addTsDrawdownChart(tsOptions: TsEquityChartOptions) {
                 }
             },
             {
-                name: 'Один открытый ордер',
-                type: 'arearange',
-                color: '#999',
+                name: "Один открытый ордер",
+                type: "arearange",
+                color: "#999",
                 data: perOrder,
                 zIndex: 2,
                 step: true
             } as HighchartsIndividualSeriesOptions,
             {
-                name: 'Все открытые ордера',
-                type: 'arearange',
-                color: '#ccc',
+                name: "Все открытые ордера",
+                type: "arearange",
+                color: "#ccc",
                 data: perAccount,
                 zIndex: 1,
                 step: true
             },
             {
-                name: 'Число открытых ордеров',
-                type: 'column',
-                color: '#ddd',
+                name: "Число открытых ордеров",
+                type: "column",
+                color: "#ddd",
                 data: orders,
                 zIndex: 0,
                 yAxis: 1,
-                states: {hover: {color: '#ccc'}}
+                states: {hover: {color: "#ccc"}}
             }
         ]
     } as HighchartsOptions
@@ -631,6 +645,7 @@ function addTsDrawdownChart(tsOptions: TsEquityChartOptions) {
 }
 
 function attachModalAccountChart(elementSelector: string, broker: number, account: string): void {
+    installTranslations()
     $(elementSelector).click(function (e: Event) {
         e.preventDefault()
         getAccountInfo(broker, account).then((accountInfo: AccountInfoResponse) => {
@@ -640,9 +655,10 @@ function attachModalAccountChart(elementSelector: string, broker: number, accoun
 }
 
 function addAccountChart(options: AccountChartOptions) {
+    installTranslations()
     let hsOptions = prepareAccountProfitChartOptions(options)
     const $chartEl = $(options.chartElementSelector)
-    $chartEl.highcharts('StockChart', hsOptions)
+    $chartEl.highcharts("StockChart", hsOptions)
     enableZoom($chartEl)
 }
 
