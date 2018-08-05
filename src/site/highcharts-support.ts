@@ -6,7 +6,10 @@ import {Broker} from "./broker"
 import Utils from "./site-utils"
 
 const HIGHCHARTS_MODAL_DIV_ID = "iflow_highcharts_modal"
-const PROFIT_CHART_COLOR = "#00854E"
+// const PROFIT_CHART_COLOR = "#00854E"
+const PROFIT_CHART_COLOR = "#66887a"
+const DD_ZONE_COLOR = "Crimson"
+const PROFIT_ZONE_COLOR = "#00b500"
 
 function getRangeButtons(firstEventMillis: number, lastEventMillis: number): Array<any> {
     let buttons: Array<any> = []
@@ -40,13 +43,16 @@ export interface MaxDrawdownInfo {
     drawdown: number
 }
 
+export type HPoint = number[] | HighchartsPointObject
+
 export interface AccountChartOptions {
-    profitData: number[][],
+    profitData: HPoint[],
     balanceData?: number[][],
     equityData?: number[][],
     chartElementSelector: string,
     profitLabelSelector: string;
     maxDDLabelSelector: string;
+    maxProfitLabelSelector: string;
     fullAccountName: string;
     broker?: number,
     currencySuffix?: string,
@@ -73,20 +79,20 @@ function toSafeFileName(s: string): string {
     return r
 }
 
-function deriveDecimalPrecision(profitData: number[][], minIdx?: number, maxIdx?: number): number {
+function deriveDecimalPrecision(profitData: HPoint[], minIdx?: number, maxIdx?: number): number {
     let maxValue: number = 0
     let fromIdx = typeof minIdx === "undefined" ? 0 : minIdx
     let toIdx = typeof  maxIdx === "undefined" ? profitData.length : maxIdx
     for (let i = fromIdx; i < toIdx; i++) {
-        let val = profitData[i][1]
+        let val = y(profitData[i])
         maxValue = Math.max(maxValue, val)
     }
     return maxValue > 10000 ? 0 : (maxValue < 10 ? 4 : 2)
 }
 
-function getIdxBeforeOrEquals(timestamp: number, profitData: Array<Array<number>>): number {
+function getIdxBeforeOrEquals(timestamp: number, profitData: HPoint[]): number {
     for (let i = 0; i < profitData.length; i++) {
-        let t = profitData[i][0]
+        let t = x(profitData[i])
         if (t > timestamp) {
             return i - 1
         }
@@ -94,68 +100,143 @@ function getIdxBeforeOrEquals(timestamp: number, profitData: Array<Array<number>
     return profitData.length - 1
 }
 
-function updateContextInfo(profitSeries: HighchartsSeriesOptions, profitData: number[][],
-                           startEventIdx: number, endEventIdx: number, valueDecimals: number, options: AccountChartOptions) {
+function updateContextInfo(profitSeries: HighchartsSeriesObject | HighchartsSeriesOptions, profitData: HPoint[],
+                           startEventIdx: number, endEventIdx: number, valueDecimals: number,
+                           options: AccountChartOptions,
+                           seriesIsOptions: boolean) {
     updateProfitLabel(profitData, startEventIdx, endEventIdx, valueDecimals, options)
-    updateMaxDDInfo(profitSeries, profitData, startEventIdx, endEventIdx, valueDecimals, options)
+    updateMaxDDInfo(profitSeries, profitData, startEventIdx, endEventIdx, valueDecimals, options, seriesIsOptions)
 }
 
-function updateMaxDDInfo(profitSeries: HighchartsSeriesOptions, profitData: number[][],
-                         startEventIdx: number, endEventIdx: number, valueDecimals: number, options: AccountChartOptions) {
-    const $maxDDLabel = $(options.maxDDLabelSelector)
-    if ($maxDDLabel.length == 0) {
+function x(p: HPoint): number {
+    return Array.isArray(p) ? p[0] : (p as HighchartsDataPoint).x
+}
+
+function y(p: HPoint): number {
+    return Array.isArray(p) ? p[1] : (p as HighchartsDataPoint).y
+}
+
+function updateMaxDDInfo(profitSeries: HighchartsSeriesObject | HighchartsSeriesOptions, profitData: HPoint[],
+                         startEventIdx: number, endEventIdx: number,
+                         valueDecimals: number, options: AccountChartOptions,
+                         seriesIsOptions: boolean) {
+    const $ddLabel = $(options.maxDDLabelSelector)
+    const $profitLabel = $(options.maxProfitLabelSelector)
+    if ($ddLabel.length == 0 && $profitLabel.length == 0) {
         return
     }
-
-    let currentMaxEvent = profitData[startEventIdx]
-    let currentMinEvent = currentMaxEvent
-    let ddStartEvent = currentMaxEvent
-    let ddEndEvent = currentMinEvent
-
     const broker = Broker.getBrokerById(options.broker)
     const ddFunc = broker.isPercentBasedPrice()
         ? (p1, p2) => -percentBetweenPercents(p1, p2)
         : (e1, e2) => -percentBetweenEquity(e1, e2)
+    const profitFunc = (v1, v2) => -ddFunc(v1, v2)
 
-    for (let idx = startEventIdx + 1; idx <= endEventIdx; idx++) {
-        const event = profitData[idx]
-        if (event[1] <= currentMinEvent[1]) {
-            currentMinEvent = event
-        }
-        const currentDD = ddFunc(currentMaxEvent[1], currentMinEvent[1])
-        const maxDD = ddFunc(ddStartEvent[1], ddEndEvent[1])
-        if (currentDD >= maxDD) {
-            ddStartEvent = currentMaxEvent
-            ddEndEvent = currentMinEvent
-        }
-        if (event[1] >= currentMaxEvent[1]) {
-            currentMaxEvent = event
-            currentMinEvent = event
+    let ddStartEvent = profitData[startEventIdx]
+    let ddEndEvent = ddStartEvent
+
+    { // drawdown
+        let currentDDMinEvent = ddStartEvent
+        let currentDDMaxEvent = ddStartEvent
+
+        for (let idx = startEventIdx + 1; idx <= endEventIdx; idx++) {
+            const event = profitData[idx]
+            if (y(event) <= y(currentDDMinEvent)) {
+                currentDDMinEvent = event
+            }
+            const currentDD = ddFunc(y(currentDDMaxEvent), y(currentDDMinEvent))
+            const maxDD = ddFunc(y(ddStartEvent), y(ddEndEvent))
+            if (currentDD >= maxDD) {
+                ddStartEvent = currentDDMaxEvent
+                ddEndEvent = currentDDMinEvent
+            }
+            if (y(event) >= y(currentDDMaxEvent)) {
+                currentDDMaxEvent = event
+                currentDDMinEvent = event
+            }
         }
     }
-    const drawdown = ddFunc(ddStartEvent[1], ddEndEvent[1])
-    const text = drawdown.toFixed(valueDecimals) + "%"
-    $maxDDLabel.text(text)
 
-    if (drawdown > 0.1) {
-        profitSeries.zoneAxis = "x"
-        profitSeries.zones = [
-            {value: ddStartEvent[0], color: PROFIT_CHART_COLOR},
-            {value: ddEndEvent[0], color: "red", fillColor: PROFIT_CHART_COLOR + "0f"},
-            {color: PROFIT_CHART_COLOR}
-        ]
+    let pStartEvent = profitData[startEventIdx]
+    let pEndEvent = pStartEvent
+    { // profit
+        let currentPMinEvent = pStartEvent
+        let currentPMaxEvent = pStartEvent
+
+        for (let idx = startEventIdx + 1; idx <= endEventIdx; idx++) {
+            const event = profitData[idx]
+            if (y(event) >= y(currentPMaxEvent)) {
+                currentPMaxEvent = event
+            }
+            const currentProfit = profitFunc(y(currentPMinEvent), y(currentPMaxEvent))
+            const maxProfit = profitFunc(y(pStartEvent), y(pEndEvent))
+            if (currentProfit >= maxProfit) {
+                pStartEvent = currentPMinEvent
+                pEndEvent = currentPMaxEvent
+            }
+            if (y(event) <= y(currentPMinEvent)) {
+                currentPMinEvent = event
+                currentPMaxEvent = event
+            }
+        }
+    }
+
+    const drawdown = ddFunc(y(ddStartEvent), y(ddEndEvent))
+    $ddLabel.text("-" + drawdown.toFixed(valueDecimals) + "%")
+
+    const profit = profitFunc(y(pStartEvent), y(pEndEvent))
+    $profitLabel.text("+" + profit.toFixed(valueDecimals) + "%")
+
+    if (drawdown > 0.1 || profit >= 0.1) {
+        if (seriesIsOptions) {
+            (profitSeries as HighchartsSeriesOptions).zoneAxis = "x"
+        }
+        const ddStartZone = {value: x(ddStartEvent), color: PROFIT_CHART_COLOR, fillColor: PROFIT_CHART_COLOR + "0f"}
+        const ddEndZone = {value: x(ddEndEvent), color: DD_ZONE_COLOR, fillColor: PROFIT_CHART_COLOR + "0f"}
+        const pStartZone = {value: x(pStartEvent), color: PROFIT_CHART_COLOR, fillColor: PROFIT_CHART_COLOR + "0f"}
+        const pEndZone = {value: x(pEndEvent), color: PROFIT_ZONE_COLOR, fillColor: PROFIT_CHART_COLOR + "0f"}
+
+        let zones
+        if (drawdown > 0.1 && profit > 0.1) {
+            if (ddEndZone.value === pStartZone.value) ddEndZone.value--
+            if (pEndZone.value === ddStartZone.value) pEndZone.value--
+            const isStartZone = z => z === ddStartZone || z === pStartZone
+            const isEndZone = z => z === ddEndZone || z === pEndZone
+            zones = [ddStartZone, ddEndZone, pStartZone, pEndZone]
+            zones = zones.filter(z1 => !(isStartZone(z1) && zones.some(z2 => z2.value === z1.value && isEndZone(z2))))
+            zones.sort((z1, z2) => z1.value - z2.value)
+            if (pStartZone.value > ddStartZone.value && pEndZone.value < ddEndZone.value) pStartZone.color = DD_ZONE_COLOR
+            if (ddStartZone.value > pStartZone.value && ddEndZone.value < pEndZone.value) ddStartZone.color = PROFIT_ZONE_COLOR
+        } else if (drawdown > 0.1) {
+            zones = [ddStartZone, ddEndZone]
+        } else {
+            zones = [pStartZone, pEndZone]
+        }
+        if (startEventIdx > 0) {
+            zones = [{value: x(profitData[startEventIdx - 1]), color: PROFIT_CHART_COLOR}, ...zones]
+        }
+        zones.push({color: PROFIT_CHART_COLOR} as any)
+
+
+        if (seriesIsOptions) {
+            (profitSeries as HighchartsSeriesOptions).zones = zones
+        } else {
+            const series = profitSeries as HighchartsSeriesObject
+            (series.options as HighchartsSeriesOptions).zones = zones
+            series.update(series.options)
+        }
     }
 }
 
 
-function updateProfitLabel(profitData: number[][], startEventIdx: number, endEventIdx: number, valueDecimals: number, options: AccountChartOptions) {
+function updateProfitLabel(profitData: HPoint[], startEventIdx: number, endEventIdx: number,
+                           valueDecimals: number, options: AccountChartOptions) {
     const $profitLabel = $(options.profitLabelSelector)
     if ($profitLabel.length == 0) {
         return
     }
 
-    const startValue = profitData[startEventIdx][1]
-    const endValue = profitData[endEventIdx][1]
+    const startValue = y(profitData[startEventIdx])
+    const endValue = y(profitData[endEventIdx])
 
     const broker = Broker.getBrokerById(options.broker)
     let text
@@ -180,8 +261,8 @@ function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
     let lastEventMillis = -1
     let profitData = options.profitData
     if (profitData.length > 0) {
-        firstEventMillis = profitData[0][0]
-        lastEventMillis = profitData[profitData.length - 1][0]
+        firstEventMillis = x(profitData[0])
+        lastEventMillis = x(profitData[profitData.length - 1])
     }
     let buttons: Array<any> = getRangeButtons(firstEventMillis, lastEventMillis)
     const broker = Broker.getBrokerById(options.broker)
@@ -261,13 +342,15 @@ function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
                 setExtremes: function (e) {
                     const $profitLabel = $(options.profitLabelSelector)
                     const $maxDDLabel = $(options.maxDDLabelSelector)
+                    const $maxProfitLabel = $(options.maxProfitLabelSelector)
                     if ($profitLabel.length > 0 && typeof e.min !== "undefined" && typeof e.max !== "undefined") {
                         const startEventIdx = Math.max(0, getIdxBeforeOrEquals(e.min, profitData))
                         const endEventIdx = Math.max(startEventIdx, getIdxBeforeOrEquals(e.max, profitData))
-                        updateContextInfo(this.chart.series[0], profitData, startEventIdx, endEventIdx, vState.valueDecimals, options)
+                        updateContextInfo(this.chart.series[0], profitData, startEventIdx, endEventIdx, vState.valueDecimals, options, false)
                     } else {
                         $profitLabel.text("")
                         $maxDDLabel.text("")
+                        $maxProfitLabel.text("")
                     }
                 }
             }
@@ -341,7 +424,7 @@ function prepareAccountProfitChartOptions(options: AccountChartOptions): any {
         })
     }
 
-    updateContextInfo(profitSeries, profitData, 0, profitData.length - 1, vState.valueDecimals, options)
+    updateContextInfo(profitSeries, profitData, 0, profitData.length - 1, vState.valueDecimals, options, true)
 
     return res
 }
@@ -392,7 +475,8 @@ function showChart(accountInfo: AccountInfoResponse) {
                     <h4 class="modal-title">
                         <span class="modal-title-text"></span>
                         <span class="txt-muted itl modal-title-profit" title="${titleAttr}"></span>,
-                        макс. просадка: <span class="txt-muted itl modal-title-max-dd" title="Максимальная просадка за выбранный период."></span>
+                        макс. просадка: <span class="dd-zone-color itl modal-title-max-dd" title="Максимальная просадка за выбранный период."></span>,
+                        макс. рост: <span class="profit-zone-color itl modal-title-max-profit" title="Максимальный рост за выбранный период."></span>
                     </h4>
                 </div>
                 <div class="modal-body">
@@ -408,10 +492,12 @@ function showChart(accountInfo: AccountInfoResponse) {
     const fullAccountName = accountInfo.name + "/" + accountInfo.account
     const profitLabelId = "profit_label_" + Date.now()
     const maxDDLabelId = "max_dd_label_" + Date.now()
+    const maxProfitLabelId = "max_profit_label_" + Date.now()
     const headerText = (percentBasedPrice ? "Доходность счета «" + fullAccountName + "»" : "Изменение стоимости «" + fullAccountName + "»") + " за выбранный период:"
     $modalDiv.find(".modal-title-text").text(headerText)
     $modalDiv.find(".modal-title-profit").attr("id", profitLabelId)
     $modalDiv.find(".modal-title-max-dd").attr("id", maxDDLabelId)
+    $modalDiv.find(".modal-title-max-profit").attr("id", maxProfitLabelId)
     $modalDiv.find(".account-url").attr("href", accountInfo.url)
 
     let $dialog = $modalDiv.find(".modal-dialog")
@@ -429,6 +515,7 @@ function showChart(accountInfo: AccountInfoResponse) {
         fullAccountName: fullAccountName,
         profitLabelSelector: "#" + profitLabelId,
         maxDDLabelSelector: "#" + maxDDLabelId,
+        maxProfitLabelSelector: "#" + maxProfitLabelId,
         broker: accountInfo.broker
     }
     const options = prepareAccountProfitChartOptions(chartOptions)
