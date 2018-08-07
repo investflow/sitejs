@@ -105,7 +105,7 @@ function updateContextInfo(profitSeries: HighchartsSeriesObject | HighchartsSeri
                            options: AccountChartOptions,
                            seriesIsOptions: boolean) {
     updateProfitLabel(profitData, startEventIdx, endEventIdx, valueDecimals, options)
-    updateMaxDDInfo(profitSeries, profitData, startEventIdx, endEventIdx, valueDecimals, options, seriesIsOptions)
+    updateMaxDDInfo(profitSeries, profitData, startEventIdx, endEventIdx, options, seriesIsOptions)
 }
 
 function x(p: HPoint): number {
@@ -117,9 +117,7 @@ function y(p: HPoint): number {
 }
 
 function updateMaxDDInfo(profitSeries: HighchartsSeriesObject | HighchartsSeriesOptions, profitData: HPoint[],
-                         startEventIdx: number, endEventIdx: number,
-                         valueDecimals: number, options: AccountChartOptions,
-                         seriesIsOptions: boolean) {
+                         startEventIdx: number, endEventIdx: number, options: AccountChartOptions, seriesIsOptions: boolean) {
     const $ddLabel = $(options.maxDDLabelSelector)
     const $profitLabel = $(options.maxProfitLabelSelector)
     if ($ddLabel.length == 0 && $profitLabel.length == 0) {
@@ -181,10 +179,10 @@ function updateMaxDDInfo(profitSeries: HighchartsSeriesObject | HighchartsSeries
     }
 
     const drawdown = ddFunc(y(ddStartEvent), y(ddEndEvent))
-    $ddLabel.text("-" + drawdown.toFixed(valueDecimals) + "%")
+    $ddLabel.text("-" + drawdown.toFixed(getDefaultLabelDecimalsForPercent(drawdown)) + "%")
 
     const profit = profitFunc(y(pStartEvent), y(pEndEvent))
-    $profitLabel.text("+" + profit.toFixed(valueDecimals) + "%")
+    $profitLabel.text("+" + profit.toFixed(getDefaultLabelDecimalsForPercent(profit)) + "%")
 
     if (drawdown > 0.1 || profit >= 0.1) {
         if (seriesIsOptions) {
