@@ -133,23 +133,17 @@ function updateMaxDDInfo(profitSeries: HighchartsSeriesObject | HighchartsSeries
     let ddEndEvent = ddStartEvent
 
     { // drawdown
-        let currentDDMinEvent = ddStartEvent
-        let currentDDMaxEvent = ddStartEvent
-
+        let currentDDStartEvent = ddStartEvent
         for (let idx = startEventIdx + 1; idx <= endEventIdx; idx++) {
             const event = profitData[idx]
-            if (y(event) <= y(currentDDMinEvent)) {
-                currentDDMinEvent = event
+            if (y(event) >= y(currentDDStartEvent)) {
+                currentDDStartEvent = event
             }
-            const currentDD = ddFunc(y(currentDDMaxEvent), y(currentDDMinEvent))
+            const currentDD = ddFunc(y(currentDDStartEvent), y(event))
             const maxDD = ddFunc(y(ddStartEvent), y(ddEndEvent))
             if (currentDD >= maxDD) {
-                ddStartEvent = currentDDMaxEvent
-                ddEndEvent = currentDDMinEvent
-            }
-            if (y(event) >= y(currentDDMaxEvent)) {
-                currentDDMaxEvent = event
-                currentDDMinEvent = event
+                ddStartEvent = currentDDStartEvent
+                ddEndEvent = event
             }
         }
     }
@@ -157,23 +151,18 @@ function updateMaxDDInfo(profitSeries: HighchartsSeriesObject | HighchartsSeries
     let pStartEvent = profitData[startEventIdx]
     let pEndEvent = pStartEvent
     { // profit
-        let currentPMinEvent = pStartEvent
-        let currentPMaxEvent = pStartEvent
+        let currentPStartEvent = pStartEvent
 
         for (let idx = startEventIdx + 1; idx <= endEventIdx; idx++) {
             const event = profitData[idx]
-            if (y(event) >= y(currentPMaxEvent)) {
-                currentPMaxEvent = event
+            if (y(event) <= y(currentPStartEvent)) {
+                currentPStartEvent = event
             }
-            const currentProfit = profitFunc(y(currentPMinEvent), y(currentPMaxEvent))
+            const currentProfit = profitFunc(y(currentPStartEvent), y(event))
             const maxProfit = profitFunc(y(pStartEvent), y(pEndEvent))
             if (currentProfit >= maxProfit) {
-                pStartEvent = currentPMinEvent
-                pEndEvent = currentPMaxEvent
-            }
-            if (y(event) <= y(currentPMinEvent)) {
-                currentPMinEvent = event
-                currentPMaxEvent = event
+                pStartEvent = currentPStartEvent
+                pEndEvent = event
             }
         }
     }
